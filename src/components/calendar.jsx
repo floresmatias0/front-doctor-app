@@ -55,10 +55,7 @@ export default function CalendarComponent({ calendarData, selectedDoctor, fetchD
     const handleDateSelect = (selectInfo) => {
         const selectedDate = selectInfo.start
 
-        const currentTime = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false })
-        const selectTime = new Date(selectedDate).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false })
-
-        if(selectTime < currentTime) {
+        if(new Date(selectedDate) <= new Date()) {
             return toast({
                 title: 'Fecha no disponible',
                 position: 'top-right',
