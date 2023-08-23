@@ -1,33 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { instance } from '../utils/axios';
 import CalendarComponent from '../components/calendar';
 import AsyncSelect from 'react-select/async';
+import { Grid, GridItem } from '@chakra-ui/react';
 
 export default function Welcome() {
-  const [searchParams] = useSearchParams();
-  const currentParams = Object.fromEntries([...searchParams]);
-  const { _valid: idUser } = currentParams;
-
-  const [user, setUser] = useState(null);
   const [calendarData, setCalendarData] = useState(null);
-
-  const fetchUser = async (userId) => {
-    try {
-      const { data } = await instance.get(`/users/${userId}`);
-      const response = data;
-      if(response.success) {
-        localStorage.setItem('user', JSON.stringify(response.data))
-        setUser(response.data)
-        return response.data
-      }
-      return null
-    }catch(err) {
-      console.log('fetch users', err.message)
-      throw new Error('Something went wrong to search user')
-    }
-  }
-
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+ 
   const fetchDoctors = async () => {
     try {
       const { data } = await instance.get(`/users?filters={"role":"DOCTOR"}`);
@@ -56,6 +36,7 @@ export default function Welcome() {
 
   const fetchDataCalendarDoctor = async (selectedOption) => {
     if (selectedOption) {
+      setSelectedDoctor(selectedOption)
       try {
         const { data } = await instance.get(`/calendars?email=${selectedOption.value}`);
         setCalendarData(data.data)
@@ -67,26 +48,28 @@ export default function Welcome() {
   }
 
   useEffect(() => {
-    if(idUser) {
-      fetchUser(idUser)
-        .then(response => response)
-        .catch(err => err.message)
-    }
-
     fetchDoctors()
       .then(response => response)
       .catch(err => err.message)
 
-  }, [searchParams]);
+  }, []);
 
   return (
-    <div>
-      <h1>Bienvenido {user?.name}</h1>
-      <label>
-        Selecciona un doctor
-        <AsyncSelect cacheOptions defaultOptions loadOptions={fetchDoctors} onChange={fetchDataCalendarDoctor}/>
-      </label>
-      {calendarData && <CalendarComponent calendarData={calendarData}/>}
-    </div>
+    <Grid
+      minH="100vh"
+      templateRows={['1fr 1fr', '1fr', '1fr']}
+      templateColumns={['1fr', '1fr', '1fr 1fr 1fr 1fr']}
+      gap={4}
+    >
+      <GridItem rowSpan={2} colSpan={1}>
+          <label>
+            Doctores disponibles
+            <AsyncSelect cacheOptions defaultOptions loadOptions={fetchDoctors} onChange={fetchDataCalendarDoctor}/>
+          </label>
+      </GridItem>
+      <GridItem colSpan={3}>
+        {calendarData && <CalendarComponent calendarData={calendarData} selectedDoctor={selectedDoctor} fetchDataCalendarDoctor={fetchDataCalendarDoctor} />}
+      </GridItem>
+    </Grid>
   );
 }
