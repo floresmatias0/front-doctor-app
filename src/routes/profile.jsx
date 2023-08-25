@@ -30,6 +30,7 @@ import { useEffect, useState } from "react"
 import { instance } from "../utils/axios"
 import { getFormattedDateTime } from "../components/calendar"
 import { SlClose } from "react-icons/sl"
+import { useSearchParams } from "react-router-dom";
 
 export default function Profile() {
   const [searchParams] = useSearchParams();
