@@ -30,7 +30,8 @@ import { useEffect, useState } from "react"
 import { instance } from "../utils/axios"
 import { getFormattedDateTime } from "../components/calendar"
 import { SlClose } from "react-icons/sl"
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom"
+import axios from 'axios'
 
 export default function Profile() {
   const [searchParams] = useSearchParams();
@@ -62,9 +63,11 @@ export default function Profile() {
   }, [])
 
   useEffect(() => {
-    connectMercadopago()
-      .then(response => response)
-      .catch(err => err.message)
+    if(code) {
+      connectMercadopago()
+        .then(response => response)
+        .catch(err => err.message)
+    }
 
   }, [code])
 
@@ -73,7 +76,7 @@ export default function Profile() {
         "client_secret": import.meta.env.VITE_MERCADOPAGO_CLIENT_SECRET,
         "client_id": import.meta.env.VITE_MERCADOPAGO_CLIENT_ID,
         "grant_type": "authorization_code",
-        code
+        "code": code
     });
 
     const response = await axios.post('https://api.mercadopago.com/oauth/token', body)
