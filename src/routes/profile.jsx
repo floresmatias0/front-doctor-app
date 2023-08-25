@@ -32,6 +32,11 @@ import { getFormattedDateTime } from "../components/calendar"
 import { SlClose } from "react-icons/sl"
 
 export default function Profile() {
+  const [searchParams] = useSearchParams();
+  
+  const currentParams = Object.fromEntries([...searchParams]);
+  const { code } = currentParams;
+
   const [dataBookings, setDataBookings] = useState([])
 
   const user = JSON.parse(localStorage.getItem("user"))
@@ -54,6 +59,34 @@ export default function Profile() {
       .catch(err => err.message)
 
   }, [])
+
+  useEffect(() => {
+    connectMercadopago()
+      .then(response => response)
+      .catch(err => err.message)
+
+  }, [code])
+
+  const connectMercadopago = async () => {
+    const body = JSON.stringify({
+        "client_secret": import.meta.env.VITE_MERCADOPAGO_CLIENT_SECRET,
+        "client_id": import.meta.env.VITE_MERCADOPAGO_CLIENT_ID,
+        "grant_type": "authorization_code",
+        code
+    });
+
+    const response = await axios.post('https://api.mercadopago.com/oauth/token', body)
+
+    await instance.post('/users/mercadopago', {
+      user_id: user?._id,
+      mercadopago_access: response.data
+    })
+  }
+
+  const handleLoginMp = () => {
+    const randomId = Math.floor(Math.random() * Date.now())
+    window.open(`${import.meta.env.VITE_AUTH_URL_MERCADOPAGO}?client_id=${import.meta.env.VITE_APP_ID_MERCADOPAGO}&response_type=code&platform_id=mp&state=${randomId}&redirect_uri=${import.meta.env.VITE_REDIRECT_URL_MERCADOPAGO}`, "_self");
+  }
 
   return (
     <Grid
@@ -122,18 +155,29 @@ export default function Profile() {
                 bg: "red.500",
               }}
             >
-              Cancelar
+              Modificar datos
             </Button>
-            <Button
-              bg={"blue.400"}
-              color={"white"}
-              w="full"
-              _hover={{
-                bg: "blue.500",
-              }}
-            >
-              Enviar
-            </Button>
+            {user?.role === 'DOCTOR' && !user?.mercadopago_access ? (
+              <Button
+                bg={"blue.400"}
+                color={"white"}
+                w="full"
+                _hover={{
+                  bg: "blue.500",
+                }}
+                onClick={handleLoginMp}
+              >
+                Vincular mercadopago
+              </Button>
+            ) : !user?.role === 'PATIENT' ? (
+              <Button
+                bg={"green.400"}
+                color={"white"}
+                w="full"
+              >
+                MP conectado
+              </Button>
+            ) : null}
           </Stack>
         </Stack>
       </GridItem>
