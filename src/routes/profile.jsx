@@ -77,7 +77,7 @@ export default function Profile() {
         "client_id": import.meta.env.VITE_APP_ID_MERCADOPAGO,
         "grant_type": "authorization_code",
         "code": code,
-        "redirect_uri": `${import.meta.env.VITE_BACKEND_URL}/users/mercadopago`
+        "redirect_uri": `${import.meta.env.VITE_REDIRECT_URL_MERCADOPAGO}`
     });
 
     const response = await axios.post('https://api.mercadopago.com/oauth/token', body)
