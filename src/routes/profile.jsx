@@ -74,7 +74,7 @@ export default function Profile() {
   const connectMercadopago = async () => {
     const body = JSON.stringify({
         "client_secret": import.meta.env.VITE_MERCADOPAGO_CLIENT_SECRET,
-        "client_id": import.meta.env.VITE_MERCADOPAGO_CLIENT_ID,
+        "client_id": import.meta.env.VITE_APP_ID_MERCADOPAGO,
         "grant_type": "authorization_code",
         "code": code,
         "redirect_uri": `${import.meta.env.VITE_BACKEND_URL}/users/mercadopago`
