@@ -8,6 +8,7 @@ export default function VerifyMP() {
 
   const fetchUser = async () => {
     try {
+      console.log("entra fetch user");
       const { data } = await instance.get(`/users/${user?._id}`);
       const response = data;
       if (response.success) {
@@ -30,5 +31,5 @@ export default function VerifyMP() {
     }
   }, []);
 
-  return null;
+  return <h1>HOLA</h1>;
 }
