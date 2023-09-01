@@ -35,7 +35,7 @@ export default function Profile() {
   const [searchParams] = useSearchParams();
   
   const currentParams = Object.fromEntries([...searchParams]);
-  const { code } = currentParams;
+  const { code, mercadopago_success } = currentParams;
 
   const [dataBookings, setDataBookings] = useState([])
 
@@ -100,17 +100,36 @@ export default function Profile() {
   }
 
   useEffect(() => {
-    const fetchDataMP = async () => {
-      if (code) {
+    if (code) {
+      const fetchDataMP = async () => {
         try {
           await connectMercadopago();
         } catch (err) {
           console.log(err);
         }
-      }
-    };
+      };
+
+      fetchDataMP();
+    }
   
-    fetchDataMP();
+  }, [])
+
+  useEffect(() => {
+    if(mercadopago_success) {
+      const updateDataUser = async () => {
+        try {
+          const { data } = await instance.get(`/users/${user?._id}`);
+          const response = data;
+          if (response.success) {
+            localStorage.removeItem("user");
+            localStorage.setItem("user", JSON.stringify(response.data));
+          }
+        }catch(err) {
+          console.log(err);
+        }
+      }
+      updateDataUser();
+    }
   }, [])
 
   const handleLoginMp = () => {
