@@ -25,7 +25,7 @@ import { useNavigate } from "react-router-dom";
 const Links = [];
 
 const NavLink = (props) => {
-  const { children } = props;
+  const { children, href } = props;
 
   return (
     <Box
@@ -37,7 +37,7 @@ const NavLink = (props) => {
         textDecoration: "none",
         bg: useColorModeValue("gray.200", "gray.700"),
       }}
-      href={"#"}
+      href={href}
     >
       {children}
     </Box>
@@ -57,64 +57,62 @@ export default function Navbar() {
   };
 
   return (
-    <>
-      <Box bg={useColorModeValue("orange.50", "gray.900")} px={4}>
-        <Flex h={20} alignItems={"center"} justifyContent={"space-between"}>
-          <IconButton
-            size={"md"}
-            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-            aria-label={"Open Menu"}
-            display={Links?.length > 0 ? { md: "none" } : "none"}
-            onClick={isOpen ? onClose : onOpen}
+    <Box bg={useColorModeValue("orange.50", "gray.900")} px={4}>
+      <Flex h={20} alignItems={"center"} justifyContent={"space-between"}>
+        <IconButton
+          size={"md"}
+          icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+          aria-label={"Open Menu"}
+          display={Links?.length > 0 ? { md: "none" } : "none"}
+          onClick={isOpen ? onClose : onOpen}
+        />
+
+        <HStack spacing={8} alignItems={"center"}>
+          <Avatar
+            onClick={() => navigate('/')}
+            size="xl"
+            src={logo}
+            cursor="pointer"
           />
-
-          <HStack spacing={8} alignItems={"center"}>
-            <Avatar
-              onClick={() => navigate('/')}
-              size="xl"
-              src={logo}
-              cursor="pointer"
-            />
-            <HStack
-              as={"nav"}
-              spacing={4}
-              display={{ base: "none", md: "flex" }}
-            >
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
-              ))}
-            </HStack>
+          <HStack
+            as={"nav"}
+            spacing={4}
+            display={{ base: "none", md: "flex" }}
+          >
+            {Links?.map((link) => (
+              <NavLink key={link}>{link}</NavLink>
+            ))}
           </HStack>
-          <Flex alignItems={"center"}>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rounded={"full"}
-                variant={"link"}
-                cursor={"pointer"}
-                minW={0}
-              >
-                <Avatar size={"sm"} src={user?.picture} />
-              </MenuButton>
-              <MenuList>
-                <MenuItem onClick={() => navigate('/profile')}>Perfil</MenuItem>
-                <MenuDivider />
-                <MenuItem onClick={logout}>Cerrar sesion</MenuItem>
-              </MenuList>
-            </Menu>
-          </Flex>
+        </HStack>
+        <Flex alignItems={"center"}>
+          <Menu>
+            <MenuButton
+              as={Button}
+              rounded={"full"}
+              variant={"link"}
+              cursor={"pointer"}
+              minW={0}
+            >
+              <Avatar size={"sm"} src={user?.picture} />
+            </MenuButton>
+            <MenuList>
+              <MenuItem onClick={() => navigate('/profile')}>Perfil</MenuItem>
+              <MenuDivider />
+              <MenuItem onClick={logout}>Cerrar sesion</MenuItem>
+            </MenuList>
+          </Menu>
         </Flex>
+      </Flex>
 
-        {isOpen ? (
-          <Box pb={4} display={{ md: "none" }}>
-            <Stack as={"nav"} spacing={4}>
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
-              ))}
-            </Stack>
-          </Box>
-        ) : null}
-      </Box>
-    </>
+      {isOpen ? (
+        <Box pb={4} display={{ md: "none" }}>
+          <Stack as={"nav"} spacing={4}>
+            {Links.map((link) => (
+              <NavLink key={link}>{link}</NavLink>
+            ))}
+          </Stack>
+        </Box>
+      ) : null}
+    </Box>
   );
 }

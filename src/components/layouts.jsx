@@ -1,6 +1,7 @@
 import { Box, useColorModeValue } from "@chakra-ui/react";
 import { Navigate } from "react-router-dom";
 import Navbar from "./navbar";
+import DoctorContext from "./context";
 
 export const ProtectedRoutes = ({children}) => {
     const userStorage = localStorage.getItem("user")
@@ -14,9 +15,11 @@ export const ProtectedRoutes = ({children}) => {
 
 export const Layout = ({children}) => {
     return (
-        <Box bg={useColorModeValue('white.100', 'gray.900')} w='100%'>
-            <Navbar/>
-            <Box w='100%' p={4} bg={useColorModeValue('gray.50', 'gray.900')}>{children}</Box>
-        </Box>
+        <DoctorContext>
+            <Box bg={useColorModeValue('white.100', 'gray.900')} w='100%'>
+                <Navbar/>
+                <Box w='100%' p={4} bg={useColorModeValue('gray.50', 'gray.900')}>{children}</Box>
+            </Box>
+        </DoctorContext>
     )
 }

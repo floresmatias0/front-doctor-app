@@ -6,7 +6,7 @@ import { Grid, GridItem } from '@chakra-ui/react';
 
 export default function Welcome() {
   const [calendarData, setCalendarData] = useState(null);
-  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [selected, setSelected] = useState(null);
  
   const fetchDoctors = async () => {
     try {
@@ -36,7 +36,7 @@ export default function Welcome() {
 
   const fetchDataCalendarDoctor = async (selectedOption) => {
     if (selectedOption) {
-      setSelectedDoctor(selectedOption)
+      setSelected(selectedOption)
       try {
         const { data } = await instance.get(`/calendars?email=${selectedOption.value}`);
         setCalendarData(data.data)
@@ -48,27 +48,32 @@ export default function Welcome() {
   }
 
   useEffect(() => {
-    fetchDoctors()
-      .then(response => response)
-      .catch(err => err.message)
+    const fetchDataDoctors = async () => {
+      try {
+        await fetchDoctors();
+      }catch(err){
+        console.log(err)
+      }
+    }
 
+    fetchDataDoctors();
   }, []);
 
   return (
     <Grid
       minH="100vh"
-      templateRows={['1fr 1fr', '1fr', '1fr']}
-      templateColumns={['1fr', '1fr', '1fr 1fr 1fr 1fr']}
+      templateRows='repeat(1, 1fr)'
+      templateColumns='repeat(5, 1fr)'
       gap={4}
     >
-      <GridItem rowSpan={2} colSpan={1}>
+      <GridItem rowSpan={1} colSpan={{ base: 5, lg: 1 }}>
           <label>
             Doctores disponibles
             <AsyncSelect cacheOptions defaultOptions loadOptions={fetchDoctors} onChange={fetchDataCalendarDoctor}/>
           </label>
       </GridItem>
-      <GridItem colSpan={3}>
-        {calendarData && <CalendarComponent calendarData={calendarData} selectedDoctor={selectedDoctor} fetchDataCalendarDoctor={fetchDataCalendarDoctor} />}
+      <GridItem colSpan={{ base: 5, lg: 4 }}>
+        {calendarData && <CalendarComponent calendarData={calendarData} selectedDoctor={selected} fetchDataCalendarDoctor={fetchDataCalendarDoctor} />}
       </GridItem>
     </Grid>
   );
