@@ -16,6 +16,7 @@ import Login from "./routes/login";
 import Welcome from "./routes/welcome";
 import Verify from "./routes/verify";
 import Profile from "./routes/profile";
+import VerifyMP from "./routes/verify_mp";
 
 const colors = {
   brand: {
@@ -40,6 +41,13 @@ const router = createBrowserRouter([
     path: "/verify",
     element: <Verify />,
     errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "mp",
+        element: <VerifyMP />,
+        errorElement: <ErrorPage />
+      },
+    ],
   },
   {
     path: "login",
