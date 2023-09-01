@@ -33,5 +33,5 @@ export default function Verify() {
     }
   }, [searchParams]);
 
-  return <Outlet />;
+  return null;
 }

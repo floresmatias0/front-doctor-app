@@ -35,7 +35,7 @@ export default function Profile() {
   const [searchParams] = useSearchParams();
   
   const currentParams = Object.fromEntries([...searchParams]);
-  const { code, mercadopago_success } = currentParams;
+  const { code } = currentParams;
 
   const [dataBookings, setDataBookings] = useState([])
 
@@ -115,7 +115,7 @@ export default function Profile() {
   }, [])
 
   useEffect(() => {
-    if(mercadopago_success) {
+    if(!user?.mercadopago_access) {
       const updateDataUser = async () => {
         try {
           const { data } = await instance.get(`/users/${user?._id}`);
