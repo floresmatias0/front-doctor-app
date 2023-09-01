@@ -40,14 +40,12 @@ const router = createBrowserRouter([
   {
     path: "/verify",
     element: <Verify />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        path: "mp",
-        element: <VerifyMP />,
-        errorElement: <ErrorPage />
-      },
-    ],
+    errorElement: <ErrorPage />
+  },
+  {
+    path: "/mp",
+    element: <VerifyMP />,
+    errorElement: <ErrorPage />
   },
   {
     path: "login",

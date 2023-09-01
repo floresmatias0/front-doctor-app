@@ -31,5 +31,5 @@ export default function VerifyMP() {
     }
   }, []);
 
-  return <h1>HOLA</h1>;
+  return null;
 }
