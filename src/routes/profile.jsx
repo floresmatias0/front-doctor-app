@@ -194,7 +194,16 @@ export default function Profile() {
             />
           </FormControl>
           <Stack spacing={6} direction={["column", "row"]}>
-            {user?.role === 'DOCTOR' && !user?.mercadopago_access ? (
+            {user?.mercadopago_access?.access_token && (
+              <Button
+                bg={"green.400"}
+                color={"white"}
+                w="full"
+              >
+                MP conectado
+              </Button>
+            )}
+            {!user?.mercadopago_access?.access_token && (
               <Button
                 colorScheme='yellow'
                 w="full"
@@ -203,15 +212,7 @@ export default function Profile() {
               >
                 Vincular
               </Button>
-            ) : !user?.role === 'PATIENT' ? (
-              <Button
-                bg={"green.400"}
-                color={"white"}
-                w="full"
-              >
-                MP conectado
-              </Button>
-            ) : null}
+            )}
           </Stack>
         </Stack>
       </GridItem>
