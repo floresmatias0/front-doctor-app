@@ -8,14 +8,27 @@ import {
     AlertDialogBody,
     AlertDialogFooter,
     Spinner,
-    Center
+    Center,
+    Box,
+    Flex
 } from "@chakra-ui/react"
-
 import { useRef } from "react"
+import { Wallet } from "@mercadopago/sdk-react"
 
-export const TransitionExample = ({alertHeader, alertBody, textButtonCancel, textButtonConfirm, onClose, onConfirm, isOpen, isLoading}) => {
+export const TransitionExample = ({
+    alertHeader,
+    alertBody,
+    textButtonCancel,
+    textButtonConfirm,
+    onClose,
+    onConfirm,
+    isOpen,
+    isLoading,
+    onConfirmPay,
+    preferenceId
+}) => {
     const cancelRef = useRef()
-  
+
     return (
         <AlertDialog
           motionPreset='slideInBottom'
@@ -45,13 +58,24 @@ export const TransitionExample = ({alertHeader, alertBody, textButtonCancel, tex
                         </Center>
                     </AlertDialogFooter>
                     ) : (
-                        <AlertDialogFooter>
-                            <Button ref={cancelRef} onClick={onClose}>
-                                {textButtonCancel}
-                            </Button>
-                            <Button colorScheme='red' ml={3} onClick={onConfirm}>
-                                {textButtonConfirm}
-                            </Button>
+                        <AlertDialogFooter justifyContent='center'>
+                            <Flex minWidth='max-content' gap='2' direction='column' w='100%'>
+                                <Box w='100%'>
+                                    <Flex minWidth='max-content' alignItems='center' justifyContent='flex-end' gap='2'>
+                                        <Button ref={cancelRef} onClick={onClose}>
+                                            {textButtonCancel}
+                                        </Button>
+                                        <Button colorScheme='red' ml={3} isDisabled={preferenceId} onClick={onConfirmPay}>
+                                            {textButtonConfirm}
+                                        </Button>
+                                    </Flex>
+                                </Box>
+                                {preferenceId && (
+                                    <Wallet
+                                        initialization={{ preferenceId }}
+                                    />
+                                )}
+                            </Flex>
                         </AlertDialogFooter>
                     )
                 }

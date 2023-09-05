@@ -6,11 +6,13 @@ import { Grid, GridItem } from '@chakra-ui/react';
 
 export default function Welcome() {
   const [calendarData, setCalendarData] = useState(null);
+  const [doctorData, setDoctorData] = useState(null);
   const [selected, setSelected] = useState(null);
- 
+  
   const fetchDoctors = async () => {
     try {
-      const { data } = await instance.get(`/users?filters={"role":"DOCTOR"}`);
+      let filters = '{ "role": "DOCTOR" }'
+      const { data } = await instance.get(`/users?filters=${filters}`);
       const response = data;
 
       if(response.success) {
@@ -40,6 +42,9 @@ export default function Welcome() {
       try {
         const { data } = await instance.get(`/calendars?email=${selectedOption.value}`);
         setCalendarData(data.data)
+        let filters = `{ "email": "${selectedOption.value}" }`
+        const doctor = await instance.get(`/users?filters=${filters}`);
+        setDoctorData(doctor?.data?.data[0])
       }catch(err) {
         console.log('fetch data calendar doctor', err.message)
         throw new Error('Something went wrong to search calendar doctor')
@@ -73,7 +78,7 @@ export default function Welcome() {
           </label>
       </GridItem>
       <GridItem colSpan={{ base: 5, lg: 4 }}>
-        {calendarData && <CalendarComponent calendarData={calendarData} selectedDoctor={selected} fetchDataCalendarDoctor={fetchDataCalendarDoctor} />}
+        {calendarData && <CalendarComponent calendarData={calendarData} selectedDoctor={selected} fetchDataCalendarDoctor={fetchDataCalendarDoctor} doctorData={doctorData}/>}
       </GridItem>
     </Grid>
   );

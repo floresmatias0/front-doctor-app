@@ -9,19 +9,23 @@ import { instance } from "../utils/axios";
 import '../styles/calendar.css';
 import { Box, useDisclosure, useToast } from "@chakra-ui/react";
 import { TransitionExample } from "./alerts";
+import { initMercadoPago } from "@mercadopago/sdk-react";
 
 export const getFormattedDateTime = (dateTimeStr, options) => {
     const dateTime = new Date(dateTimeStr);
     return dateTime.toLocaleString('es', options);
 }
 
-export default function CalendarComponent({ calendarData, selectedDoctor, fetchDataCalendarDoctor }) {
+export default function CalendarComponent({ calendarData, selectedDoctor, fetchDataCalendarDoctor, doctorData }) {
+    const [user, setUser] = useState(null)
     const [events, setEvents] = useState([])
     const [selectedEvent, setSelectedEvent] = useState(null)
-    const [user, setUser] = useState(null)
     const [confirmLoading, setConfirmLoading] = useState(false)
-    
+    const [preferenceId, setPreferenceId] = useState(null)
+
     const toast = useToast()
+
+    initMercadoPago(doctorData?.mercadopago_access?.public_key, {locale: 'es-AR'});
 
     useEffect(() => {
         let userLogged = localStorage.getItem('user');
@@ -89,29 +93,42 @@ export default function CalendarComponent({ calendarData, selectedDoctor, fetchD
         return setSelectedEvent(selectInfo);
     };
 
+    const handleClose = () => {
+        onClose()
+        setPreferenceId(null)
+    };
+
     const confirmReserve = async () => {
-        setConfirmLoading(true)
-        await instance.post('/calendars/create-event', {
-            doctorEmail: selectedDoctor.value,
-            patientEmail: user?.email,
-            title: 'Consulta médica',
-            startDateTime: selectedEvent.startStr,
-            endDateTime: selectedEvent.endStr
-        })
-        await fetchDataCalendarDoctor(selectedDoctor)
-        setConfirmLoading(false)
-        toast({
-            title: 'Reserva creada con exito',
-            position: 'top-right',
-            isClosable: true,
-            duration: 6000,
-            status: 'success'
-        })
-        return onClose()
+        try {
+            setConfirmLoading(true)
+            const payment = await instance.post('/payments/create', {
+                user_email: selectedDoctor.value,
+                unit_price: 1
+            });
+            const { id } = payment.data.data;
+
+            setPreferenceId(id)
+            setConfirmLoading(false)
+        }catch(err) {
+            console.log(err.message)
+        }
     }
+    // const createEventToCalendar = async () => {
+    //     try {
+    //         await instance.post('/calendars/create-event', {
+    //             doctorEmail: selectedDoctor.value,
+    //             patientEmail: user?.email,
+    //             title: 'Consulta médica',
+    //             startDateTime: selectedEvent.startStr,
+    //             endDateTime: selectedEvent.endStr
+    //         })
+    //     }catch(err) {
+    //         console.log(err.message)
+    //     }
+    // }
     
     const alertBody = selectedEvent
-        ? `Estás a punto de reservar el día
+        ? `Para reservar el día
         ${getFormattedDateTime(
             selectedEvent.startStr,
             { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }
@@ -123,9 +140,11 @@ export default function CalendarComponent({ calendarData, selectedDoctor, fetchD
         ${getFormattedDateTime(
             selectedEvent.endStr,
             { hour: 'numeric', minute: 'numeric' }
-        )}hs. ¿Quieres continuar?`
-        : '';          
-        
+        )}hs.
+        Tienes que abonarlo
+        ¿Quieres continuar?`
+        : '';
+
     return (
         <Box w="100%" h="650px">
             <FullCalendar
@@ -157,8 +176,9 @@ export default function CalendarComponent({ calendarData, selectedDoctor, fetchD
                     }
                 }}
             />
+            
             <TransitionExample
-                onClose={onClose}
+                onClose={handleClose}
                 isOpen={isOpen}
                 onConfirm={confirmReserve}
                 alertHeader="Reserva"
@@ -166,6 +186,8 @@ export default function CalendarComponent({ calendarData, selectedDoctor, fetchD
                 textButtonCancel="CANCELAR"
                 textButtonConfirm="ACEPTAR"
                 isLoading={confirmLoading}
+                preferenceId={preferenceId}
+                onConfirmPay={confirmReserve}
             />
         </Box>
     );
