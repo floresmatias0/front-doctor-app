@@ -10,7 +10,7 @@ import {
 
 /* existing imports */
 import ErrorPage from "./components/error-page";
-import { Layout, ProtectedRoutes } from "./components/layouts";
+import { LayoutWithNavbar, ProtectedRoutes } from "./components/layouts";
 
 import Login from "./routes/login";
 import Welcome from "./routes/welcome";
@@ -33,7 +33,7 @@ const handleLoginAdmin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <ProtectedRoutes><Layout><Welcome /></Layout></ProtectedRoutes>,
+    element: <ProtectedRoutes><LayoutWithNavbar><Welcome /></LayoutWithNavbar></ProtectedRoutes>,
     errorElement: <ErrorPage />,
   },
   {
@@ -51,7 +51,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/profile",
-    element: <ProtectedRoutes><Layout><Profile /></Layout></ProtectedRoutes>,
+    element: <ProtectedRoutes><LayoutWithNavbar><Profile /></LayoutWithNavbar></ProtectedRoutes>,
     errorElement: <ErrorPage />,
   },
 ]);

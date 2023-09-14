@@ -237,7 +237,7 @@ export default function Profile() {
               {
                 dataBookings &&
                 dataBookings?.length > 0 &&
-                dataBookings?.map(x => {
+                dataBookings?.map((x, idx)=> {
                   let now = new Date()
                   let bookingStart = new Date(x.start.dateTime);
                   let isBookingPassed = now > bookingStart || x.status === 'deleted';
@@ -247,7 +247,7 @@ export default function Profile() {
                             ${getFormattedDateTime(x.end.dateTime, { hour: 'numeric', minute: 'numeric' })}hs.`
 
                 return (
-                <Tr>
+                <Tr key={idx}>
                   <Td>{x.summary}</Td>
                   <Td><a href={x.hangoutLink}><Text color='blue'>Google meet</Text></a></Td>
                   <Td>{date}</Td>

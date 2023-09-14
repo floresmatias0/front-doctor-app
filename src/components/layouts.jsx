@@ -1,7 +1,8 @@
-import { Box, useColorModeValue } from "@chakra-ui/react";
+import { Box, useColorModeValue, Flex } from "@chakra-ui/react";
 import { Navigate } from "react-router-dom";
 import Navbar from "./navbar";
 import DoctorContext from "./context";
+import SidebarWithHeader from "./sidebar";
 
 export const ProtectedRoutes = ({children}) => {
     const userStorage = localStorage.getItem("user")
@@ -13,13 +14,25 @@ export const ProtectedRoutes = ({children}) => {
     return <Navigate to="/login" replace/>
 }
 
-export const Layout = ({children}) => {
+export const LayoutWithNavbar = ({children}) => {
+    return (
+        <Flex bg={useColorModeValue('gray.50', 'gray.900')} w='100%' direction='column' minH="100vh">
+            <DoctorContext>
+                <Navbar/>
+                <Box w='100%' flex='1' p={4}>
+                    {children}
+                </Box>
+            </DoctorContext>
+        </Flex>
+    )
+}
+
+export const LayoutWithSidebarAndHeader = ({children}) => {
     return (
         <DoctorContext>
-            <Box bg={useColorModeValue('white.100', 'gray.900')} w='100%'>
-                <Navbar/>
-                <Box w='100%' p={4} bg={useColorModeValue('gray.50', 'gray.900')}>{children}</Box>
-            </Box>
+            <SidebarWithHeader>
+                {children}
+            </SidebarWithHeader>
         </DoctorContext>
     )
 }

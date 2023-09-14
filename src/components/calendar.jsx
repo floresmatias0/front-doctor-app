@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -16,7 +16,7 @@ export const getFormattedDateTime = (dateTimeStr, options) => {
     return dateTime.toLocaleString('es', options);
 }
 
-export default function CalendarComponent({ calendarData, selectedDoctor, fetchDataCalendarDoctor, doctorData }) {
+export default function CalendarComponent({ calendarData, selectedDoctor }) {
     const [user, setUser] = useState(null)
     const [events, setEvents] = useState([])
     const [selectedEvent, setSelectedEvent] = useState(null)
@@ -24,8 +24,9 @@ export default function CalendarComponent({ calendarData, selectedDoctor, fetchD
     const [preferenceId, setPreferenceId] = useState(null)
 
     const toast = useToast()
+    const calendarRef = useRef(null);
 
-    initMercadoPago(doctorData?.mercadopago_access?.public_key, {locale: 'es-AR'});
+    initMercadoPago("APP_USR-c5b986a0-6449-40f2-9960-87844a45305e", {locale: 'es-AR'});
 
     useEffect(() => {
         let userLogged = localStorage.getItem('user');
@@ -57,6 +58,11 @@ export default function CalendarComponent({ calendarData, selectedDoctor, fetchD
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const handleDateSelect = (selectInfo) => {
+
+        if(selectInfo?.view?.type === "dayGridMonth") {
+            return calendarRef.current.getApi().changeView('timeGridDay', new Date(selectInfo.start));
+        }
+
         const selectedDate = selectInfo.start
 
         if(new Date(selectedDate) <= new Date()) {
@@ -103,7 +109,10 @@ export default function CalendarComponent({ calendarData, selectedDoctor, fetchD
             setConfirmLoading(true)
             const payment = await instance.post('/payments/create', {
                 user_email: selectedDoctor.value,
-                unit_price: 1
+                patient_email: user?.email,
+                startDateTime: selectedEvent.startStr,
+                endDateTime: selectedEvent.endStr,
+                unit_price: 500
             });
             const { id } = payment.data.data;
 
@@ -113,19 +122,6 @@ export default function CalendarComponent({ calendarData, selectedDoctor, fetchD
             console.log(err.message)
         }
     }
-    // const createEventToCalendar = async () => {
-    //     try {
-    //         await instance.post('/calendars/create-event', {
-    //             doctorEmail: selectedDoctor.value,
-    //             patientEmail: user?.email,
-    //             title: 'Consulta médica',
-    //             startDateTime: selectedEvent.startStr,
-    //             endDateTime: selectedEvent.endStr
-    //         })
-    //     }catch(err) {
-    //         console.log(err.message)
-    //     }
-    // }
     
     const alertBody = selectedEvent
         ? `Para reservar el día
@@ -145,37 +141,70 @@ export default function CalendarComponent({ calendarData, selectedDoctor, fetchD
         ¿Quieres continuar?`
         : '';
 
+    const handleControlEventDate = (e) => {
+        if(user?.email === selectedDoctor?.value) {
+            return e.title
+        }
+
+        return 'Turno reservado'
+    }
+
+    const shouldApplyAvailableClass = (slotInfo) => {
+        const currentDateTime = new Date();
+        const slotDateTime = slotInfo.date;
+
+        return slotDateTime.getHours() < currentDateTime.getHours();
+    };
+
     return (
-        <Box w="100%" h="650px">
-            <FullCalendar
-                plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
-                headerToolbar={{
-                    left: 'prev,next today',
-                    center: '',
-                    right: user?.email === selectedDoctor?.value ? 'dayGridMonth,timeGridWeek,timeGridDay' : 'timeGridDay'
-                }}
-                initialView='timeGridDay'
-                allDaySlot={false}
-                selectable={true}
-                weekends={false}
-                locales={[esLocale]}
-                locale="es"
-                events={events}
-                eventContent={({event}) => user?.email === selectedDoctor?.value ? <p>{event.title}</p> : <p>Reservado</p>}
-                select={handleDateSelect}
-                validRange={{
-                    start: new Date()
-                }}
-                slotMinTime="10:00:00"
-                slotMaxTime="19:00:00"
-                slotDuration="00:15:00"
-                slotLabelInterval={{ hours: 1 }}
-                views={{
-                    timeGridDay: {
-                        dayHeaderFormat: { weekday: 'long', day: 'numeric', month: 'long' }
-                    }
-                }}
-            />
+        <Box w="100%">
+            <Box maxW="480px" mx="auto">
+                <FullCalendar
+                    ref={calendarRef}
+                    plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+                    headerToolbar={{
+                        left: 'prev,next today',
+                        center: '',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    }}
+                    initialView='dayGridMonth'
+                    allDaySlot={false}
+                    selectable={true}
+                    weekends={false}
+                    locales={[esLocale]}
+                    locale="es"
+                    events={events}
+                    eventContent={handleControlEventDate}
+                    select={handleDateSelect}
+                    validRange={{
+                        start: new Date()
+                    }}
+                    slotMinTime="10:00:00"
+                    slotMaxTime="19:00:00"
+                    slotDuration="00:15:00"
+                    slotLabelInterval={{ hours: 1 }}
+                    views={{
+                        timeGridDay: {
+                            dayHeaderFormat: { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' },
+                            slotLabelContent: (slotInfo) => {
+                                const hour = slotInfo.date.getHours();
+                                return `${hour}hs`;
+                            }
+                        },
+                        timeGridWeek: {
+                            slotLabelContent: (slotInfo) => {
+                                const hour = slotInfo.date.getHours();
+                                return `${hour}hs`;
+                            }
+                        },
+                    }}
+                    slotLaneClassNames={(slotInfo) => {
+                        if(slotInfo?.view?.type === "timeGridDay") {
+                            return shouldApplyAvailableClass(slotInfo) ? 'available-slot' : '';
+                        }
+                    }}
+                />
+            </Box>
             
             <TransitionExample
                 onClose={handleClose}
