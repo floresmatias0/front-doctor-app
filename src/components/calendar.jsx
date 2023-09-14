@@ -153,7 +153,7 @@ export default function CalendarComponent({ calendarData, selectedDoctor }) {
         const currentDateTime = new Date();
         const slotDateTime = slotInfo.date;
 
-        return slotDateTime.getHours() < currentDateTime.getHours();
+        return slotDateTime === currentDateTime && slotDateTime.getHours() < currentDateTime.getHours();
     };
 
     return (
