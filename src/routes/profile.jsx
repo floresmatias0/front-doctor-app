@@ -30,6 +30,7 @@ import { SlClose } from "react-icons/sl"
 import { SiMercadopago } from "react-icons/si"
 import { useSearchParams } from "react-router-dom"
 import axios from 'axios'
+import { Field, Form, Formik } from "formik";
 
 export default function Profile() {
   const [searchParams] = useSearchParams();
@@ -150,6 +151,17 @@ export default function Profile() {
     'deleted': 'CANCELADO'
   }
 
+  const handleSubmit = async (values) => {
+    try {
+      await instance.put(`/users/${user?._id}`, {
+        reservePrice: values.reservePrice,
+        reserveTime: values.reserveTime
+      })
+    }catch(err) {
+      throw new Error(err.message)
+    }
+  }
+
   return (
     <Grid
       minH="100vh"
@@ -168,46 +180,103 @@ export default function Profile() {
           <Heading lineHeight={1.1} fontSize={{ base: "2xl", sm: "3xl" }} textAlign="center">
             Mi perfil
           </Heading>
-          <FormControl id="userName">
-            <Center>
-              <Avatar size="xl" src={user?.picture}/>
-            </Center>
-          </FormControl>
-          <FormControl id="userName">
-            <FormLabel>Nombre</FormLabel>
-            <Input
-              placeholder="nombre y apellido"
-              _placeholder={{ color: "gray.500" }}
-              type="text"
-              value={user?.name}
-              disabled
-            />
-          </FormControl>
-          <FormControl id="email">
-            <FormLabel>Correo electronico</FormLabel>
-            <Input
-              placeholder="your-email@example.com"
-              _placeholder={{ color: "gray.500" }}
-              type="email"
-              value={user?.email}
-              disabled
-            />
-          </FormControl>
+          <Center>
+            <Avatar size="xl" src={user?.picture}/>
+          </Center>
+
+          <Formik
+            initialValues={{
+              name: user?.name,
+              email: user?.email,
+              reservePrice: user?.reservePrice,
+              reserveTime: user?.reserveTime
+            }}
+            onSubmit={handleSubmit}
+          >
+            {(props) => (
+              <Form>
+                <Field name='name'>
+                  {({ field, form }) => (
+                    <FormControl id="name">
+                      <FormLabel>Nombre</FormLabel>
+                      <Input
+                        placeholder="nombre y apellido"
+                        _placeholder={{ color: "gray.500" }}
+                        isDisabled
+                        {...field}
+                      />
+                    </FormControl>
+                  )}
+                </Field>
+                <Field name='email'>
+                  {({ field, form }) => (
+                    <FormControl id="email">
+                      <FormLabel>Correo electronico</FormLabel>
+                      <Input
+                        placeholder="your-email@example.com"
+                        _placeholder={{ color: "gray.500" }}
+                        isDisabled
+                        {...field}
+                      />
+                    </FormControl>
+                  )}
+                </Field>
+                {user?.role === "DOCTOR" && (
+                  <>
+                    <Field name='reservePrice' type="number">
+                      {({ field, form }) => (
+                        <FormControl id="reservePrice">
+                          <FormLabel>Precio por consulta</FormLabel>
+                          <Input
+                            placeholder="500"
+                            _placeholder={{ color: "gray.500" }}
+                            {...field}
+                          />
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name='reserveTime' type="number">
+                      {({ field, form }) => (
+                        <FormControl id="reserveTime">
+                          <FormLabel>Tiempo por consulta</FormLabel>
+                          <Input
+                            placeholder="15"
+                            _placeholder={{ color: "gray.500" }}
+                            {...field}
+                          />
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Button
+                      mt={4}
+                      colorScheme='teal'
+                      w="full"
+                      isLoading={props.isSubmitting}
+                      type='submit'
+                    >
+                      Actualizar
+                    </Button>
+                  </>
+                )}
+              </Form>
+            )}
+          </Formik>
           <Stack spacing={6} direction={["column", "row"]}>
             {user?.role === "DOCTOR" && user?.mercadopago_access?.access_token && (
               <Button
-                bg={"green.400"}
-                color={"white"}
+                colorScheme="gray"
                 w="full"
+                leftIcon={<SiMercadopago style={{ fontSize: "24px" }}/>}
+                isDisabled
               >
-                MP conectado
+                Conectado
               </Button>
             )}
             {user?.role === "DOCTOR" && !user?.mercadopago_access?.access_token && (
               <Button
-                colorScheme='yellow'
+                colorScheme='gray'
                 w="full"
-                leftIcon={<SiMercadopago/>}
+                leftIcon={<SiMercadopago style={{ fontSize: "24px" }}/>}
                 onClick={handleLoginMp}
               >
                 Vincular
@@ -269,3 +338,4 @@ export default function Profile() {
     </Grid>
   );
 }
+

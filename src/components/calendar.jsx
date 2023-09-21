@@ -16,7 +16,7 @@ export const getFormattedDateTime = (dateTimeStr, options) => {
     return dateTime.toLocaleString('es', options);
 }
 
-export default function CalendarComponent({ calendarData, selectedDoctor }) {
+export default function CalendarComponent({ calendarData, selectedDoctor, doctorData }) {
     const [user, setUser] = useState(null)
     const [events, setEvents] = useState([])
     const [selectedEvent, setSelectedEvent] = useState(null)
@@ -112,7 +112,7 @@ export default function CalendarComponent({ calendarData, selectedDoctor }) {
                 patient_email: user?.email,
                 startDateTime: selectedEvent.startStr,
                 endDateTime: selectedEvent.endStr,
-                unit_price: 500
+                unit_price: doctorData?.reservePrice
             });
             const { id } = payment.data.data;
 
@@ -152,10 +152,13 @@ export default function CalendarComponent({ calendarData, selectedDoctor }) {
     const shouldApplyAvailableClass = (slotInfo) => {
         const currentDateTime = new Date();
         const slotDateTime = slotInfo.date;
+        const date = new Date(slotInfo?.time?.milliseconds);
 
+        console.log({slotDateTime, currentDateTime, date});
         return slotDateTime === currentDateTime && slotDateTime.getHours() < currentDateTime.getHours();
     };
 
+    console.log({doctorData});
     return (
         <Box w="100%">
             <Box maxW="480px" mx="auto">
@@ -181,7 +184,7 @@ export default function CalendarComponent({ calendarData, selectedDoctor }) {
                     }}
                     slotMinTime="10:00:00"
                     slotMaxTime="19:00:00"
-                    slotDuration="00:15:00"
+                    slotDuration={`00:${doctorData?.reserveTime || '30'}:00`}
                     slotLabelInterval={{ hours: 1 }}
                     views={{
                         timeGridDay: {
