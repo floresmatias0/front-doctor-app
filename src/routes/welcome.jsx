@@ -4,6 +4,8 @@ import CalendarComponent from '../components/calendar';
 import AsyncSelect from 'react-select/async';
 import { Grid, GridItem, useToast } from '@chakra-ui/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import SidebarMenu from '../components/sidebar-menu';
+import { Box } from '@chakra-ui/react'
 
 export default function Welcome() {
   const navigate = useNavigate()
@@ -108,20 +110,23 @@ export default function Welcome() {
 }, [paymentStatus, navigate]);
 
   return (
-    <Grid
-      templateRows='repeat(1, 1fr)'
-      templateColumns='repeat(5, 1fr)'
-      gap={4}
-    >
-      <GridItem rowSpan={1} colSpan={{ base: 5, lg: 2 }}>
-          <label>
-            Doctores disponibles
-            <AsyncSelect cacheOptions defaultOptions loadOptions={fetchDoctors} onChange={fetchDataCalendarDoctor}/>
-          </label>
-      </GridItem>
-      <GridItem colSpan={{ base: 5, lg: 3 }}>
-        {calendarData && <CalendarComponent paymentStatus={paymentStatus} calendarData={calendarData} selectedDoctor={selected} doctorData={doctorData}/>}
-      </GridItem>
-    </Grid>
+    <Box w="100vw" h="100vh" bg="#E5F2FA">
+      <SidebarMenu/>
+    </Box>
+    // <Grid
+    //   templateRows='repeat(1, 1fr)'
+    //   templateColumns='repeat(5, 1fr)'
+    //   gap={4}
+    // >
+    //   <GridItem rowSpan={1} colSpan={{ base: 5, lg: 2 }}>
+    //       <label>
+    //         Doctores disponibles
+    //         <AsyncSelect cacheOptions defaultOptions loadOptions={fetchDoctors} onChange={fetchDataCalendarDoctor}/>
+    //       </label>
+    //   </GridItem>
+    //   <GridItem colSpan={{ base: 5, lg: 3 }}>
+    //     {calendarData && <CalendarComponent paymentStatus={paymentStatus} calendarData={calendarData} selectedDoctor={selected} doctorData={doctorData}/>}
+    //   </GridItem>
+    // </Grid>
   );
 }

@@ -33,7 +33,8 @@ const handleLoginAdmin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <ProtectedRoutes><LayoutWithNavbar><Welcome /></LayoutWithNavbar></ProtectedRoutes>,
+    // element: <ProtectedRoutes><LayoutWithNavbar><Welcome /></LayoutWithNavbar></ProtectedRoutes>,
+    element: <ProtectedRoutes><Welcome /></ProtectedRoutes>,
     errorElement: <ErrorPage />,
   },
   {
@@ -47,7 +48,7 @@ const router = createBrowserRouter([
   },
   {
     path: "admin",
-    element: localStorage.getItem("user") ? <Navigate to="/" replace/> :<Login handleLogin={handleLoginAdmin}/>,
+    element: localStorage.getItem("user") ? <Navigate to="/" replace/> : <Login handleLogin={handleLoginAdmin}/>,
   },
   {
     path: "/profile",

@@ -26,7 +26,7 @@ export default function CalendarComponent({ calendarData, selectedDoctor, doctor
     const toast = useToast()
     const calendarRef = useRef(null);
 
-    initMercadoPago("APP_USR-c5b986a0-6449-40f2-9960-87844a45305e", {locale: 'es-AR'});
+    initMercadoPago(import.meta.env.VITE_MERCADOPAGO_PUBLIC_KEY, {locale: 'es-AR'});
 
     useEffect(() => {
         let userLogged = localStorage.getItem('user');
@@ -149,16 +149,6 @@ export default function CalendarComponent({ calendarData, selectedDoctor, doctor
         return 'Turno reservado'
     }
 
-    const shouldApplyAvailableClass = (slotInfo) => {
-        const currentDateTime = new Date();
-        const slotDateTime = slotInfo.date;
-        const date = new Date(slotInfo?.time?.milliseconds);
-
-        console.log({slotDateTime, currentDateTime, date});
-        return slotDateTime === currentDateTime && slotDateTime.getHours() < currentDateTime.getHours();
-    };
-
-    console.log({doctorData});
     return (
         <Box w="100%">
             <Box maxW="480px" mx="auto">
@@ -200,11 +190,6 @@ export default function CalendarComponent({ calendarData, selectedDoctor, doctor
                                 return `${hour}hs`;
                             }
                         },
-                    }}
-                    slotLaneClassNames={(slotInfo) => {
-                        if(slotInfo?.view?.type === "timeGridDay") {
-                            return shouldApplyAvailableClass(slotInfo) ? 'available-slot' : '';
-                        }
                     }}
                 />
             </Box>
