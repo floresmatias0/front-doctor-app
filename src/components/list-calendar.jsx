@@ -1,9 +1,14 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { instance } from "../utils/axios";
 
+
 const ListCalendar = ({doctorSelected}) => {
-    const [calendarData, setCalendarData] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(null);
+
+    const handleDateClick = (date) => {
+      setSelectedDate(date);
+    };
 
     const fetchDataCalendar = async () => {
         try {
@@ -30,12 +35,12 @@ const ListCalendar = ({doctorSelected}) => {
         if(doctorSelected) {
             fetchDataCalendars();
         }
-    }, [])
+    }, [doctorSelected])
 
-    console.log({calendarData, doctorSelected})
     return (
         <Box>
             <Text>Calendario</Text>
+
         </Box>
     )
 }

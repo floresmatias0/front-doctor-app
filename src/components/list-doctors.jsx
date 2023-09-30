@@ -47,20 +47,30 @@ const ListDoctors = ({handleSelect}) => {
     return (
         <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(250px, 1fr))'>
             {doctors?.length > 0 && doctors.map((doctor, idx) => (
-                <Card key={idx} onClick={() => handleSelect(doctor)}>
-                    <CardHeader>
-                        <Flex spacing='4'>
-                            <Flex flex='1' gap='4' alignItems='center'>
-                                <Avatar name={doctor.label} src={doctor.picture}/>
+              <Card
+                key={idx}
+                onClick={() => handleSelect(doctor, 1)}
+                cursor="pointer"
+                _hover={{ bg: '#ebedf0' }}
+                _active={{
+                  bg: '#dddfe2',
+                  transform: 'scale(0.98)',
+                  borderColor: '#bec3c9',
+                }}
+              >
+                  <CardHeader>
+                      <Flex spacing='4'>
+                          <Flex flex='1' gap='4' alignItems='center'>
+                              <Avatar name={doctor.label} src={doctor.picture}/>
 
-                                <Box>
-                                    <Heading size='sm' textTransform="uppercase" color="#205583" fontSize="sm">{doctor.label}</Heading>
-                                    <Text color="#205583" fontSize="xs">Especialización</Text>
-                                </Box>
-                            </Flex>
-                        </Flex>
-                    </CardHeader>
-                </Card>
+                              <Box>
+                                  <Heading size='sm' textTransform="uppercase" color="#205583" fontSize="sm">{doctor.label}</Heading>
+                                  <Text color="#205583" fontSize="xs">Especialización</Text>
+                              </Box>
+                          </Flex>
+                      </Flex>
+                  </CardHeader>
+              </Card>
             ))}
         </SimpleGrid>  
     )

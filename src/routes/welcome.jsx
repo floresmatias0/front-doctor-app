@@ -18,7 +18,13 @@ export default function Welcome() {
   const [calendarData, setCalendarData] = useState(null);
   const [doctorData, setDoctorData] = useState(null);
   const [selected, setSelected] = useState(null);
-  
+  const [activeTab, setActiveTab] = useState(0);
+
+  const handleSelectDoctor = (doctor, index) => {
+    setSelected(doctor)
+    setActiveTab(index)
+  }
+
   const toast = useToast()
 
   useEffect(() => {
@@ -58,7 +64,7 @@ export default function Welcome() {
 
   const tabsTitles = ["Seleccionar doctor", "Seleccionar fecha", "Pagar", "Reservar"];
   const tabContents = [
-    <ListDoctors handleSelect={setSelected}/>,
+    <ListDoctors handleSelect={handleSelectDoctor}/>,
     <ListCalendar doctorSelected={selected}/>,
     <Box>Contenido de la pestaña 3</Box>,
     <Box>Contenido de la pestaña 4</Box>
@@ -68,7 +74,7 @@ export default function Welcome() {
     <Flex bg="#E5F2FA">
       <SidebarMenu/>
       <Box h="100vh" flex={1} py={12} pl={28} pr={10}>
-        <TabsConsult tabsTitles={tabsTitles} tabContents={tabContents} />
+        <TabsConsult tabsTitles={tabsTitles} tabContents={tabContents} activeTab={activeTab} setActiveTab={setActiveTab}/>
       </Box>
     </Flex>
     // <Grid
