@@ -40,7 +40,7 @@ const SidebarMenu = () => {
     };
 
     return (
-        <Box bg='#FCFEFF' w="200px" boxShadow='md' p={4} position="absolute" top="0" left="0" h="100vh" borderRightRadius="lg" style={{ transform: sliderTransform, transition: 'transform 0.3s ease-in-out' }}>
+        <Box zIndex={5} bg='#FCFEFF' w="200px" boxShadow='md' p={4} position="absolute" top="0" left="0" h="100vh" borderRightRadius="lg" style={{ transform: sliderTransform, transition: 'transform 0.3s ease-in-out' }}>
             <Box w="100%" h="100%" position="relative">
                 <Flex borderRadius="full" bg="#FCFEFF" w="36px" h="36px" position="absolute" top="10" right="-30" justifyContent="center" alignItems="center" boxShadow='xl'>
                     <Button p={0} m={0} h="100%" borderRadius="full" zIndex={10} onClick={handleOpen}>

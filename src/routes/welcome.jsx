@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react';
 import { instance } from '../utils/axios';
 import CalendarComponent from '../components/calendar';
 import AsyncSelect from 'react-select/async';
-import { Grid, GridItem, useToast } from '@chakra-ui/react';
+import { Flex, Grid, GridItem, useToast } from '@chakra-ui/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import SidebarMenu from '../components/sidebar-menu';
 import { Box } from '@chakra-ui/react'
+import TabsConsult from '../components/tabs';
+import ListDoctors from '../components/list-doctors';
+import ListCalendar from '../components/list-calendar';
 
 export default function Welcome() {
   const navigate = useNavigate()
@@ -17,60 +20,6 @@ export default function Welcome() {
   const [selected, setSelected] = useState(null);
   
   const toast = useToast()
-
-  const fetchDoctors = async () => {
-    try {
-      let filters = '{ "role": "DOCTOR" }'
-      const { data } = await instance.get(`/users?filters=${filters}`);
-      const response = data;
-
-      if(response.success) {
-        let doctors = response.data;
-        let auxDoctors = [];
-
-        if(doctors && doctors?.length > 0) {
-          for(let i = 0; i < doctors.length; i++) {
-            auxDoctors.push({ label: doctors[i].name, value: doctors[i].email })
-          }
-          return auxDoctors
-        }
-
-        return auxDoctors
-      }
-
-      return []
-    }catch(err) {
-      console.log('fetch doctors', err.message)
-      throw new Error('Something went wrong to search doctors')
-    }
-  }
-
-  const fetchDataCalendarDoctor = async (selectedOption) => {
-    if (selectedOption) {
-      setSelected(selectedOption)
-      try {
-        const { data } = await instance.get(`/calendars?email=${selectedOption.value}`);
-        setCalendarData(data.data)
-        let filters = `{ "email": "${selectedOption.value}" }`
-        const doctor = await instance.get(`/users?filters=${filters}`);
-        setDoctorData(doctor?.data?.data[0])
-      }catch(err) {
-        throw new Error('Something went wrong to search calendar doctor')
-      }
-    }
-  }
-
-  useEffect(() => {
-    const fetchDataDoctors = async () => {
-      try {
-        await fetchDoctors();
-      }catch(err){
-        console.log(err)
-      }
-    }
-
-    fetchDataDoctors();
-  }, []);
 
   useEffect(() => {
     const paymentStatusMessages = {
@@ -103,16 +52,25 @@ export default function Welcome() {
         status: paymentStatusMessage.status
       });
     }
-    
-    // Después de mostrar el toast, puedes redirigir al usuario a otra página si es necesario.
-    // Por ejemplo, para evitar que el usuario vea el estado del pago en la URL después de mostrar el toast.
-    navigate("/"); // Cambia la ruta según tus necesidades.
-}, [paymentStatus, navigate]);
+
+    navigate("/");
+  }, [paymentStatus, navigate]);
+
+  const tabsTitles = ["Seleccionar doctor", "Seleccionar fecha", "Pagar", "Reservar"];
+  const tabContents = [
+    <ListDoctors handleSelect={setSelected}/>,
+    <ListCalendar doctorSelected={selected}/>,
+    <Box>Contenido de la pestaña 3</Box>,
+    <Box>Contenido de la pestaña 4</Box>
+  ];
 
   return (
-    <Box w="100vw" h="100vh" bg="#E5F2FA">
+    <Flex bg="#E5F2FA">
       <SidebarMenu/>
-    </Box>
+      <Box h="100vh" flex={1} py={12} pl={28} pr={10}>
+        <TabsConsult tabsTitles={tabsTitles} tabContents={tabContents} />
+      </Box>
+    </Flex>
     // <Grid
     //   templateRows='repeat(1, 1fr)'
     //   templateColumns='repeat(5, 1fr)'
