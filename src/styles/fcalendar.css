@@ -1,0 +1,67 @@
+/* Calendario.css */
+
+.day {
+    width: 140px; /* Ancho del cuadrado del día */
+    height: 100px; /* Alto del cuadrado del día */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #2C3E50;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px;
+    }
+    .day span{
+        color:#2C3E50
+    }
+    .day-number{
+        font-size: 2rem;
+        font-weight: 800;
+    }
+    .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columnas para los días de la semana */
+    gap: 5px; /* Espacio entre los cuadrados de los días */
+    }
+
+    .calendar__header{
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        margin: 1em 0em;
+        color:#2C3E50;
+        font-size: 1.3rem;
+    }
+    .empty-day{
+        width: 140px; /* Ancho del cuadrado del día */
+        height: 100px; /* Alto del cuadrado del día */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ca0e0e;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 6px;
+    }
+
+    .event-container {
+        margin-top: 2em;
+        display: flex; /* Para que los eventos estén en línea horizontalmente */
+        flex-wrap: wrap;
+        overflow-x: auto; /* Agrega una barra de desplazamiento horizontal si es necesario */
+        white-space: nowrap; /* Evita que los eventos se envuelvan a la siguiente línea */
+    }
+    
+    .event {
+        margin-top: .5em;
+    /* Estilos individuales para cada evento */
+    background-color: #e0e0e0;
+    padding: 8px;
+    margin-right: 10px; /* Espacio entre eventos */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    }
