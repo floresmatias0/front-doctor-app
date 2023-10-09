@@ -15,7 +15,7 @@ import {
 import { useRef } from "react"
 import { Wallet } from "@mercadopago/sdk-react"
 
-export const TransitionExample = ({
+export const AlertModal = ({
     alertHeader,
     alertBody,
     textButtonCancel,
@@ -24,8 +24,11 @@ export const TransitionExample = ({
     onConfirm,
     isOpen,
     isLoading,
-    onConfirmPay,
-    preferenceId
+    preferenceId,
+    withCancelButton,
+    withConfirmButton,
+    customButtonCancel,
+    customButtonConfirm
 }) => {
     const cancelRef = useRef()
 
@@ -36,12 +39,13 @@ export const TransitionExample = ({
           onClose={onClose}
           isOpen={isOpen}
           isCentered
+          closeOnOverlayClick={false}
         >
           <AlertDialogOverlay />
   
           <AlertDialogContent>
-            <AlertDialogHeader>{alertHeader}</AlertDialogHeader>
-            <AlertDialogCloseButton />
+            <AlertDialogHeader color="#205583">{alertHeader}</AlertDialogHeader>
+            {onClose && <AlertDialogCloseButton />}
             <AlertDialogBody>
               {alertBody}
             </AlertDialogBody>
@@ -61,13 +65,11 @@ export const TransitionExample = ({
                         <AlertDialogFooter justifyContent='center'>
                             <Flex minWidth='max-content' gap='2' direction='column' w='100%'>
                                 <Box w='100%'>
-                                    <Flex minWidth='max-content' alignItems='center' justifyContent='flex-end' gap='2'>
-                                        <Button ref={cancelRef} onClick={onClose}>
-                                            {textButtonCancel}
-                                        </Button>
-                                        <Button colorScheme='red' ml={3} isDisabled={preferenceId} onClick={onConfirmPay}>
-                                            {textButtonConfirm}
-                                        </Button>
+                                    <Flex minWidth='max-content' alignItems='center' justifyContent='space-between' gap='2'>
+                                        {withCancelButton && <Button ref={cancelRef} onClick={onClose}>{textButtonCancel}</Button>}
+                                        {withConfirmButton && <Button colorScheme='red' ml={3} isDisabled={preferenceId} onClick={onConfirm}>{textButtonConfirm}</Button>}
+                                        {customButtonCancel}
+                                        {customButtonConfirm}
                                     </Flex>
                                 </Box>
                                 {preferenceId && (
@@ -82,4 +84,4 @@ export const TransitionExample = ({
           </AlertDialogContent>
         </AlertDialog>
     )
-  }
+}

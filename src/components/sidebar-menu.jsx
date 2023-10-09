@@ -44,7 +44,7 @@ const SidebarMenu = () => {
             <Box w="100%" h="100%" position="relative">
                 <Flex borderRadius="full" bg="#FCFEFF" w="36px" h="36px" position="absolute" top="10" right="-30" justifyContent="center" alignItems="center" boxShadow='xl'>
                     <Button p={0} m={0} h="100%" borderRadius="full" zIndex={10} onClick={handleOpen}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={isOpen ? { transform: "rotate(180deg)", transition: "rotate(0deg)", transition: "transform 0.3s ease-in-out" } : {}}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={isOpen ? { transform: "rotate(180deg)", transition: "rotate(0deg)" } : {}}>
                             <mask id="mask0_461_22" style={{ "maskType": "alpha" }} maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
                                 <rect width="24" height="24" fill="#202529"/>
                             </mask>

@@ -8,7 +8,7 @@ import { instance } from "../utils/axios";
 
 import '../styles/calendar.css';
 import { Box, useDisclosure, useToast } from "@chakra-ui/react";
-import { TransitionExample } from "./alerts";
+import { AlertModal } from "./alerts";
 import { initMercadoPago } from "@mercadopago/sdk-react";
 
 export const getFormattedDateTime = (dateTimeStr, options) => {
@@ -194,7 +194,7 @@ export default function CalendarComponent({ calendarData, selectedDoctor, doctor
                 />
             </Box>
             
-            <TransitionExample
+            <AlertModal
                 onClose={handleClose}
                 isOpen={isOpen}
                 onConfirm={confirmReserve}
@@ -204,7 +204,6 @@ export default function CalendarComponent({ calendarData, selectedDoctor, doctor
                 textButtonConfirm="ACEPTAR"
                 isLoading={confirmLoading}
                 preferenceId={preferenceId}
-                onConfirmPay={confirmReserve}
             />
         </Box>
     );
