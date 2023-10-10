@@ -156,7 +156,7 @@ const ListCalendar = ({ doctorSelected, setDaySelected, daySelected }) => {
             <button onClick={goToPrevMonth}>
               <ChevronLeftIcon />
             </button>
-              <span>{format(currentDateState, "MMMM yyyy")}</span>
+              <span>{format(currentDateState, "MMMM yyyy", { locale: es })}</span>
             <button onClick={goToNextMonth}>
               <ChevronRightIcon />
             </button>
