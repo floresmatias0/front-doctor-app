@@ -20,42 +20,40 @@ import {
 } from "date-fns";
 import "../styles/fcalendar.css"; // Importa tu archivo de estilos CSS
 
-const ListCalendar = ({ doctorSelected }) => {
-  console.log("🚀 ~ file: list-calendar.jsx:19 ~ ListCalendar ~ doctorSelected:", doctorSelected)
+const ListCalendar = ({ doctorSelected, setDaySelected, daySelected }) => {
+  // console.log("🚀 ~ file: list-calendar.jsx:19 ~ ListCalendar ~ doctorSelected:", doctorSelected)
   const currentDate = new Date();
   const [currentDateState, setCurrentDateState] = useState(currentDate); // Estado para almacenar la fecha actual
   const daysInMonth = getDaysInMonth(currentDateState);
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [calendarEvents, setCalendarEvents] = useState(null)
-  
-  console.log('calendars',calendarEvents)
-    useEffect(() => {
+  useEffect(() => {
 
-      const fetchDataCalendar = async () => {
-        try {
-            const { data } = await instance.get(`/calendars?email=${doctorSelected.value}`);
-        
-            setCalendarEvents(data?.data?.items)
-            let filters = `{ "email": "${doctorSelected.value}" }`
-            const doctor = await instance.get(`/users?filters=${filters}`);
-            console.log(doctor?.data?.data[0])
-            setSelectedDoc(doctor?.data?.data[0])
-          }catch(err) {
-            throw new Error('Something went wrong to search calendar doctor')
+    const fetchDataCalendar = async () => {
+      try {
+          const { data } = await instance.get(`/calendars?email=${doctorSelected.value}`);
+      
+          setCalendarEvents(data?.data?.items)
+          let filters = `{ "email": "${doctorSelected.value}" }`
+          const doctor = await instance.get(`/users?filters=${filters}`);
+          console.log(doctor?.data?.data[0])
+          setSelectedDoc(doctor?.data?.data[0])
+        }catch(err) {
+          throw new Error('Something went wrong to search calendar doctor')
+        }
+    }
+      const fetchDataCalendars = async () => {
+          try {
+            await fetchDataCalendar();
+          }catch(err){
+            console.log(err)
           }
       }
-        const fetchDataCalendars = async () => {
-            try {
-              await fetchDataCalendar();
-            }catch(err){
-              console.log(err)
-            }
-        }
-      
-        if(doctorSelected) {
-            fetchDataCalendars();
-        }
-    }, [doctorSelected])
+    
+      if(doctorSelected) {
+          fetchDataCalendars();
+      }
+  }, [doctorSelected])
 
   // Función para generar los días del mes actual
   const generateDays = () => {
@@ -86,7 +84,7 @@ const ListCalendar = ({ doctorSelected }) => {
       const dayClass = isWeekend ? "empty-day" : "day";
   
       days.push(
-        <div className={dayClass} key={day}>
+        <div className={dayClass} onClick={() => setDaySelected(dayDate)} key={day}>
           <span className="day-name">{dayName}</span>
           <span className="day-number">{day}</span>
         </div>
@@ -96,7 +94,6 @@ const ListCalendar = ({ doctorSelected }) => {
     return days;
   };
   
-
   // Función para cambiar al mes anterior
   const goToPrevMonth = () => {
     const newDate = subMonths(currentDateState, 1);
@@ -112,6 +109,7 @@ const ListCalendar = ({ doctorSelected }) => {
       setCurrentDateState(newDate);
     }
   };
+
   const generateEventDivs = () => {
     const eventDivs = [];
     const startTime = setHours(currentDateState, 9); // 10 a.m.
@@ -143,21 +141,23 @@ const ListCalendar = ({ doctorSelected }) => {
   return (
     <Box>
       {selectedDoc && (
-      <div>
-        <div className='calendar__header'>
-          <button onClick={goToPrevMonth}>
-          <ChevronLeftIcon />
-          </button>
-          <span>{format(currentDateState, "MMMM yyyy")}</span>
-          <button onClick={goToNextMonth}>
-          <ChevronRightIcon />
-          </button>
+        <div>
+          <div className='calendar__header'>
+            <button onClick={goToPrevMonth}>
+              <ChevronLeftIcon />
+            </button>
+              <span>{format(currentDateState, "MMMM yyyy")}</span>
+            <button onClick={goToNextMonth}>
+              <ChevronRightIcon />
+            </button>
+          </div>
+          <div className="calendar-grid">{generateDays()}</div>
+          {daySelected && (
+            <div className="event-container">
+              {events.map(event => event)}
+            </div>
+          )}
         </div>
-        <div className="calendar-grid">{generateDays()}</div>
-        <div className="event-container">
-          {events.map(event => event)}
-        </div>
-      </div>
       )}
       {!selectedDoc && (
       <div>

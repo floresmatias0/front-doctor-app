@@ -1,9 +1,9 @@
-import { Box, Grid, GridItem, Text } from "@chakra-ui/react";
+import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { instance } from "../utils/axios";
 import { initMercadoPago } from "@mercadopago/sdk-react";
 
-const Payment = ({doctorSelected, user}) => {
+const Payment = ({doctorSelected, user, patient, selectDay}) => {
     initMercadoPago(import.meta.env.VITE_MERCADOPAGO_PUBLIC_KEY, {locale: 'es-AR'});
 
 
@@ -38,9 +38,34 @@ const Payment = ({doctorSelected, user}) => {
     //     }
     // }, [doctorSelected])
 
+    const fecha = new Date(selectDay); // Reemplaza con tu fecha
+    const day = fecha.getDate();
+    const month = fecha.getMonth() + 1; // Nota: getMonth() devuelve el mes de 0 a 11, así que sumamos 1 para obtener el mes real.
+    const year = fecha.getFullYear();
+
     return (
         <Box>
-            <Text>Pago</Text>
+            <Box bgColor="#E5F2FA" py={10} px={0}>
+                <Text textAlign="center" fontSize="lg" color="#205583" my={2}>Detalles del turno médico de {patient?.name}</Text>
+                <Flex w="100%" justifyContent="space-around" alignItems="center" my={8}>
+                    <Box>
+                        <Text fontSize="lg" color="#205583" fontWeight="bold">Doctor</Text>
+                        <Text fontSize="lg" color="#205583">{doctorSelected?.label}</Text>
+                    </Box>
+                    <Box>
+                        <Text fontSize="lg" color="#205583" fontWeight="bold">Especializacion</Text>
+                        <Text fontSize="lg" color="#205583">Especializacion</Text>
+                    </Box>
+                    <Box>
+                        <Text fontSize="lg" color="#205583" fontWeight="bold">Dia</Text>
+                        <Text fontSize="lg" color="#205583">{`${day}/${month}/${year}`}</Text>
+                    </Box>
+                    <Box>
+                        <Text fontSize="lg" color="#205583" fontWeight="bold">Hora</Text>
+                        <Text fontSize="lg" color="#205583">{new Date(selectDay).getHours()}</Text>
+                    </Box>
+                </Flex>
+            </Box>
         </Box>
     )
 }

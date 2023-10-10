@@ -18,14 +18,15 @@ const CardCustom = ({
                 transform: 'scale(0.98)',
                 borderColor: '#bec3c9',
             }}
+            w="100%"
         >
             <CardHeader>
                 <Flex>
-                    <Flex flex='1' gap={2} alignItems='center'>
+                    <Flex flex={1} gap={2} alignItems='center'>
                         <Avatar size={avatarSize} name={name} src={picture}/>
 
                         <Box>
-                            <Heading size='sm' textTransform="uppercase" color="#205583" fontSize="sm">{heading}</Heading>
+                            <Heading size='sm' textTransform="uppercase" color="#205583" fontSize={["xs", "sm"]}>{heading}</Heading>
                             <Text color="#205583" fontSize="xs">{description}</Text>
                         </Box>
                     </Flex>

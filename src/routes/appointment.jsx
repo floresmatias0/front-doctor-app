@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { instance } from '../utils/axios';
 import { Button, Flex, Select, SimpleGrid, Text, useDisclosure, useToast } from '@chakra-ui/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import SidebarMenu from '../components/sidebar-menu';
 import { Box } from '@chakra-ui/react'
 import TabsConsult from '../components/tabs';
 import ListDoctors from '../components/list-doctors';
@@ -12,8 +11,9 @@ import { AlertModal } from '../components/alerts';
 import { AiOutlinePlus } from 'react-icons/ai'
 import FormPatient from '../components/form-patient';
 import CardCustom from '../components/card-custom';
+import ListSymptoms from '../components/lists-symptoms';
 
-export default function Welcome() {
+export default function Appointment() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const paymentStatus = searchParams.get("status");
@@ -23,6 +23,7 @@ export default function Welcome() {
   const [user, setUser] = useState(null)
   const [patients, setPatients] = useState([])
   const [patientSelected, setPatientSelected] = useState({})
+  const [daySelected, setDaySelected] = useState(null)
 
   const handleSelectDoctor = (doctor, index) => {
     setSelected(doctor)
@@ -32,38 +33,40 @@ export default function Welcome() {
   const toast = useToast()
 
   useEffect(() => {
-    const paymentStatusMessages = {
-      approved: {
-        title: "Reserva creada",
-        description: "Tu reserva ha sido creada exitosamente.",
-        status: "success",
-      },
-      pending: {
-        title: "Pago pendiente",
-        description: "Tu pago está pendiente de confirmación.",
-        status: "info",
-      },
-      failed: {
-        title: "Pago fallido",
-        description: "Tu pago ha fallado. Por favor, inténtalo nuevamente.",
-        status: "error",
-      },
-    };
-    
-    const paymentStatusMessage = paymentStatusMessages[paymentStatus];
-    
-    if (paymentStatusMessage) {
-      toast({
-        title: paymentStatusMessage.title,
-        description: paymentStatusMessage.description,
-        position: "top-right",
-        isClosable: true,
-        duration: 6000,
-        status: paymentStatusMessage.status
-      });
+    if(paymentStatus) {
+      const paymentStatusMessages = {
+        approved: {
+          title: "Reserva creada",
+          description: "Tu reserva ha sido creada exitosamente.",
+          status: "success",
+        },
+        pending: {
+          title: "Pago pendiente",
+          description: "Tu pago está pendiente de confirmación.",
+          status: "info",
+        },
+        failed: {
+          title: "Pago fallido",
+          description: "Tu pago ha fallado. Por favor, inténtalo nuevamente.",
+          status: "error",
+        },
+      };
+      
+      const paymentStatusMessage = paymentStatusMessages[paymentStatus];
+      
+      if (paymentStatusMessage) {
+        toast({
+          title: paymentStatusMessage.title,
+          description: paymentStatusMessage.description,
+          position: "top-right",
+          isClosable: true,
+          duration: 6000,
+          status: paymentStatusMessage.status
+        });
+      }
+  
+      navigate("/");
     }
-
-    navigate("/");
   }, [paymentStatus, navigate]);
 
   useEffect(() => {
@@ -89,8 +92,9 @@ export default function Welcome() {
 
       if(response.success) {
         let patients = response.data;
+        let transformPatients = patients.map(patient => ({ value: patient.dni, label: patient.name }))
 
-        return setPatients(patients)
+        return setPatients(transformPatients)
       }
 
       setPatients([])
@@ -150,53 +154,51 @@ export default function Welcome() {
     onOpenFirst()
   }, [user]);
  
-  const tabsTitles = ["Seleccionar doctor", "Seleccionar fecha", "Pagar", "Reservar"];
+  const tabsTitles = ["Síntomas", "Seleccionar doctor", "Seleccionar fecha", "Pagar", "Reservar"];
   const tabContents = [
+    <ListSymptoms/>,
     <ListDoctors handleSelect={handleSelectDoctor}/>,
-    <ListCalendar doctorSelected={selected}/>,
-    <Payment/>,
+    <ListCalendar doctorSelected={selected} setDaySelected={setDaySelected} daySelected={daySelected}/>,
+    <Payment doctorSelected={selected} patient={patientSelected} selectDay={daySelected} user={user}/>,
     <Box>Contenido de la pestaña 4</Box>
   ];
 
   return (
-    <Flex bg="#E5F2FA">
-      <SidebarMenu/>
-      <Box h="100vh" flex={1} py={12} pl={28} pr={10}>
-        <Flex justifyContent="space-between" alignItems="center" my={2}>
-          <Text color="#205583" fontSize="lg" fontWeight="bold">Solicitar un turno médico</Text>
-          <Select w="250px" bg="#FFFFFF" placeholder='Selecciona un paciente' onChange={handleSelectPatient} value={patientSelected}>
-            {patients.map((patient, idx) => (
-              <option key={idx} value={patient}>{patient.name}</option>
-            ))}
-          </Select>
-        </Flex>
-        <TabsConsult
-          tabsTitles={tabsTitles}
-          tabContents={tabContents}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
-      </Box>
+    <Flex w="100%" h="100%" px={[0, 2]} flexDirection="column">
+      <Flex w="100%" justifyContent="space-between" alignItems="center" flexDirection={["column", "row"]} my={2}>
+        <Text color="#205583" fontSize="lg" fontWeight="bold">Solicitar un turno médico</Text>
+        <Select w={["auto", "250px"]} bg="#FFFFFF" placeholder='Selecciona un paciente' onChange={handleSelectPatient} value={patientSelected}>
+          {patients.map((patient, idx) => (
+            <option key={idx} value={patient.value}>{patient.label}</option>
+          ))}
+        </Select>
+      </Flex>
+      <TabsConsult
+        tabsTitles={tabsTitles}
+        tabContents={tabContents}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
       <AlertModal
         isOpen={isOpenFirst}
         alertHeader="¿Para quien desea solicitar un turno?"
         alertBody={
-          <SimpleGrid templateColumns='repeat(2, 1fr)' gap={4}>
+          <Flex flexDirection={["column", "row"]} flexWrap={["none", "wrap"]} gap={4}>
             {patients.map((patient, idx) => (
               <CardCustom
                 key={idx}
-                heading={patient.name}
+                heading={patient.label}
                 handleSelect={() => handleSelectPatient(patient)}
-                name={patient.name}
-                description={`DNI ${patient.dni}`}
+                name={patient.label}
+                description={`DNI ${patient.value}`}
                 avatarSize="sm"
               />
             ))}
-          </SimpleGrid>
+          </Flex>
         }
         isLoading={false}
         customButtonCancel={
-          <Button leftIcon={<AiOutlinePlus />} onClick={() => onOpenSecond()}>Crear nuevo paciente</Button>
+          <Button size={["sm", "md"]} leftIcon={<AiOutlinePlus />} onClick={() => onOpenSecond()}>Crear nuevo paciente</Button>
         }
       />
       <AlertModal

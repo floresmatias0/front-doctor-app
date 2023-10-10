@@ -10,12 +10,13 @@ import {
 
 /* existing imports */
 import ErrorPage from "./components/error-page";
-import { LayoutWithNavbar, ProtectedRoutes } from "./components/layouts";
+import { LayoutWithNavbar, LayoutWithSidebar, ProtectedRoutes } from "./components/layouts";
 
 import Login from "./routes/login";
-import Welcome from "./routes/welcome";
 import Verify from "./routes/verify";
 import Profile from "./routes/profile";
+import Home from "./routes/home";
+import Appointment from "./routes/appointment";
 
 const colors = {
   brand: {
@@ -33,8 +34,12 @@ const handleLoginAdmin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/
 const router = createBrowserRouter([
   {
     path: "/",
-    // element: <ProtectedRoutes><LayoutWithNavbar><Welcome /></LayoutWithNavbar></ProtectedRoutes>,
-    element: <ProtectedRoutes><Welcome /></ProtectedRoutes>,
+    element: <ProtectedRoutes><LayoutWithSidebar><Home /></LayoutWithSidebar></ProtectedRoutes>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/appointment",
+    element: <ProtectedRoutes><LayoutWithSidebar><Appointment /></LayoutWithSidebar></ProtectedRoutes>,
     errorElement: <ErrorPage />,
   },
   {
