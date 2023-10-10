@@ -1,53 +1,78 @@
-/* Calendario.css */
+/* Calendario.css hasta 1240px anda */ 
 
-.day {
-    margin: 0 auto;
-    width: 140px; /* Ancho del cuadrado del día */
-    min-height: 60px; /* Alto del cuadrado del día */
-    display: flex;
-    gap: 2;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #2C3E50;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 6px;
-}
-.day span{
-    color:#2C3E50
-}
-.day-number{
-    font-size: 1.5rem;
-    font-weight: 800;
-}
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr); /* 7 columnas para los días de la semana */
-    gap: 5px; /* Espacio entre los cuadrados de los días */
+    gap: 16px; /* Espacio entre los cuadrados de los días */
 }
 
 .calendar__header{
     display: flex;
     width: 100%;
     justify-content: space-between;
-    margin: 0.5em 0em;
-    color:#2C3E50;
-    font-size: 1.3rem;
+    margin: 1em 0em;
+    color: #205583;
+    font-size: 14px;
+    font-family: Montserrat;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 2.80px;
+    word-wrap: break-word
 }
+
+.day {
+    margin: 0 auto;
+    width: 140px; /* Ancho del cuadrado del día */
+    min-height: 60px; /* Alto del cuadrado del día */
+    display: flex;
+    background: #FCFEFF;
+    gap: 2;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #E5F2FA;
+    padding-top: 8px; 
+    padding-bottom: 8px; 
+    opacity: 0.50;
+    cursor: pointer;
+    border-radius: 6px;
+}
+.day:hover{
+    background: #20558347;
+    border: 1px solid #205583;
+}
+
+.day-text{
+    color: #205583;
+    font-size: 14px;
+    font-family: Montserrat;
+    font-weight: 400;
+    text-transform: uppercase;
+    word-wrap: break-word;
+}
+.day-number{
+    color: #205583;
+    font-size: 32px;
+    font-family: Montserrat;
+    font-weight: 700;
+    line-height: 32px;
+    word-wrap: break-word
+}
+
 .empty-day{
     margin: 0 auto;
     width: 140px; /* Ancho del cuadrado del día */
     min-height: 60px; /* Alto del cuadrado del día */
     display: flex;
+    background: #FCFEFF;
     gap: 2;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border: 1px solid #ca0e0e;
-    font-size: 16px;
-    font-weight: bold;
+    border: 1px solid #faeae5;
+    padding-top: 8px; 
+    padding-bottom: 8px; 
+    opacity: 0.50;
     cursor: pointer;
     border-radius: 6px;
 }
@@ -62,10 +87,22 @@
 
 .event {
     margin-top: .5em;
-    /* Estilos individuales para cada evento */
-    background-color: #e0e0e0;
-    padding: 2px;
+    font-weight: 400;
+    padding: .2em .5em;
+    background-color: #ffffff;
     margin-right: 10px; /* Espacio entre eventos */
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc4f;
     border-radius: 4px;
+    color: #205583;
+}
+.empty-event {
+    margin-top: .5em;
+    font-weight: 400;
+    padding: .2em .5em;
+    background-color: #ffffff;
+    margin-right: 10px; /* Espacio entre eventos */
+    border: 1px solid #cccccc4f;
+    border-radius: 4px;
+    color: #cccccc;
+    opacity: .8;
 }

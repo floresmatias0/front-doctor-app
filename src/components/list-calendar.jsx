@@ -4,6 +4,7 @@ import {instance} from '../utils/axios';
 import { Box } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
+import { es } from 'date-fns/locale';
 import {
   format,
   startOfMonth,
@@ -76,16 +77,15 @@ const ListCalendar = ({ doctorSelected, setDaySelected, daySelected }) => {
         currentDateState.getMonth(),
         day
       );
-      const dayName = format(dayDate, "EEEE"); // Obtiene el nombre del día
-      const isWeekend =
-        dayName === "Saturday" || dayName === "Sunday"; // Verifica si es fin de semana
+      const dayName = format(dayDate, "EEEE", { locale: es }); // Obtiene el nombre del día
+      const isWeekend =  dayName === "Saturday" || dayName === "Sunday"; // Verifica si es fin de semana
   
       // Agregar la clase "empty-day" si es fin de semana
       const dayClass = isWeekend ? "empty-day" : "day";
   
       days.push(
         <div className={dayClass} onClick={() => setDaySelected(dayDate)} key={day}>
-          <span className="day-name">{dayName}</span>
+          <span className="day-text">{dayName}</span>
           <span className="day-number">{day}</span>
         </div>
       );
@@ -93,6 +93,7 @@ const ListCalendar = ({ doctorSelected, setDaySelected, daySelected }) => {
   
     return days;
   };
+  
   
   // Función para cambiar al mes anterior
   const goToPrevMonth = () => {
@@ -119,13 +120,22 @@ const ListCalendar = ({ doctorSelected, setDaySelected, daySelected }) => {
     while (currentTime < endTime) {
       const eventStartTime = currentTime;
       const eventEndTime = addMinutes(currentTime, selectedDoc?.reserveTime);
-  
+      let emptyEvent = false; // calcular eventos vacios
+
       // Comprobar si el evento está dentro del rango de tiempo deseado (10 a.m. - 6 p.m.)
       if (eventStartTime >= startTime && eventEndTime <= endTime) {
         eventDivs.push(
           <div className="event" key={eventStartTime.toISOString()}>
-            {format(eventStartTime, 'HH:mm')} - {format(eventEndTime, 'HH:mm')}
+            {format(eventStartTime, 'HH:mm')}
             {/* Puedes agregar más detalles del evento aquí si es necesario */}
+          </div>
+        );
+      }
+
+      if (emptyEvent) {
+        eventDivs.push(
+          <div className="empty-event" key={eventStartTime.toISOString()}>
+            {format(eventStartTime, 'HH:mm')}
           </div>
         );
       }
