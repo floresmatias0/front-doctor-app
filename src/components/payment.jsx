@@ -1,73 +1,152 @@
-import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { instance } from "../utils/axios";
-import { initMercadoPago } from "@mercadopago/sdk-react";
+import PropTypes from 'prop-types'
+import { Box, Button, Center, Flex, Spinner, Text } from "@chakra-ui/react";
+import { Wallet, initMercadoPago } from "@mercadopago/sdk-react";
+import { useCallback, useEffect, useState } from 'react';
+import { instance } from '../utils/axios';
 
-const Payment = ({doctorSelected, user, patient, selectDay}) => {
-    initMercadoPago(import.meta.env.VITE_MERCADOPAGO_PUBLIC_KEY, {locale: 'es-AR'});
+const Payment = ({
+    doctorSelected,
+    user,
+    patientSelected,
+    selectDay,
+    paymentStatus,
+    onNext,
+    isActive
+}) => {
+    const [isLoading, setIsLoading] = useState(false)
+    const [preferenceId, setPreferenceId] = useState(null)
 
+    initMercadoPago(import.meta.env.VITE_MERCADOPAGO_PUBLIC_KEY, { locale: 'es-AR' });
 
-    // const handleDateClick = (date) => {
-    //   setSelectedDate(date);
-    // };
+    const confirmReserve = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const payment = await instance.post('/payments/create', {
+                user_email: doctorSelected.value,
+                patient_email: user?.email,
+                startDateTime: { dateTime: "2023-08-24T10:15:00-03:00", timeZone: "America/Argentina/Buenos_Aires" },
+                endDateTime: { dateTime: "2023-08-24T10:00:00-03:00", timeZone: "America/Argentina/Buenos_Aires" },
+                unit_price: doctorSelected.reservePrice
+            });
+            const { id } = payment.data.data;
 
-    // const fetchDataCalendar = async () => {
-    //     try {
-    //       const { data } = await instance.get(`/calendars?email=${doctorSelected.value}`);
-    //       console.log({data})
-    //       setCalendarData(data.data)
-    //     //   let filters = `{ "email": "${doctorSelected.value}" }`
-    //     //   const doctor = await instance.get(`/users?filters=${filters}`);
-    //     //   setDoctorData(doctor?.data?.data[0])
-    //     }catch(err) {
-    //       throw new Error('Something went wrong to search calendar doctor')
-    //     }
-    // }
+            setPreferenceId(id)
+            setIsLoading(false)
+        }catch(err) {
+            console.log(err.message)
+        }
+    }, [doctorSelected, user])
 
-    // useEffect(() => {
-    //     const fetchDataCalendars = async () => {
-    //         try {
-    //           await fetchDataCalendar();
-    //         }catch(err){
-    //           console.log(err)
-    //         }
-    //     }
-      
-    //     if(doctorSelected) {
-    //         fetchDataCalendars();
-    //     }
-    // }, [doctorSelected])
-
-    const fecha = new Date(selectDay); // Reemplaza con tu fecha
+    const fecha = new Date(selectDay);
     const day = fecha.getDate();
-    const month = fecha.getMonth() + 1; // Nota: getMonth() devuelve el mes de 0 a 11, así que sumamos 1 para obtener el mes real.
+    const month = fecha.getMonth() + 1;
     const year = fecha.getFullYear();
 
+    const handleNextClick = () => {
+        if (paymentStatus) {
+            onNext();
+        }
+    }
+
+    useEffect(() => {
+        const fetchPaymentData = async () => {
+            try {
+              await confirmReserve();
+            }catch(err){
+              console.log(err)
+            }
+          }
+      
+          if(isActive) fetchPaymentData();
+    }, [confirmReserve, isActive])
+
     return (
-        <Box>
-            <Box bgColor="#E5F2FA" py={10} px={0}>
-                <Text textAlign="center" fontSize="lg" color="#205583" my={2}>Detalles del turno médico de {patient?.name}</Text>
-                <Flex w="100%" justifyContent="space-around" alignItems="center" my={8}>
-                    <Box>
-                        <Text fontSize="lg" color="#205583" fontWeight="bold">Doctor</Text>
-                        <Text fontSize="lg" color="#205583">{doctorSelected?.label}</Text>
-                    </Box>
-                    <Box>
-                        <Text fontSize="lg" color="#205583" fontWeight="bold">Especializacion</Text>
-                        <Text fontSize="lg" color="#205583">Especializacion</Text>
-                    </Box>
-                    <Box>
-                        <Text fontSize="lg" color="#205583" fontWeight="bold">Dia</Text>
-                        <Text fontSize="lg" color="#205583">{`${day}/${month}/${year}`}</Text>
-                    </Box>
-                    <Box>
-                        <Text fontSize="lg" color="#205583" fontWeight="bold">Hora</Text>
-                        <Text fontSize="lg" color="#205583">{new Date(selectDay).getHours()}</Text>
-                    </Box>
-                </Flex>
-            </Box>
-        </Box>
+        <Flex h="100%" flexDirection="column">
+            <Flex bgColor="#E5F2FA" flexDirection="column" justifyContent="center" alignItems="center" h={["auto", "237px"]}>
+                <Box w={["100%", "100%", "100%", "50%"]} px={[4, 4, 4, 0]}>
+                    <Text textAlign={["center", "left"]} fontSize={["md", "lg"]} color="#205583" my={2}>Detalles del turno médico de {patientSelected?.label}</Text>
+                    <Flex w="100%" justifyContent="space-between" alignItems="center" my={[2, 8]} flexWrap={["wrap"]} gap={[3, 0]}>
+                        <Box>
+                            <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Médico</Text>
+                            <Text fontSize={["sm", "lg"]} color="#205583">{doctorSelected?.label}</Text>
+                        </Box>
+                        <Box>
+                            <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Especialización</Text>
+                            <Text fontSize={["sm", "lg"]} color="#205583">Especializacion</Text>
+                        </Box>
+                        <Box>
+                            <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Día</Text>
+                            <Text fontSize={["sm", "lg"]} color="#205583">{`${day}/${month}/${year}`}</Text>
+                        </Box>
+                        <Box>
+                            <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Hora</Text>
+                            <Text fontSize={["sm", "lg"]} color="#205583">{new Date(selectDay).getHours()}</Text>
+                        </Box>
+                    </Flex>
+                </Box>
+            </Flex>
+            <Flex flexDirection="column" justifyContent="center" alignItems="center">
+                <Box w={["100%", "100%", "90%", "50%"]} px={[4, 4, 4, 0]}>
+                    <Text textAlign="center" fontSize={["lg","2xl"]} color="#205583" my={[2, 4]} fontWeight="bold">Tu turno aún no está confirmado.</Text>
+                    <Text textAlign="center" fontSize={["sm", "lg"]} color="#205583">
+                        Para garantizar tu cita, por favor, procede con el pago de la consulta <b>haciendo clic en el botón &quot;Pagar&quot;</b>. 
+                        Serás <b>redirigido a Mercado Pago</b> para completar el proceso de pago correspondiente.
+                    </Text>
+                    <Flex justifyContent="center" alignItems="center" gap={2} my={[2, 0]} flexDirection={["column", "row"]}>
+                        <Button bg="#FFFFFF" color="#205583" w={["220px","300px"]} size={["sm", "md"]} isDisabled>CANCELAR TURNO</Button>
+                        {isLoading ? (
+                            <Center>
+                                <Spinner
+                                    thickness='4px'
+                                    speed='0.65s'
+                                    emptyColor='gray.200'
+                                    color='blue.500'
+                                    size='xl'
+                                />
+                            </Center>
+                        ) : (
+                            preferenceId && (
+                                <Box w={["100%", "auto"]}>
+                                    <Wallet initialization={{ preferenceId }} style={{ minWidth: "100%" }}/>
+                                </Box>
+                            )
+                        )}
+                    </Flex>
+
+                </Box>
+            </Flex>
+            <Flex flex={1} justifyContent="center" alignItems="flex-end" my={[2, 4]}>
+                <Text textAlign="center" w={["100%", "100%", "90%", "50%"]} fontStyle="italic" fontSize={["sm", "lg"]} mx={[4, 0]} color="#205583">
+                    Una vez que hayas realizado el pago con éxito, recibirás una confirmación por correo electrónico y tu turno quedará reservado de manera efectiva.
+                </Text>
+                {paymentStatus && (
+                    <Button
+                        bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["xs", "sm"]}
+                        onClick={handleNextClick}
+                    >
+                        SIGUIENTE
+                    </Button>
+                )}
+            </Flex>
+        </Flex>
     )
+}
+
+Payment.propTypes = {
+    doctorSelected: PropTypes.shape({
+      value: PropTypes.string,
+      label: PropTypes.string,
+      reservePrice: PropTypes.number
+    }).isRequired,
+    patientSelected: PropTypes.shape({
+        value: PropTypes.string,
+        label: PropTypes.string
+    }).isRequired,
+    selectDay: PropTypes.instanceOf(Date).isRequired,
+    user: PropTypes.shape(),
+    paymentStatus: PropTypes.bool,
+    onNext: PropTypes.func,
+    isActive: PropTypes.bool
 }
 
 export default Payment
