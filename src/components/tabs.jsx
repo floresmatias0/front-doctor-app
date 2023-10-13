@@ -32,6 +32,7 @@ const TabsConsult = ({
                 borderRadius="1px"
                 display={["none", "block"]}
                 flex="0 0 auto"
+                top={10}
             />
             <TabPanels flex={1} overflow={["auto", "auto"]}>
                 {tabContents?.map((content, index) => <TabPanel h="100%" px={0} py={[0, 4]} key={index}>{content}</TabPanel>)}

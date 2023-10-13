@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { Box, useColorModeValue, Flex } from "@chakra-ui/react";
 import { Navigate } from "react-router-dom";
 import Navbar from "./navbar";
@@ -47,4 +48,20 @@ export const LayoutWithSidebar = ({children}) => {
             </Box>
         </Flex>
     )
+}
+
+LayoutWithSidebar.propTypes = {
+    children: PropTypes.node,
+}
+
+LayoutWithSidebarAndHeader.propTypes = {
+    children: PropTypes.node,
+}
+
+LayoutWithNavbar.propTypes = {
+    children: PropTypes.node,
+}
+
+ProtectedRoutes.propTypes = {
+    children: PropTypes.node,
 }

@@ -1,4 +1,5 @@
-import { FormControl, FormErrorMessage, FormLabel, Input, Button, Select, Grid, useToast } from "@chakra-ui/react"
+import PropTypes from 'prop-types'
+import { FormControl, FormErrorMessage, FormLabel, Input, Button, Select, Grid } from "@chakra-ui/react"
 import { Formik, Form, Field } from 'formik';
 
 const FormPatient = ({handleSubmit}) => {
@@ -54,7 +55,7 @@ const FormPatient = ({handleSubmit}) => {
           onSubmit={handleSubmit}
           validate={validate}
         >
-          {(props) => (
+          {({isSubmitting}) => (
             <Form>
               <Grid templateColumns='repeat(2, 1fr)' gap={4} my={2}>
                 <Field name='name' colSpan={1}>
@@ -131,7 +132,7 @@ const FormPatient = ({handleSubmit}) => {
               <Button
                 mt={4}
                 colorScheme='teal'
-                isLoading={props.isSubmitting}
+                isLoading={{isSubmitting}}
                 type='submit'
               >
                 Crear
@@ -140,6 +141,10 @@ const FormPatient = ({handleSubmit}) => {
           )}
         </Formik>
     )
+}
+
+FormPatient.propTypes = {
+  handleSubmit: PropTypes.func
 }
 
 export default FormPatient

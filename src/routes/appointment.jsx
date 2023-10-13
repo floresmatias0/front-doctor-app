@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { instance } from '../utils/axios';
 import { Button, Flex, Select, Text, useDisclosure, useToast } from '@chakra-ui/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Box } from '@chakra-ui/react'
 import TabsConsult from '../components/tabs';
 import ListDoctors from '../components/list-doctors';
 import ListCalendar from '../components/list-calendar';
@@ -216,7 +215,7 @@ export default function Appointment() {
         <Text color="#205583" fontSize={["md", "lg"]} fontWeight="bold">Solicitar un turno médico</Text>
         <Select
           w={["auto", "250px"]}
-          h={["28px", "auto"]}
+          h={["28px", "36px"]}
           bg="#FFFFFF"
           placeholder='Selecciona un paciente'
           value={patientSelected.value}
