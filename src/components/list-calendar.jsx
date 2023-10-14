@@ -1,10 +1,13 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-import {instance} from '../utils/axios';
-import { Box } from "@chakra-ui/react";
+import PropTypes from 'prop-types'
+import { instance } from '../utils/axios';
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { useEffect, useState } from "react";
+
 import { es } from 'date-fns/locale';
+
+import { useCallback, useEffect, useState } from "react";
+
 import {
   format,
   startOfMonth,
@@ -15,48 +18,46 @@ import {
   isBefore,
   isSameMonth,
   startOfDay, 
-  addMinutes, 
-  isWithinInterval,
+  addMinutes,
   setHours
 } from "date-fns";
-import "../styles/fcalendar.css"; // Importa tu archivo de estilos CSS
+import "../styles/fcalendar.css";
 
-const ListCalendar = ({ doctorSelected, setDaySelected, daySelected }) => {
-  // console.log("🚀 ~ file: list-calendar.jsx:19 ~ ListCalendar ~ doctorSelected:", doctorSelected)
+const ListCalendar = ({ doctorSelected, onNext, isActive }) => {
   const currentDate = new Date();
-  const [currentDateState, setCurrentDateState] = useState(currentDate); // Estado para almacenar la fecha actual
-  const daysInMonth = getDaysInMonth(currentDateState);
-  const [selectedDoc, setSelectedDoc] = useState(null);
+  const [currentDateState, setCurrentDateState] = useState(currentDate)
+  const daysInMonth = getDaysInMonth(currentDateState)
+  const [selectedDoc, setSelectedDoc] = useState(null)
   const [calendarEvents, setCalendarEvents] = useState(null)
-  useEffect(() => {
+  const [daySelected, setDaySelected] = useState("")
 
-    const fetchDataCalendar = async () => {
-      try {
-          const { data } = await instance.get(`/calendars?email=${doctorSelected.value}`);
-      
-          setCalendarEvents(data?.data?.items)
-          let filters = `{ "email": "${doctorSelected.value}" }`
-          const doctor = await instance.get(`/users?filters=${filters}`);
-          console.log(doctor?.data?.data[0])
-          setSelectedDoc(doctor?.data?.data[0])
-        }catch(err) {
-          throw new Error('Something went wrong to search calendar doctor')
-        }
-    }
-      const fetchDataCalendars = async () => {
-          try {
-            await fetchDataCalendar();
-          }catch(err){
-            console.log(err)
-          }
-      }
+  const fetchDataCalendar = useCallback(async () => {
+    try {
+        const { data } = await instance.get(`/calendars?email=${doctorSelected?.value}`);
     
-      if(doctorSelected) {
-          fetchDataCalendars();
+        setCalendarEvents(data?.data?.items)
+        let filters = `{ "email": "${doctorSelected?.value}" }`
+        const doctor = await instance.get(`/users?filters=${filters}`);
+        setSelectedDoc(doctor?.data?.data[0])
+      }catch(err) {
+        throw new Error('Something went wrong to search calendar doctor')
       }
   }, [doctorSelected])
 
-  // Función para generar los días del mes actual
+  useEffect(() => {
+    const fetchDataCalendars = async () => {
+        try {
+          await fetchDataCalendar();
+        }catch(err){
+          console.log(err)
+        }
+    }
+    
+    if(doctorSelected && isActive) {
+        fetchDataCalendars();
+    }
+  }, [doctorSelected, isActive, fetchDataCalendar])
+
   const generateDays = () => {
     const days = [];
     const startOfMonthDate = startOfMonth(currentDateState);
@@ -94,8 +95,6 @@ const ListCalendar = ({ doctorSelected, setDaySelected, daySelected }) => {
     return days;
   };
   
-  
-  // Función para cambiar al mes anterior
   const goToPrevMonth = () => {
     const newDate = subMonths(currentDateState, 1);
     if (!isBefore(newDate, currentDate) || isSameMonth(newDate, currentDate)) {
@@ -103,7 +102,6 @@ const ListCalendar = ({ doctorSelected, setDaySelected, daySelected }) => {
     }
   };
 
-  // Función para cambiar al mes siguiente
   const goToNextMonth = () => {
     const newDate = addMonths(currentDateState, 1);
     if (!isBefore(newDate, currentDate) || isSameMonth(newDate, currentDate)) {
@@ -148,70 +146,62 @@ const ListCalendar = ({ doctorSelected, setDaySelected, daySelected }) => {
 
   const events = generateEventDivs();
 
+  const handleNextClick = () => {
+    if (daySelected) {
+      onNext(daySelected);
+    }
+  }
+
   return (
-    <Box>
-      {selectedDoc && (
-        <div>
-          <div className='calendar__header'>
-            <button onClick={goToPrevMonth}>
-              <ChevronLeftIcon />
-            </button>
-              <span>{format(currentDateState, "MMMM yyyy", { locale: es })}</span>
-            <button onClick={goToNextMonth}>
-              <ChevronRightIcon />
-            </button>
-          </div>
-          <div className="calendar-grid">{generateDays()}</div>
-          {daySelected && (
-            <div className="event-container">
-              {events.map(event => event)}
+
+    <Flex h="100%" flexDirection="column" px={6}>
+      <Box>
+        {selectedDoc && (
+          <div>
+            <div className='calendar__header'>
+              <button onClick={goToPrevMonth}>
+                <ChevronLeftIcon />
+              </button>
+                <span>{format(currentDateState, "MMMM yyyy")}</span>
+              <button onClick={goToNextMonth}>
+                <ChevronRightIcon />
+              </button>
+
             </div>
-          )}
+            <div className="calendar-grid">{generateDays()}</div>
+            {daySelected && (
+              <div className="event-container">
+                {events.map(event => event)}
+              </div>
+            )}
+          </div>
+        )}
+        {!selectedDoc && (
+        <div>
+          {/*No se pudo obtener la informacion del medico */}
         </div>
-      )}
-      {!selectedDoc && (
-      <div>
-        {/*No se pudo obtener la informacion del medico */}
-      </div>
-      )}
-    </Box>
+        )}
+      </Box>
+      <Flex flex={1} justifyContent="center" alignItems="flex-end" my={[2, 4]}>
+        {daySelected && (
+          <Button
+            bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["xs", "sm"]}
+            onClick={handleNextClick}
+          >
+            SIGUIENTE
+          </Button>
+        )}
+      </Flex>
+    </Flex>
   );
 };
 
+ListCalendar.propTypes = {
+  doctorSelected: PropTypes.shape({
+    value: PropTypes.string
+  }),
+  onNext: PropTypes.func,
+  isActive: PropTypes.bool
+}
+
 export default ListCalendar;
-
-
-
-
- // const [selectedDate, setSelectedDate] = useState(null);
-
-    // const handleDateClick = (date) => {
-    //   setSelectedDate(date);
-    // };
-
-    // const fetchDataCalendar = async () => {
-    //     try {
-    //       const { data } = await instance.get(`/calendars?email=${doctorSelected.value}`);
-    //       console.log({data})
-    //       // setCalendarData(data.data)
-    //     //   let filters = `{ "email": "${doctorSelected.value}" }`
-    //     //   const doctor = await instance.get(`/users?filters=${filters}`);
-    //     //   setDoctorData(doctor?.data?.data[0])
-    //     }catch(err) {
-    //       throw new Error('Something went wrong to search calendar doctor')
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     const fetchDataCalendars = async () => {
-    //         try {
-    //           await fetchDataCalendar();
-    //         }catch(err){
-    //           console.log(err)
-    //         }
-    //     }
-      
-    //     if(doctorSelected) {
-    //         fetchDataCalendars();
-    //     }
-    // }, [doctorSelected])

@@ -1,10 +1,12 @@
-import { Avatar, Box, Card, CardHeader, Flex, Heading, SimpleGrid, Text } from "@chakra-ui/react"
+import PropTypes from 'prop-types'
+import { Button, Flex } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { instance } from "../utils/axios";
 import CardCustom from "./card-custom";
 
-const ListDoctors = ({handleSelect}) => {
+const ListDoctors = ({ onNext, isActive }) => {
     const [doctors, setDoctors] = useState([]);
+    const [selectedDoctor, setSelectedDoctor] = useState({});
 
     const fetchDoctors = async () => {
         try {
@@ -18,7 +20,7 @@ const ListDoctors = ({handleSelect}) => {
     
             if(doctors && doctors?.length > 0) {
               for(let i = 0; i < doctors.length; i++) {
-                auxDoctors.push({ label: doctors[i].name, value: doctors[i].email, picture: doctors[i].picture })
+                auxDoctors.push({ label: doctors[i].name, value: doctors[i].email, picture: doctors[i].picture, reservePrice: doctors[i].reservePrice })
               }
               setDoctors(auxDoctors)
             }
@@ -33,6 +35,16 @@ const ListDoctors = ({handleSelect}) => {
         }
     }
 
+    const handleDoctorsSelect = (doctor) => {
+      setSelectedDoctor(doctor);
+    };
+
+    const handleNextClick = () => {
+      if (Object.keys(selectedDoctor).length > 0) {
+        onNext(selectedDoctor);
+      }
+    };
+
     useEffect(() => {
         const fetchDataDoctors = async () => {
           try {
@@ -42,24 +54,43 @@ const ListDoctors = ({handleSelect}) => {
           }
         }
     
-        fetchDataDoctors();
-    }, []);
+        if(isActive) fetchDataDoctors();
+    }, [isActive]);
 
     return (
-        <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(250px, 1fr))'>
+      <Flex h="100%" flexDirection="column" px={6}>
+        <Flex flexDirection={["column", "row"]} flexWrap={["wrap", "no-wrap"]} gap={4}>
             {doctors?.length > 0 && doctors.map((doctor, idx) => (
               <CardCustom
                 key={idx}
                 heading={doctor.label}
-                handleSelect={() => handleSelect(doctor, 1)}
+                handleSelect={() => handleDoctorsSelect(doctor)}
                 name={doctor.name}
                 picture={doctor.picture}
                 description="Especializacion"
                 avatarSize="md"
+                width={["100%", "284px"]}
+                isSelected={selectedDoctor.label === doctor.label}
               />
             ))}
-        </SimpleGrid>  
+        </Flex>
+        <Flex flex={1} justifyContent="center" alignItems="flex-end" my={[2, 4]}>
+        {Object.keys(selectedDoctor).length > 0 && (
+          <Button
+            bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["xs", "sm"]}
+            onClick={handleNextClick}
+          >
+            SIGUIENTE
+          </Button>
+        )}
+        </Flex>
+      </Flex>
     )
+}
+
+ListDoctors.propTypes = {
+  onNext: PropTypes.func,
+  isActive: PropTypes.bool
 }
 
 export default ListDoctors

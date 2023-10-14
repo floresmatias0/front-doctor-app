@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import {
     Button,
     AlertDialog,
@@ -84,4 +85,20 @@ export const AlertModal = ({
           </AlertDialogContent>
         </AlertDialog>
     )
+}
+
+AlertModal.propTypes = {
+    alertHeader: PropTypes.string,
+    alertBody: PropTypes.any,
+    textButtonCancel: PropTypes.string,
+    textButtonConfirm: PropTypes.string,
+    onClose: PropTypes.func,
+    onConfirm: PropTypes.func,
+    isOpen: PropTypes.bool,
+    isLoading: PropTypes.bool,
+    preferenceId: PropTypes.string,
+    withCancelButton: PropTypes.bool,
+    withConfirmButton: PropTypes.bool,
+    customButtonCancel: PropTypes.any,
+    customButtonConfirm: PropTypes.any
 }
