@@ -5,12 +5,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { instance } from '../utils/axios';
 
 const Payment = ({
+    symptomsSelected,
     doctorSelected,
     user,
     patientSelected,
     selectDay,
-    paymentStatus,
-    onNext,
     isActive
 }) => {
     const [isLoading, setIsLoading] = useState(false)
@@ -26,7 +25,8 @@ const Payment = ({
                 patient_email: user?.email,
                 startDateTime: { dateTime: "2023-08-24T10:15:00-03:00", timeZone: "America/Argentina/Buenos_Aires" },
                 endDateTime: { dateTime: "2023-08-24T10:00:00-03:00", timeZone: "America/Argentina/Buenos_Aires" },
-                unit_price: doctorSelected.reservePrice
+                unit_price: doctorSelected.reservePrice,
+                symptoms: symptomsSelected
             });
             const { id } = payment.data.data;
 
@@ -35,18 +35,12 @@ const Payment = ({
         }catch(err) {
             console.log(err.message)
         }
-    }, [doctorSelected, user])
+    }, [doctorSelected, user, symptomsSelected])
 
     const fecha = new Date(selectDay);
     const day = fecha.getDate();
     const month = fecha.getMonth() + 1;
     const year = fecha.getFullYear();
-
-    const handleNextClick = () => {
-        if (paymentStatus) {
-            onNext();
-        }
-    }
 
     useEffect(() => {
         const fetchPaymentData = async () => {
@@ -119,20 +113,13 @@ const Payment = ({
                 <Text textAlign="center" w={["100%", "100%", "90%", "50%"]} fontStyle="italic" fontSize={["sm", "lg"]} mx={[4, 0]} color="#205583">
                     Una vez que hayas realizado el pago con éxito, recibirás una confirmación por correo electrónico y tu turno quedará reservado de manera efectiva.
                 </Text>
-                {paymentStatus && (
-                    <Button
-                        bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["xs", "sm"]}
-                        onClick={handleNextClick}
-                    >
-                        SIGUIENTE
-                    </Button>
-                )}
             </Flex>
         </Flex>
     )
 }
 
 Payment.propTypes = {
+    symptomsSelected: PropTypes.array,
     doctorSelected: PropTypes.shape({
       value: PropTypes.string,
       label: PropTypes.string,
@@ -144,8 +131,6 @@ Payment.propTypes = {
     }).isRequired,
     selectDay: PropTypes.instanceOf(Date).isRequired,
     user: PropTypes.shape(),
-    paymentStatus: PropTypes.bool,
-    onNext: PropTypes.func,
     isActive: PropTypes.bool
 }
 

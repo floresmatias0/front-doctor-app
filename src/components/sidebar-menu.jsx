@@ -74,7 +74,7 @@ const SidebarMenu = () => {
                     <Center flexDirection="column" gap={5}>
                         {menuItems?.map((item, idx) => (
                             <Link key={idx} href={item.href}>
-                                <Flex gap={2}>
+                                <Flex gap={2} alignItems="center" justifyContent="center">
                                         <div dangerouslySetInnerHTML={{__html: item.icon}}/>
                                         <Text className="fade-in-text" display={isOpen ? 'block' : 'none'} w="80px" fontSize='sm' color='#205583' style={{ fontWeight: 'bold', lineHeight: 'normal' }}>{item.title}</Text>
                                 </Flex>

@@ -17,6 +17,9 @@ import Verify from "./routes/verify";
 import Profile from "./routes/profile";
 import Home from "./routes/home";
 import Appointment from "./routes/appointment";
+import Settings from "./routes/settings";
+import './styles/main.css';
+import DoctorContext from "./components/context";
 
 const colors = {
   brand: {
@@ -28,10 +31,6 @@ const colors = {
 
 const theme = extendTheme({ 
   colors,
-  fonts: {
-    heading: `'Montserrat', sans-serif`,
-    body: `'Montserrat', sans-serif`,
-  },
 })
 
 const handleLogin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google/?role=PATIENT`, "_self");
@@ -40,12 +39,12 @@ const handleLoginAdmin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <ProtectedRoutes><LayoutWithSidebar><Home /></LayoutWithSidebar></ProtectedRoutes>,
+    element: <LayoutWithSidebar><ProtectedRoutes><Home /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
   {
     path: "/appointment",
-    element: <ProtectedRoutes><LayoutWithSidebar><Appointment /></LayoutWithSidebar></ProtectedRoutes>,
+    element: <LayoutWithSidebar><ProtectedRoutes><Appointment /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
   {
@@ -66,12 +65,19 @@ const router = createBrowserRouter([
     element: <ProtectedRoutes><LayoutWithNavbar><Profile /></LayoutWithNavbar></ProtectedRoutes>,
     errorElement: <ErrorPage />,
   },
+  {
+    path: "/settings",
+    element: <LayoutWithSidebar><ProtectedRoutes><Settings /></ProtectedRoutes></LayoutWithSidebar>,
+    errorElement: <ErrorPage />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
-      <RouterProvider router={router} />
+      <DoctorContext>
+        <RouterProvider router={router} />
+      </DoctorContext>
     </ChakraProvider>
   </React.StrictMode>
 );

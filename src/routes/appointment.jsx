@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { instance } from '../utils/axios';
 import { Button, Flex, Select, Text, useDisclosure, useToast } from '@chakra-ui/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -12,13 +12,14 @@ import FormPatient from '../components/form-patient';
 import CardCustom from '../components/card-custom';
 import ListSymptoms from '../components/lists-symptoms';
 import Reserve from '../components/reserve';
+import { AppContext } from '../components/context';
 
 export default function Appointment() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const paymentStatus = searchParams.get("status");
 
-  const [user, setUser] = useState(null)
+  const { user } = useContext(AppContext)
   const [patients, setPatients] = useState([])
 
   const initialStateTabs = {
@@ -162,14 +163,6 @@ export default function Appointment() {
   }, [paymentStatus, navigate, toast]);
 
   useEffect(() => {
-    let userLogged = localStorage.getItem('user');
-    if(userLogged) {
-        let parseUser = JSON.parse(userLogged);
-        setUser(parseUser);
-    }
-  }, [])
-
-  useEffect(() => {
     const fetchDataPatients = async () => {
       try {
         await fetchPatients()
@@ -204,7 +197,7 @@ export default function Appointment() {
     <ListSymptoms key="first" onNext={handleNextSymptoms} isActive={activeTab === 0}/>,
     <ListDoctors key="second" onNext={handleNextDoctors} isActive={activeTab === 1}/>,
     <ListCalendar key="third" doctorSelected={doctorSelected} onNext={handleNextCalendar} isActive={activeTab === 2}/>,
-    <Payment key="fourth" doctorSelected={doctorSelected} patientSelected={patientSelected} selectDay={daySelected} user={user} isActive={activeTab === 3}/>,
+    <Payment key="fourth" symptomsSelected={symptomsSelected} doctorSelected={doctorSelected} patientSelected={patientSelected} selectDay={daySelected} user={user} isActive={activeTab === 3}/>,
     <Reserve key="fifth" isActive={activeTab === 4}/>
   ];
 
