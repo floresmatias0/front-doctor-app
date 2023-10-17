@@ -1,0 +1,119 @@
+/* Calendario.css hasta 1240px anda */ 
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columnas para los días de la semana */
+    gap: 8px; /* Espacio entre los cuadrados de los días */
+}
+
+.calendar__header{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin: 1em 0em;
+    color: #205583;
+    font-size: 14px;
+    font-family: Montserrat;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 2.80px;
+    word-wrap: break-word
+}
+
+.day {
+    margin: 0 auto;
+    min-width: 140px; /* Ancho del cuadrado del día */
+    min-height: 60px; /* Alto del cuadrado del día */
+    display: flex;
+    background: #FCFEFF;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #E5F2FA;
+    cursor: pointer;
+    border-radius: 6px;
+}
+.day:hover{
+    background: #2055832e;
+    border: 1px solid #205583;
+}
+
+.day-text{
+    color: #205583;
+    font-size: 14px;
+    font-family: Montserrat;
+    font-weight: 400;
+    text-transform: uppercase;
+    word-wrap: break-word;
+}
+.day-number{
+    color: #205583;
+    font-size: 32px;
+    font-family: Montserrat;
+    font-weight: 700;
+    line-height: 32px;
+    word-wrap: break-word
+}
+
+.empty-day{
+    margin: 0 auto;
+    min-width: 140px; /* Ancho del cuadrado del día */
+    min-height: 60px; /* Alto del cuadrado del día */
+    display: flex;
+    background: #FCFEFF;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #E5F2FA;
+    opacity: 0.50;
+    border-radius: 6px;
+}
+
+.event-container {
+    margin-top: 2em;
+    display: flex; /* Para que los eventos estén en línea horizontalmente */
+    flex-wrap: wrap;
+    overflow-x: auto; /* Agrega una barra de desplazamiento horizontal si es necesario */
+    white-space: nowrap; /* Evita que los eventos se envuelvan a la siguiente línea */
+}
+
+.event {
+    font-weight: 400;
+    background-color: #ffffff;
+    border: 1px solid #cccccc4f;
+    border-radius: 4px;
+    color: #205583;
+    cursor: pointer;
+}
+.event-active{
+    font-weight: 400;
+    background: #20558347;
+    border: 1px solid #205583;
+    border-radius: 4px;
+    color: #205583;
+    cursor: pointer;
+}
+.event:hover {
+    font-weight: 400;
+    background: #20558347;
+    border: 1px solid #205583;
+    border-radius: 4px;
+    color: #205583;
+    cursor: pointer;
+}
+.empty-event {
+    font-weight: 400;
+    background-color: #ffffff;
+    border: 1px solid #cccccc4f;
+    border-radius: 4px;
+    color: #cccccc;
+    opacity: .8;
+}
+.highlighted-event{
+    font-weight: 400;
+    background-color: #ffffff;
+    border: 1px solid #cccccc4f;
+    border-radius: 4px;
+    color: #cccccc;
+    opacity: .5;
+}

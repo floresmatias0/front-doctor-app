@@ -86,7 +86,7 @@ export default function Profile() {
         "redirect_uri": `${import.meta.env.VITE_MERCADOPAGO_REDIRECT_URL}`
       });
 
-      const response = await axios.post(import.meta.env.VITE_MERCADOPAGO_OAUTH_TOKEN, body)
+      const response = await axios.post(import.meta.env.VITE_MERCADOPAGO_OAUTH_TOKEN_URL, body)
 
       await instance.post('/users/mercadopago', {
         user_id: user?._id,
@@ -135,7 +135,7 @@ export default function Profile() {
 
   const handleLoginMp = () => {
     const randomId = Math.floor(Math.random() * Date.now())
-    window.open(`${import.meta.env.VITE_MERCADOPAGO_AUTH_ACCESS_URL}?client_id=${import.meta.env.VITE_MERCADOPAGO_CLIENT_ID}&response_type=code&platform_id=mp&state=${randomId}&redirect_uri=${import.meta.env.VITE_MERCADOPAGO_REDIRECT_URL}`, "_self");
+    window.open(`${import.meta.env.VITE_MERCADOPAGO_OAUTH_URL}?client_id=${import.meta.env.VITE_MERCADOPAGO_CLIENT_ID}&response_type=code&platform_id=mp&state=${randomId}&redirect_uri=${import.meta.env.VITE_MERCADOPAGO_REDIRECT_URL}`, "_self");
   }
 
   const handleDeleteEvent = async (bookingId, userEmail) => {

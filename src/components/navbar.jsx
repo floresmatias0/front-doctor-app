@@ -1,5 +1,4 @@
-"use client";
-
+import PropTypes from 'prop-types'
 import {
   Box,
   Flex,
@@ -21,11 +20,9 @@ import logo from '../assets/docconnect.svg'
 import '../styles/navbar.css'
 import { useNavigate } from "react-router-dom";
 
-// const Links = ['Dashboard', 'Projects', 'Team']
 const Links = [];
 
-const NavLink = (props) => {
-  const { children, href } = props;
+const NavLink = ({ children, href }) => {
 
   return (
     <Box
@@ -115,4 +112,9 @@ export default function Navbar() {
       ) : null}
     </Box>
   );
+}
+
+NavLink.propTypes = {
+  children: PropTypes.any,
+  href: PropTypes.string
 }

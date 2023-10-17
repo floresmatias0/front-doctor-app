@@ -10,12 +10,16 @@ import {
 
 /* existing imports */
 import ErrorPage from "./components/error-page";
-import { LayoutWithNavbar, ProtectedRoutes } from "./components/layouts";
+import { LayoutWithNavbar, LayoutWithSidebar, ProtectedRoutes } from "./components/layouts";
 
 import Login from "./routes/login";
-import Welcome from "./routes/welcome";
 import Verify from "./routes/verify";
 import Profile from "./routes/profile";
+import Home from "./routes/home";
+import Appointment from "./routes/appointment";
+import Settings from "./routes/settings";
+import './styles/main.css';
+import DoctorContext from "./components/context";
 
 const colors = {
   brand: {
@@ -25,7 +29,9 @@ const colors = {
   },
 }
 
-const theme = extendTheme({ colors })
+const theme = extendTheme({ 
+  colors,
+})
 
 const handleLogin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google/?role=PATIENT`, "_self");
 const handleLoginAdmin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google/?role=DOCTOR`, "_self");
@@ -33,7 +39,12 @@ const handleLoginAdmin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <ProtectedRoutes><LayoutWithNavbar><Welcome /></LayoutWithNavbar></ProtectedRoutes>,
+    element: <LayoutWithSidebar><ProtectedRoutes><Home /></ProtectedRoutes></LayoutWithSidebar>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/appointment",
+    element: <LayoutWithSidebar><ProtectedRoutes><Appointment /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
   {
@@ -47,11 +58,16 @@ const router = createBrowserRouter([
   },
   {
     path: "admin",
-    element: localStorage.getItem("user") ? <Navigate to="/" replace/> :<Login handleLogin={handleLoginAdmin}/>,
+    element: localStorage.getItem("user") ? <Navigate to="/" replace/> : <Login handleLogin={handleLoginAdmin}/>,
   },
   {
     path: "/profile",
     element: <ProtectedRoutes><LayoutWithNavbar><Profile /></LayoutWithNavbar></ProtectedRoutes>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/settings",
+    element: <LayoutWithSidebar><ProtectedRoutes><Settings /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
 ]);
@@ -59,7 +75,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
-      <RouterProvider router={router} />
+      <DoctorContext>
+        <RouterProvider router={router} />
+      </DoctorContext>
     </ChakraProvider>
   </React.StrictMode>
 );
