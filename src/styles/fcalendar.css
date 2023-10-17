@@ -109,7 +109,7 @@
     color: #cccccc;
     opacity: .8;
 }
-.highlighted-event{
+.highlighted-event {
     font-weight: 400;
     background-color: #ffffff;
     border: 1px solid #cccccc4f;
@@ -117,3 +117,9 @@
     color: #cccccc;
     opacity: .5;
 }
+
+.selected-event {
+    border: 2px solid #007bff; /* Cambia el color del borde al que desees */
+    background-color: #e0e0e0; /* Cambia el color de fondo al que desees */
+    /* Otros estilos adicionales si los necesitas */
+  }

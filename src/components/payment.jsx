@@ -3,6 +3,8 @@ import { Box, Button, Center, Flex, Spinner, Text } from "@chakra-ui/react";
 import { Wallet, initMercadoPago } from "@mercadopago/sdk-react";
 import { useCallback, useEffect, useState } from 'react';
 import { instance } from '../utils/axios';
+import { es } from 'date-fns/locale';
+import { format } from "date-fns";
 
 const Payment = ({
     symptomsSelected,
@@ -20,11 +22,14 @@ const Payment = ({
     const confirmReserve = useCallback(async () => {
         try {
             setIsLoading(true)
+            const endDateTime = new Date(selectDay);
+            endDateTime.setMinutes(endDateTime.getMinutes() + doctorSelected?.reserveTime);
+            
             const payment = await instance.post('/payments/create', {
                 user_email: doctorSelected.value,
                 patient_email: user?.email,
-                startDateTime: { dateTime: "2023-08-24T10:15:00-03:00", timeZone: "America/Argentina/Buenos_Aires" },
-                endDateTime: { dateTime: "2023-08-24T10:00:00-03:00", timeZone: "America/Argentina/Buenos_Aires" },
+                startDateTime: { dateTime: `${format(selectDay, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`, timeZone: "America/Argentina/Buenos_Aires" },
+                endDateTime: { dateTime: `${format(endDateTime, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`, timeZone: "America/Argentina/Buenos_Aires" },
                 unit_price: doctorSelected.reservePrice,
                 symptoms: symptomsSelected
             });
@@ -35,7 +40,7 @@ const Payment = ({
         }catch(err) {
             console.log(err.message)
         }
-    }, [doctorSelected, user, symptomsSelected])
+    }, [doctorSelected, user, symptomsSelected, selectDay])
 
     const fecha = new Date(selectDay);
     const day = fecha.getDate();
@@ -74,7 +79,7 @@ const Payment = ({
                         </Box>
                         <Box>
                             <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Hora</Text>
-                            <Text fontSize={["sm", "lg"]} color="#205583">{new Date(selectDay).getHours()}</Text>
+                            <Text fontSize={["sm", "lg"]} color="#205583">{format(new Date(selectDay), 'HH:mm', { locale: es })}hs</Text>
                         </Box>
                     </Flex>
                 </Box>
@@ -123,7 +128,8 @@ Payment.propTypes = {
     doctorSelected: PropTypes.shape({
       value: PropTypes.string,
       label: PropTypes.string,
-      reservePrice: PropTypes.number
+      reservePrice: PropTypes.number,
+      reserveTime: PropTypes.number
     }).isRequired,
     patientSelected: PropTypes.shape({
         value: PropTypes.string,

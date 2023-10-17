@@ -20,7 +20,13 @@ const ListDoctors = ({ onNext, isActive }) => {
     
             if(doctors && doctors?.length > 0) {
               for(let i = 0; i < doctors.length; i++) {
-                auxDoctors.push({ label: doctors[i].name, value: doctors[i].email, picture: doctors[i].picture, reservePrice: doctors[i].reservePrice })
+                auxDoctors.push({ 
+                  label: doctors[i].name,
+                  value: doctors[i].email,
+                  picture: doctors[i].picture,
+                  reservePrice: doctors[i].reservePrice,
+                  reserveTime: doctors[i].reserveTime
+                })
               }
               setDoctors(auxDoctors)
             }

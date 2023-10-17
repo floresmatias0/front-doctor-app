@@ -26,29 +26,32 @@ import "../styles/fcalendar.css";
 const ListCalendar = ({ doctorSelected, onNext, isActive }) => {
   const currentDate = new Date();
   const [currentDateState, setCurrentDateState] = useState(currentDate)
-  // console.log("🚀 ~ file: list-calendar.jsx:29 ~ ListCalendar ~ currentDateState:", currentDateState)
+
   const daysInMonth = getDaysInMonth(currentDateState)
   const [selectedDoc, setSelectedDoc] = useState(null)
   const [calendarEvents, setCalendarEvents] = useState(null)
   const [daySelected, setDaySelected] = useState("")
-  const [horaSelected, setHoraSelected] = useState(false)
+  const [hsSelected, setHsSelected] = useState(false)
   const [loadingCalendar, setLoadingCalendar] = useState(true)
   const [mapEvents, setMapEvents] = useState([])
 
   const fetchDataCalendar = useCallback(async () => {
-    setLoadingCalendar(true);
-    setHoraSelected(false)
+    setLoadingCalendar(true)
+    setHsSelected(false)
+
     try {
       
-        const { data } = await instance.get(`/calendars?email=${doctorSelected?.value}`);
+        const { data } = await instance.get(`/calendars?email=${doctorSelected?.value}`)
     
         setCalendarEvents(data?.data?.items)
         let filters = `{ "email": "${doctorSelected?.value}" }`
-        const doctor = await instance.get(`/users?filters=${filters}`);
-        setSelectedDoc(doctor?.data?.data[0]);
-        setLoadingCalendar(false);
+        const doctor = await instance.get(`/users?filters=${filters}`)
+
+        setSelectedDoc(doctor?.data?.data[0])
+        setLoadingCalendar(false)
+
       }catch(err) {
-        setLoadingCalendar(false);
+        setLoadingCalendar(false)
         throw new Error('Something went wrong to search calendar doctor')
       }
   }, [doctorSelected])
@@ -63,7 +66,7 @@ const ListCalendar = ({ doctorSelected, onNext, isActive }) => {
     }
     
     if(doctorSelected && isActive) {
-        fetchDataCalendars();
+        fetchDataCalendars()
     }
   }, [doctorSelected, isActive, fetchDataCalendar])
 
@@ -91,14 +94,15 @@ const ListCalendar = ({ doctorSelected, onNext, isActive }) => {
 
       const dayName = format(dayDate, "EEEE", { locale: es }).toLowerCase(); // Obtiene el nombre del día en minúsculas
       const isWeekend = dayName === "sábado" || dayName === "domingo"; // Verifica si es fin de semana
+      const beforeToday = dayDate < new Date() ; // Verifica si es menor al dia actual
       
       // Agregar la clase "empty-day" si es fin de semana
-      const dayClass = isWeekend ? "empty-day" :  "day";
+      const dayClass = isWeekend || beforeToday ? "empty-day" :  "day";
 
       const formattedDay = day.toString().padStart(2, '0'); // Agregar el cero delante si es necesario
   
       days.push(
-        <Box className={dayClass} onClick={isWeekend ? null : () => setDaySelected(dayDate)} key={day}>
+        <Box className={dayClass} onClick={isWeekend || beforeToday ? null : () => setDaySelected(dayDate)} key={day}>
           <Text fontSize={["xs", "sm"]} color="#205583" textTransform="uppercase" wordBreak="break-word">{dayName}</Text>
           <Text fontSize={["xl", "2xl", "3xl"]} color="#205583" fontWeight="bold" lineHeight="normal">{formattedDay}</Text>
         </Box>
@@ -106,69 +110,79 @@ const ListCalendar = ({ doctorSelected, onNext, isActive }) => {
     }
   
     return days;
-  };
+  }
   
   const goToPrevMonth = () => {
     const newDate = subMonths(currentDateState, 1);
     if (!isBefore(newDate, currentDate) || isSameMonth(newDate, currentDate)) {
       setCurrentDateState(newDate);
     }
-  };
+  }
 
   const goToNextMonth = () => {
     const newDate = addMonths(currentDateState, 1);
     if (!isBefore(newDate, currentDate) || isSameMonth(newDate, currentDate)) {
       setCurrentDateState(newDate);
     }
-  };
-
+  }
 
   useEffect(() => {
-    const eventDivs = [];
-    const startTime = setHours(currentDateState, 9); // 10 a.m.
-    const endTime = setHours(currentDateState, 18); // 6 p.m.
-    const mapDocEvents = calendarEvents?.map(event => event?.start?.dateTime && format(new Date(event?.start?.dateTime), 'HH:mm',  { locale: es }))
-    // console.log("🚀 ~ file: list-calendar.jsx:127 ~ useEffect ~ mapDocEvents:", mapDocEvents)
-    let currentTime = startOfDay(currentDateState);
-    
-    while (currentTime < endTime) {
-      const eventStartTime = currentTime;
-      const eventEndTime = addMinutes(currentTime, selectedDoc?.reserveTime);
-      let emptyEvent = false; // calcular eventos vacios
-      let hr = format(eventStartTime, 'HH:mm',  { locale: es })
-      let fecha1 = format(new Date(horaSelected), 'HH:mm',  { locale: es });
-      // console.log("🚀 ~ file: list-calendar.jsx:137 ~ useEffect ~ fecha1:", fecha1)
-      let fecha2 = format(new Date(eventStartTime), 'HH:mm',  { locale: es });
-      // console.log("🚀 ~ file: list-calendar.jsx:139 ~ useEffect ~ fecha2:", fecha2)
-      // Comprobar si el evento está dentro del rango de tiempo deseado (10 a.m. - 6 p.m.)
-      if (eventStartTime >= startTime && eventEndTime <= endTime) {
-        eventDivs.push(
-          <Box px={4} py={1} onClick={() => setHoraSelected(eventStartTime)} className={mapDocEvents?.includes(hr) ?  'highlighted-event' :  fecha1 === fecha2 ? 'event-active' : "event"} key={eventStartTime.toISOString()}>
-            <Text lineHeight="normal">{format(eventStartTime, 'HH:mm')}</Text>
-            {/* Puedes agregar más detalles del evento aquí si es necesario */}
-          </Box>
-        );
-      }
+    if (daySelected) {
+      const eventDivs = [];
+      const startTime = setHours(daySelected, 9); // 10 a.m.
+      const endTime = setHours(daySelected, 18); // 6 p.m.
+  
+      let currentTime = startOfDay(daySelected);
+  
+      while (currentTime < endTime) {
+        const eventStartTime = currentTime;
+        const eventEndTime = addMinutes(currentTime, selectedDoc?.reserveTime);
+  
+        let emptyEvent = true; // Suponemos que inicialmente el evento está vacío y disponible
+  
+        // Verificar si hay un evento en el rango de tiempo actual
+        const isEventAvailable = calendarEvents?.some(event => {
+          const eventStartDate = new Date(event?.start?.dateTime);
+          const eventEndDate = new Date(event?.end?.dateTime);
+          return (
+            eventStartDate <= eventStartTime && eventEndDate >= eventEndTime
+          );
+        });
+  
+        if (isEventAvailable) {
+          emptyEvent = false; // Si hay un evento, marcarlo como no disponible
+        }
+  
+        if (eventStartTime >= startTime && eventEndTime <= endTime) {
 
-    
-      if (emptyEvent) {
-        eventDivs.push(
-          <div className="empty-event" key={eventStartTime.toISOString()}>
-            {format(eventStartTime, 'HH:mm',  { locale: es })}
-          </div>
-        );
+          eventDivs.push(
+            <Box
+              px={4}
+              py={1}
+              onClick={() => {
+                if (emptyEvent) {
+                  setHsSelected(eventStartTime);
+                }
+              }}
+              className={emptyEvent ? `event ${new Date(hsSelected) === new Date(eventStartTime) && 'selected-event'}` : 'highlighted-event'}
+              key={eventStartTime.toISOString()}
+            >
+              <Text lineHeight="normal">{format(eventStartTime, 'HH:mm')}</Text>
+              {/* Puedes agregar más detalles del evento aquí si es necesario */}
+            </Box>
+          );
+        }
+  
+        currentTime = addMinutes(currentTime, 15);
       }
   
-      currentTime = addMinutes(currentTime, 15);
+      setMapEvents(eventDivs);
     }
-    // console.log(eventDivs)
-    setMapEvents(eventDivs);
-  }, [currentDateState, selectedDoc?.reserveTime, calendarEvents, horaSelected])
-
+  }, [daySelected, currentDateState, hsSelected, selectedDoc?.reserveTime, calendarEvents]);
 
   const handleNextClick = () => {
-    if (horaSelected) {
-      onNext(horaSelected);
+    if (hsSelected) {
+      onNext(hsSelected);
     }
   }
 
@@ -203,16 +217,21 @@ const ListCalendar = ({ doctorSelected, onNext, isActive }) => {
         )}
       </Box>
       <Flex flex={1} justifyContent="center" alignItems="flex-end" my={[2, 4]}>
-        {horaSelected && (
-          <Button
-            bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["xs", "sm"]}
-            onClick={handleNextClick}
-          >
-            SIGUIENTE
-          </Button>
+        {hsSelected && (
+          <Box>
+            <Box my={2}>
+              <Text textAlign="center" color="#205583">Dia y horario seleccionado:</Text>
+              <Text textAlign="center" color="#205583">{`${format(new Date(hsSelected), "EEEE", { locale: es }).toLowerCase()} ${new Date(hsSelected).getDate()} a las ${format(new Date(hsSelected), 'HH:mm', { locale: es })}hs`}</Text>
+            </Box>
+            <Button
+              bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["xs", "sm"]}
+              onClick={handleNextClick}
+            >
+              SIGUIENTE
+            </Button>
+          </Box>
         )}
       </Flex>
-      {/* <pre>{JSON.stringify(calendarEvents, null, 2)}</pre> */}
     </Flex>
   );
 };
