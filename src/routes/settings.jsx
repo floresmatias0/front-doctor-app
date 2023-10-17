@@ -1,13 +1,16 @@
-import { Box, Button, Flex, FormControl, Input, Text, useDisclosure, useToast } from "@chakra-ui/react";
-import { AppContext } from "../components/context";
-import { useContext, useState } from "react";
-import { Field, Form, Formik } from "formik";
-import { FaPenAlt } from "react-icons/fa";
-import { AiOutlineCloseCircle, AiOutlinePlus } from "react-icons/ai";
-import { instance } from "../utils/axios";
-import CardCustom from "../components/card-custom";
-import { AlertModal } from "../components/alerts";
-import FormPatient from "../components/form-patient";
+import { Box, Button, Flex, FormControl, Input, Text, useDisclosure, useToast } from "@chakra-ui/react"
+import { AppContext } from "../components/context"
+import { useCallback, useContext, useEffect, useState } from "react"
+import { Field, Form, Formik } from "formik"
+import { FaPenAlt } from "react-icons/fa"
+import { AiOutlineCloseCircle, AiOutlinePlus } from "react-icons/ai"
+import { instance } from "../utils/axios"
+import CardCustom from "../components/card-custom"
+import { AlertModal } from "../components/alerts"
+import { useSearchParams } from "react-router-dom"
+import FormPatient from "../components/form-patient"
+import axios from 'axios'
+import { SiMercadopago } from "react-icons/si"
 
 const initialState = {
     name: false,
@@ -18,6 +21,10 @@ const initialState = {
 
 export default function Settings() {
     const toast = useToast()
+    const [searchParams] = useSearchParams();
+  
+    const currentParams = Object.fromEntries([...searchParams]);
+    const { code } = currentParams;
     const { user, setUser, patients, createPatient, updatePatient } = useContext(AppContext)
     const [isEditable, setIsEditable] = useState(initialState)
     const [patientSelected, setPatientSelected] = useState(null)
@@ -77,6 +84,60 @@ export default function Settings() {
         setPatientSelected(transformPatient)
         onOpenSecond()
     }
+
+    const connectMercadopago = useCallback(async () => {
+        //TO REFRESH TOKEN, BUT THE TOKEN LASTS 180 DAYS
+        // const body = JSON.stringify({
+        //   "client_secret": import.meta.env.VITE_MERCADOPAGO_CLIENT_SECRET,
+        //   "client_id": import.meta.env.VITE_MERCADOPAGO_CLIENT_ID,
+        //   "grant_type": "refresh_token",
+        //   "code": code,
+        //   "redirect_uri": `${import.meta.env.VITE_MERCADOPAGO_REDIRECT_URL}`,
+        //   "refresh_token": user?.mercadopago_access?.refresh_token
+        // });
+    
+        try {
+          const body = JSON.stringify({
+            "client_secret": import.meta.env.VITE_MERCADOPAGO_CLIENT_SECRET,
+            "client_id": import.meta.env.VITE_MERCADOPAGO_CLIENT_ID,
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": `${import.meta.env.VITE_MERCADOPAGO_REDIRECT_URL}`
+          });
+    
+          const response = await axios.post(import.meta.env.VITE_MERCADOPAGO_OAUTH_TOKEN_URL, body)
+    
+          await instance.post('/users/mercadopago', {
+            user_id: user?._id,
+            mercadopago_access: response.data
+          })
+    
+          return response.data;
+        }catch(err) {
+          console.log(err.message)
+          throw new Error(err.message)
+        }
+    }, [code, user])
+
+    const handleLoginMp = () => {
+        const randomId = Math.floor(Math.random() * Date.now())
+        window.open(`${import.meta.env.VITE_MERCADOPAGO_OAUTH_URL}?client_id=${import.meta.env.VITE_MERCADOPAGO_CLIENT_ID}&response_type=code&platform_id=mp&state=${randomId}&redirect_uri=${import.meta.env.VITE_MERCADOPAGO_REDIRECT_URL}`, "_self");
+    }
+
+    useEffect(() => {
+        if (code) {
+          const fetchDataMP = async () => {
+            try {
+              await connectMercadopago();
+            } catch (err) {
+              console.log(err);
+            }
+          };
+    
+          fetchDataMP();
+        }
+      
+    }, [code, connectMercadopago])
 
     return (
         <Flex w="100%" h="100%" px={[0, 2]} flexDirection="column">
@@ -249,6 +310,32 @@ export default function Settings() {
                         >
                             Crear nuevo paciente
                         </Button>
+                    </Box>
+                    <Box>
+                        {user?.role === "DOCTOR" && user?.mercadopago_access?.access_token && (
+                            <Button
+                                bg="#205583"
+                                size={["xs", "sm"]}
+                                color="#FFFFFF"
+                                w={["220px","300px"]}
+                                leftIcon={<SiMercadopago style={{ fontSize: "24px" }}/>}
+                                isDisabled
+                            >
+                                Conectado
+                            </Button>
+                        )}
+                        {user?.role === "DOCTOR" && !user?.mercadopago_access?.access_token && (
+                            <Button
+                                bg="#205583"
+                                leftIcon={<SiMercadopago style={{ fontSize: "24px" }}/>}
+                                onClick={handleLoginMp}
+                                color="#FFFFFF"
+                                w={["220px","300px"]}
+                                size={["xs", "sm"]}
+                            >
+                                Vincular
+                            </Button>
+                        )}
                     </Box>
                 </Box>
             </Box>
