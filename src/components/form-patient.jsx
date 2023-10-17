@@ -3,7 +3,7 @@ import { FormControl, FormErrorMessage, FormLabel, Input, Button, Select, Grid, 
 import { Formik, Form, Field } from 'formik';
 import '../styles/form-patient.css'
 
-const FormPatient = ({handleSubmit}) => {
+const FormPatient = ({handleSubmit, initialValues}) => {
 
     const optionsGenres = [
         { value: 'male', label: 'Masculino' },
@@ -48,17 +48,18 @@ const FormPatient = ({handleSubmit}) => {
     return (
         <Formik
           initialValues={{ 
-            name: '',
-            lastName: '',
-            birthdate: '',
-            picture: '',
-            genre: '',
-            phone: '',
-            email: '',
-            history: '',
-            dni: '',
-            socialWork: '',
-            proceedings: ''
+            _id: initialValues?._id || '',
+            name: initialValues?.name || '',
+            lastName: initialValues?.lastName || '',
+            birthdate: initialValues?.birthdate || '',
+            picture: initialValues?.picture || '',
+            genre: initialValues?.genre || '',
+            phone: initialValues?.phone || '',
+            email: initialValues?.email || '',
+            history: initialValues?.history || '',
+            dni: initialValues?.dni || '',
+            socialWork: initialValues?.socialWork || '',
+            proceedings: initialValues?.proceedings || ''
          }}
           onSubmit={handleSubmit}
           validate={validate}
@@ -179,7 +180,21 @@ const FormPatient = ({handleSubmit}) => {
 }
 
 FormPatient.propTypes = {
-  handleSubmit: PropTypes.func
+  handleSubmit: PropTypes.func.isRequired,
+  initialValues: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    lastName: PropTypes.string,
+    birthdate: PropTypes.string,
+    picture: PropTypes.string,
+    genre: PropTypes.string,
+    phone: PropTypes.string,
+    email: PropTypes.string,
+    history: PropTypes.string,
+    dni: PropTypes.string,
+    socialWork: PropTypes.string,
+    proceedings: PropTypes.string
+  })
 }
 
 export default FormPatient

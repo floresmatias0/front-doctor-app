@@ -3,7 +3,7 @@
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr); /* 7 columnas para los días de la semana */
-    gap: 16px; /* Espacio entre los cuadrados de los días */
+    gap: 8px; /* Espacio entre los cuadrados de los días */
 }
 
 .calendar__header{
@@ -22,17 +22,14 @@
 
 .day {
     margin: 0 auto;
-    width: 140px; /* Ancho del cuadrado del día */
+    min-width: 140px; /* Ancho del cuadrado del día */
     min-height: 60px; /* Alto del cuadrado del día */
     display: flex;
     background: #FCFEFF;
-    gap: 2;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     border: 1px solid #E5F2FA;
-    padding-top: 8px; 
-    padding-bottom: 8px; 
     cursor: pointer;
     border-radius: 6px;
 }
@@ -60,24 +57,16 @@
 
 .empty-day{
     margin: 0 auto;
-    width: 140px; /* Ancho del cuadrado del día */
+    min-width: 140px; /* Ancho del cuadrado del día */
     min-height: 60px; /* Alto del cuadrado del día */
     display: flex;
     background: #FCFEFF;
-    gap: 2;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     border: 1px solid #E5F2FA;
-    padding-top: 8px; 
-    padding-bottom: 8px; 
     opacity: 0.50;
-    cursor: pointer;
     border-radius: 6px;
-}
-.empty-day:hover{
-    background: #20558347;
-    border: 1px solid #205583;
 }
 
 .event-container {
@@ -89,21 +78,15 @@
 }
 
 .event {
-    margin-top: .5em;
     font-weight: 400;
-    padding: .2em .5em;
     background-color: #ffffff;
-    margin-right: 10px; /* Espacio entre eventos */
     border: 1px solid #cccccc4f;
     border-radius: 4px;
     color: #205583;
     cursor: pointer;
 }
 .event-active{
-    margin-top: .5em;
     font-weight: 400;
-    padding: .2em .5em;
-    margin-right: 10px; /* Espacio entre eventos */
     background: #20558347;
     border: 1px solid #205583;
     border-radius: 4px;
@@ -111,10 +94,7 @@
     cursor: pointer;
 }
 .event:hover {
-    margin-top: .5em;
     font-weight: 400;
-    padding: .2em .5em;
-    margin-right: 10px; /* Espacio entre eventos */
     background: #20558347;
     border: 1px solid #205583;
     border-radius: 4px;
@@ -122,22 +102,16 @@
     cursor: pointer;
 }
 .empty-event {
-    margin-top: .5em;
     font-weight: 400;
-    padding: .2em .5em;
     background-color: #ffffff;
-    margin-right: 10px; /* Espacio entre eventos */
     border: 1px solid #cccccc4f;
     border-radius: 4px;
     color: #cccccc;
     opacity: .8;
 }
 .highlighted-event{
-    margin-top: .5em;
     font-weight: 400;
-    padding: .2em .5em;
     background-color: #ffffff;
-    margin-right: 10px; /* Espacio entre eventos */
     border: 1px solid #cccccc4f;
     border-radius: 4px;
     color: #cccccc;

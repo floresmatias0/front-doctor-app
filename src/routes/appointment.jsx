@@ -1,5 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { instance } from '../utils/axios';
+import { useContext, useEffect, useState } from 'react';
 import { Button, Flex, Select, Text, useDisclosure, useToast } from '@chakra-ui/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import TabsConsult from '../components/tabs';
@@ -19,8 +18,7 @@ export default function Appointment() {
   const [searchParams] = useSearchParams()
   const paymentStatus = searchParams.get("status");
 
-  const { user } = useContext(AppContext)
-  const [patients, setPatients] = useState([])
+  const { user, patients, createPatient } = useContext(AppContext)
 
   const initialStateTabs = {
     symptoms: false,
@@ -48,56 +46,6 @@ export default function Appointment() {
   const handleSelectPatient = (patient) => {
     setPatientSelected(patient)
     isOpenFirst && onCloseFirst()
-  }
-
-  const fetchPatients = useCallback(async () => {
-    try {
-      let filters = `{ "userId": "${user._id}" }`
-      const { data } = await instance.get(`/patients?filters=${filters}`);
-      const response = data;
-
-      if(response.success) {
-        let patients = response.data;
-        let transformPatients = patients.map(patient => ({ value: patient.dni, label: patient.name }))
-
-        return setPatients(transformPatients)
-      }
-
-      setPatients([])
-    }catch(err) {
-      console.log('fetch patients', err.message)
-      throw new Error('Something went wrong to search patients')
-    }
-  }, [user])
-
-  const createPatient = async(values, actions) => {
-    try {
-      await instance.post('/patients', { ...values, userId: user?._id })
-      actions.setSubmitting(false)
-      actions.resetForm()
-
-      toast({
-        title: "Paciente creado",
-        description: "Haz agregado un nuevo paciente a tu cuenta",
-        position: "top-right",
-        isClosable: true,
-        duration: 6000,
-        status: "success"
-      });
-
-      onCloseSecond()
-      await fetchPatients();
-    }catch(err) {
-      console.log(err.message)
-      toast({
-        title: "Error inesperado",
-        description: "Hubo un error al intentar agregar un nuevo paciente",
-        position: "top-right",
-        isClosable: true,
-        duration: 6000,
-        status: "error"
-      });
-    }
   }
 
   const handleNextSymptoms = (values) => {
@@ -163,18 +111,10 @@ export default function Appointment() {
   }, [paymentStatus, navigate, toast]);
 
   useEffect(() => {
-    const fetchDataPatients = async () => {
-      try {
-        await fetchPatients()
-      }catch(err){
-        console.log(err)
-      }
-    }
-    
     if(!paymentStatus && user && activeTab === 0) {
-      fetchDataPatients()
       onOpenFirst()
     }
+
     if(paymentStatus && paymentStatus === "approved"){
       setActiveTab(4)
       setDisableTabs((prevDisableTabs) => ({
@@ -183,7 +123,7 @@ export default function Appointment() {
         reserve: false
       }))
     }
-  }, [user, fetchPatients, activeTab, onOpenFirst, paymentStatus]);
+  }, [user, activeTab, onOpenFirst, paymentStatus]);
  
   const tabsHeading = [
     { title: "Síntomas", isDisabled: disableTabs.symptoms },
@@ -258,7 +198,7 @@ export default function Appointment() {
         onClose={() => onCloseSecond()}
         isOpen={isOpenSecond}
         alertHeader="Nuevo paciente"
-        alertBody={<FormPatient handleSubmit={createPatient}/>}
+        alertBody={<FormPatient handleSubmit={(values) => createPatient(values, onCloseSecond)}/>}
         isLoading={false}
       />
     </Flex>
