@@ -105,7 +105,15 @@ export default function Settings() {
             "redirect_uri": `${import.meta.env.VITE_MERCADOPAGO_REDIRECT_URL}`
           });
     
-          const response = await axios.post(import.meta.env.VITE_MERCADOPAGO_OAUTH_TOKEN_URL, body)
+          const options = {
+            "method": "POST",
+            "url": import.meta.env.VITE_MERCADOPAGO_OAUTH_TOKEN_URL,
+            "headers": {
+                "Content-type": "application/json"
+            },
+            "data": body
+          }
+          const response = await axios.request(options)
     
           await instance.post('/users/mercadopago', {
             user_id: user?._id,
