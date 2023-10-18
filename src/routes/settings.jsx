@@ -85,7 +85,7 @@ export default function Settings() {
         onOpenSecond()
     }
 
-    const connectMercadopago = useCallback(async (code) => {
+    const connectMercadopago = useCallback(async () => {
         //TO REFRESH TOKEN, BUT THE TOKEN LASTS 180 DAYS
         // const body = JSON.stringify({
         //   "client_secret": import.meta.env.VITE_MERCADOPAGO_CLIENT_SECRET,
@@ -114,7 +114,7 @@ export default function Settings() {
     
           return response.data;
         }catch(err) {
-          console.log(err.message)
+          console.log("connectMercadopago", err.message)
           throw new Error(err.message)
         }
     }, [code, user])
@@ -126,12 +126,11 @@ export default function Settings() {
 
     useEffect(() => {
         if (code) {
-            console.log({code});
             const fetchDataMP = async () => {
                 try {
-                await connectMercadopago(code);
+                    await connectMercadopago();
                 } catch (err) {
-                console.log(err);
+                    console.log("fetchDataMP", err.message);
                 }
             };
     
