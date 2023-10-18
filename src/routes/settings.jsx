@@ -107,7 +107,7 @@ export default function Settings() {
     
           const options = {
             "method": "POST",
-            "url": import.meta.env.VITE_MERCADOPAGO_OAUTH_URL,
+            "url": import.meta.env.VITE_MERCADOPAGO_OAUTH_TOKEN,
             "headers": {
                 "Content-type": "application/json"
             },
