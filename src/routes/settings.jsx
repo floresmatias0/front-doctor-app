@@ -109,7 +109,8 @@ export default function Settings() {
             "method": "POST",
             "url": import.meta.env.VITE_MERCADOPAGO_OAUTH_TOKEN,
             "headers": {
-                "Content-type": "application/json"
+                "Content-type": "application/json",
+                "cache-control": "no-cache"
             },
             "data": body
           }
