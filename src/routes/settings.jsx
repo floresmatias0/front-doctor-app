@@ -9,7 +9,6 @@ import CardCustom from "../components/card-custom"
 import { AlertModal } from "../components/alerts"
 import { useSearchParams } from "react-router-dom"
 import FormPatient from "../components/form-patient"
-import axios from 'axios'
 import { SiMercadopago } from "react-icons/si"
 
 const initialState = {
@@ -97,30 +96,24 @@ export default function Settings() {
         // });
     
         try {
-          const body = JSON.stringify({
-            "client_secret": import.meta.env.VITE_MERCADOPAGO_CLIENT_SECRET,
-            "client_id": import.meta.env.VITE_MERCADOPAGO_CLIENT_ID,
-            "grant_type": "authorization_code",
+          const body = {
             "code": code,
-            "redirect_uri": `${import.meta.env.VITE_MERCADOPAGO_REDIRECT_URL}`
-          });
+            "user_id": user._id
+          };
     
-          const options = {
-            "method": "POST",
-            "url": import.meta.env.VITE_MERCADOPAGO_OAUTH_TOKEN,
-            "headers": {
-                "Content-type": "application/json",
-                "cache-control": "no-cache",
-                "mode": "cors"
-            },
-            "data": body
-          }
-          const response = await axios.request(options)
+        //   const options = {
+        //     "method": "POST",
+        //     "url": import.meta.env.VITE_MERCADOPAGO_OAUTH_TOKEN,
+        //     "headers": {
+        //         "Content-type": "application/json",
+        //         "cache-control": "no-cache",
+        //         "mode": "cors"
+        //     },
+        //     "data": body
+        //   }
+        //   const response = await axios.request(options)
     
-          await instance.post('/users/mercadopago', {
-            user_id: user?._id,
-            mercadopago_access: response.data
-          })
+          const response = await instance.post('/users/mercadopago', body)
     
           return response.data;
         }catch(err) {
