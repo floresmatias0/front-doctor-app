@@ -93,13 +93,17 @@ export default function Settings() {
     
             await instance.post('/users/mercadopago', body)
     
-            return toast({
+            toast({
                 title: 'Mercado pago vinculado con exito',
                 position: 'top-right',
                 isClosable: true,
                 duration: 6000,
                 status: 'success'
             })
+
+            setTimeout(() => {
+                window.location.reload()
+            }, 2000)
         }catch(err) {
             toast({
                 title: 'Error en la respuesta de api mercadopago',
@@ -132,7 +136,6 @@ export default function Settings() {
       
     }, [code, connectMercadopago])
 
-    console.log({user})
     return (
         <Flex w="100%" h="100%" px={[0, 2]} flexDirection="column">
             <Flex w="100%" justifyContent="space-between" alignItems="center" flexDirection={["column", "row"]} my={2}>
