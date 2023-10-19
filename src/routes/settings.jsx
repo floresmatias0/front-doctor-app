@@ -85,42 +85,25 @@ export default function Settings() {
     }
 
     const connectMercadopago = useCallback(async () => {
-        //TO REFRESH TOKEN, BUT THE TOKEN LASTS 180 DAYS
-        // const body = JSON.stringify({
-        //   "client_secret": import.meta.env.VITE_MERCADOPAGO_CLIENT_SECRET,
-        //   "client_id": import.meta.env.VITE_MERCADOPAGO_CLIENT_ID,
-        //   "grant_type": "refresh_token",
-        //   "code": code,
-        //   "redirect_uri": `${import.meta.env.VITE_MERCADOPAGO_REDIRECT_URL}`,
-        //   "refresh_token": user?.mercadopago_access?.refresh_token
-        // });
-    
         try {
-          const body = {
-            "code": code,
-            "user_id": user._id
-          };
+            const body = {
+                "code": code,
+                "user_id": user._id
+            };
     
-        //   const options = {
-        //     "method": "POST",
-        //     "url": import.meta.env.VITE_MERCADOPAGO_OAUTH_TOKEN,
-        //     "headers": {
-        //         "Content-type": "application/json",
-        //         "cache-control": "no-cache",
-        //         "mode": "cors"
-        //     },
-        //     "data": body
-        //   }
-        //   const response = await axios.request(options)
+            await instance.post('/users/mercadopago', body)
     
-          const response = await instance.post('/users/mercadopago', body)
-    
-          return response.data;
+            return toast({
+                title: 'Mercado pago vinculado con exito',
+                position: 'top-right',
+                isClosable: true,
+                duration: 6000,
+                status: 'success'
+            })
         }catch(err) {
-          console.log("connectMercadopago", err.message)
-          throw new Error(err.message)
+            throw new Error(err.message)
         }
-    }, [code, user])
+    }, [code, user, toast])
 
     const handleLoginMp = () => {
         const randomId = Math.floor(Math.random() * Date.now())
@@ -142,6 +125,7 @@ export default function Settings() {
       
     }, [code, connectMercadopago])
 
+    console.log({user})
     return (
         <Flex w="100%" h="100%" px={[0, 2]} flexDirection="column">
             <Flex w="100%" justifyContent="space-between" alignItems="center" flexDirection={["column", "row"]} my={2}>
