@@ -101,6 +101,13 @@ export default function Settings() {
                 status: 'success'
             })
         }catch(err) {
+            toast({
+                title: 'Error en la respuesta de api mercadopago',
+                position: 'top-right',
+                isClosable: true,
+                duration: 6000,
+                status: 'error'
+            })
             throw new Error(err.message)
         }
     }, [code, user, toast])
