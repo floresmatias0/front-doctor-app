@@ -1,23 +1,18 @@
 import PropTypes from 'prop-types'
-import { Box, Button, Center, Flex, Spinner, Text } from "@chakra-ui/react";
-import { useCallback, useEffect, useState } from 'react';
-import { instance } from '../utils/axios';
+import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { useNavigate, useSearchParams } from "react-router-dom"
 
-const Reserve = ({
-    doctorSelected,
-    user,
-    patientSelected,
-    selectDay,
-    paymentStatus,
-    onNext,
-    isActive
-}) => {
+const Reserve = () => {
+    const navigate = useNavigate()
+    const [searchParams] = useSearchParams();
 
-    const handleNextClick = () => {
-        if (paymentStatus) {
-            onNext();
-        }
-    }
+    const currentParams = Object.fromEntries([...searchParams]);
+    const { doctor, patient, startDateTime, endDateTime } = currentParams;
+
+    const fechaStart = new Date(startDateTime);
+    const day = fechaStart.getDate();
+    const month = fechaStart.getMonth() + 1;
+    const year = fechaStart.getFullYear();
 
     return (
         <Flex h="100%" flexDirection="column">
@@ -25,13 +20,13 @@ const Reserve = ({
                 <Box w={["100%", "100%", "100%", "50%"]} px={[4, 4, 4, 0]}>
                     <Text textAlign={["center", "left"]} fontSize={["md", "lg"]} color="#205583" my={2}>
                         Detalles del turno médico de
-                        {patientSelected?.label}
+                        {patient}
                     </Text>
                     <Flex w="100%" justifyContent="space-between" alignItems="center" my={[2, 8]} flexWrap={["wrap"]} gap={[3, 0]}>
                         <Box>
                             <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Médico</Text>
                             <Text fontSize={["sm", "lg"]} color="#205583">
-                                {/* {doctorSelected?.label} */}
+                                {doctor}
                             </Text>
                         </Box>
                         <Box>
@@ -41,13 +36,13 @@ const Reserve = ({
                         <Box>
                             <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Día</Text>
                             <Text fontSize={["sm", "lg"]} color="#205583">
-                                {/* {`${day}/${month}/${year}`} */}
+                                {`${day}/${month}/${year}`}
                             </Text>
                         </Box>
                         <Box>
                             <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Hora</Text>
                             <Text fontSize={["sm", "lg"]} color="#205583">
-                                {/* {new Date(selectDay).getHours()} */}
+                                {new Date(endDateTime).getHours()}
                             </Text>
                         </Box>
                     </Flex>
@@ -70,7 +65,7 @@ const Reserve = ({
                     </Text>
                 </Box>
                 <Flex gap={2} my={[2, 6]} flexDirection={["column", "row"]}>
-                    <Button bg="#FFFFFF" color="#205583" w={["220px","300px"]} size={["sm", "md"]} isDisabled>VOLVER AL INICIO</Button>
+                    <Button bg="#FFFFFF" color="#205583" w={["220px","300px"]} size={["sm", "md"]} onClick={() => navigate('/')}>VOLVER AL INICIO</Button>
                     <Button bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["sm", "md"]} isDisabled>IR A MIS TURNOS</Button>
                 </Flex>
             </Flex>
