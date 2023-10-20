@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types'
-import { Box, Button, Center, Flex, Spinner, Text } from "@chakra-ui/react";
-import { Wallet, initMercadoPago } from "@mercadopago/sdk-react";
-import { useCallback, useEffect, useState } from 'react';
-import { instance } from '../utils/axios';
-import { es } from 'date-fns/locale';
-import { format } from "date-fns";
+import { Box, Button, Center, Flex, Spinner, Text } from "@chakra-ui/react"
+import { useCallback, useEffect, useState } from 'react'
+import { instance } from '../utils/axios'
+import { es } from 'date-fns/locale'
+import { format } from "date-fns"
 
 const Payment = ({
     symptomsSelected,
@@ -15,9 +14,7 @@ const Payment = ({
     isActive
 }) => {
     const [isLoading, setIsLoading] = useState(false)
-    const [preferenceId, setPreferenceId] = useState(null)
-
-    initMercadoPago(import.meta.env.VITE_MERCADOPAGO_PUBLIC_KEY, { locale: 'es-AR' });
+    const [urlMercadopago, setUrlMercadopago] = useState(null)
 
     const confirmReserve = useCallback(async () => {
         try {
@@ -28,20 +25,19 @@ const Payment = ({
             const payment = await instance.post('/payments/create', {
                 user_email: doctorSelected.value,
                 patient_email: user?.email,
-                startDateTime: { dateTime: `${format(selectDay, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`, timeZone: "America/Argentina/Buenos_Aires" },
-                endDateTime: { dateTime: `${format(endDateTime, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`, timeZone: "America/Argentina/Buenos_Aires" },
+                startDateTime: `${format(selectDay, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`,
+                endDateTime: `${format(endDateTime, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`,
                 unit_price: doctorSelected.reservePrice,
                 symptoms: symptomsSelected
             });
-            const { id } = payment.data.data;
-
-            setPreferenceId(id)
+            const { init_point } = payment.data.data;
+            setUrlMercadopago(init_point)
             setIsLoading(false)
         }catch(err) {
             console.log(err.message)
         }
     }, [doctorSelected, user, symptomsSelected, selectDay])
-
+    
     const fecha = new Date(selectDay);
     const day = fecha.getDate();
     const month = fecha.getMonth() + 1;
@@ -58,6 +54,8 @@ const Payment = ({
       
           if(isActive) fetchPaymentData();
     }, [confirmReserve, isActive])
+
+    const handleClick = () => window.location.replace(urlMercadopago)
 
     return (
         <Flex h="100%" flexDirection="column">
@@ -104,9 +102,14 @@ const Payment = ({
                                 />
                             </Center>
                         ) : (
-                            preferenceId && (
+                            urlMercadopago && (
                                 <Box w={["100%", "auto"]}>
-                                    <Wallet initialization={{ preferenceId }} style={{ minWidth: "100%" }}/>
+                                    <Button
+                                        bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["xs", "sm"]}
+                                        onClick={handleClick}
+                                    >
+                                        IR A MERCADOPAGO
+                                    </Button>
                                 </Box>
                             )
                         )}
