@@ -10,11 +10,10 @@ import {
 
 /* existing imports */
 import ErrorPage from "./components/error-page";
-import { LayoutWithNavbar, LayoutWithSidebar, ProtectedRoutes } from "./components/layouts";
+import { LayoutWithSidebar, ProtectedRoutes } from "./components/layouts";
 
 import Login from "./routes/login";
 import Verify from "./routes/verify";
-import Profile from "./routes/profile";
 import Home from "./routes/home";
 import Appointment from "./routes/appointment";
 import Settings from "./routes/settings";
@@ -60,11 +59,6 @@ const router = createBrowserRouter([
   {
     path: "admin",
     element: localStorage.getItem("user") ? <Navigate to="/" replace/> : <Login handleLogin={handleLoginAdmin}/>,
-  },
-  {
-    path: "/profile",
-    element: <ProtectedRoutes><LayoutWithNavbar><Profile /></LayoutWithNavbar></ProtectedRoutes>,
-    errorElement: <ErrorPage />,
   },
   {
     path: "/settings",

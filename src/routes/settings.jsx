@@ -127,7 +127,7 @@ export default function Settings() {
                 try {
                     await connectMercadopago();
                 } catch (err) {
-                    console.log("fetchDataMP", err.message);
+                    console.log("fetchDataMP ", err.message);
                 }
             };
     
