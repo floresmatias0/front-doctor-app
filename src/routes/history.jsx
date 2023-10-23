@@ -126,7 +126,7 @@ const History = () => {
                                     {x.organizer.email}
                                 </Box>
                                 <Box flex="1" display={["block", "flex"]} fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    {x?.name}
+                                    {x?.patient?.name} {x?.patient?.lastName}
                                 </Box>
                                 <Box flex="1" display={["block", "flex"]} fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
                                     {date}
