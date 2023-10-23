@@ -25,8 +25,7 @@ const Payment = ({
             const payment = await instance.post('/payments/create', {
                 user_email: doctorSelected.value,
                 tutor_email: user?.email,
-                patient_email: patientSelected?.email,
-                patient_name: patientSelected?.name,
+                patient: patientSelected?._id,
                 startDateTime: `${format(selectDay, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`,
                 endDateTime: `${format(endDateTime, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`,
                 unit_price: doctorSelected.reservePrice,
@@ -145,8 +144,7 @@ Payment.propTypes = {
     patientSelected: PropTypes.shape({
         value: PropTypes.string,
         label: PropTypes.string,
-        name: PropTypes.string,
-        email: PropTypes.string
+        _id: PropTypes.string
     }).isRequired,
     selectDay: PropTypes.instanceOf(Date).isRequired,
     user: PropTypes.shape(),
