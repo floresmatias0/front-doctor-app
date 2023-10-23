@@ -25,18 +25,25 @@ const Payment = ({
             const payment = await instance.post('/payments/create', {
                 user_email: doctorSelected.value,
                 patient_email: user?.email,
+                patient_name: patientSelected,
                 startDateTime: `${format(selectDay, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`,
                 endDateTime: `${format(endDateTime, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`,
                 unit_price: doctorSelected.reservePrice,
                 symptoms: symptomsSelected
             });
-            const { init_point } = payment.data.data;
+            const { init_point, sandbox_init_point } = payment.data.data;
+
+            if(import.meta.env.VITE_ENVIRONMENT === "localhost") {
+                setUrlMercadopago(sandbox_init_point)
+                return setIsLoading(false)
+            }
+
             setUrlMercadopago(init_point)
             setIsLoading(false)
         }catch(err) {
             console.log(err.message)
         }
-    }, [doctorSelected, user, symptomsSelected, selectDay])
+    }, [doctorSelected, user, symptomsSelected, selectDay, patientSelected])
     
     const fecha = new Date(selectDay);
     const day = fecha.getDate();
@@ -77,7 +84,7 @@ const Payment = ({
                         </Box>
                         <Box>
                             <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Hora</Text>
-                            <Text fontSize={["sm", "lg"]} color="#205583">{format(new Date(selectDay), 'HH:mm', { locale: es })}hs</Text>
+                            <Text fontSize={["sm", "lg"]} color="#205583">{selectDay && format(new Date(selectDay), 'HH:mm', { locale: es })}hs</Text>
                         </Box>
                     </Flex>
                 </Box>

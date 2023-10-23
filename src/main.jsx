@@ -20,6 +20,7 @@ import Appointment from "./routes/appointment";
 import Settings from "./routes/settings";
 import './styles/main.css';
 import DoctorContext from "./components/context";
+import History from "./routes/history";
 
 const colors = {
   brand: {
@@ -68,6 +69,11 @@ const router = createBrowserRouter([
   {
     path: "/settings",
     element: <LayoutWithSidebar><ProtectedRoutes><Settings /></ProtectedRoutes></LayoutWithSidebar>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/history",
+    element: <LayoutWithSidebar><ProtectedRoutes><History /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
 ]);

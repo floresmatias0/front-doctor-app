@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types'
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Text } from "@chakra-ui/react"
 import { useNavigate, useSearchParams } from "react-router-dom"
+import { es } from 'date-fns/locale'
+import { format } from "date-fns"
 
 const Reserve = () => {
     const navigate = useNavigate()
@@ -42,7 +44,7 @@ const Reserve = () => {
                         <Box>
                             <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Hora</Text>
                             <Text fontSize={["sm", "lg"]} color="#205583">
-                                {new Date(endDateTime).getHours()}
+                                {endDateTime && format(new Date(endDateTime), 'HH:mm', { locale: es })}hs
                             </Text>
                         </Box>
                     </Flex>
