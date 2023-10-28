@@ -20,6 +20,8 @@ import Settings from "./routes/settings";
 import './styles/main.css';
 import DoctorContext from "./components/context";
 import History from "./routes/history";
+import PrivacyPolicies from "./routes/privacy-policies";
+import TermsOfServices from "./routes/terms-of-services";
 
 const colors = {
   brand: {
@@ -43,12 +45,12 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/appointment",
+    path: "appointment",
     element: <LayoutWithSidebar><ProtectedRoutes><Appointment /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
   {
-    path: "/verify",
+    path: "verify",
     element: <Verify />,
     errorElement: <ErrorPage />
   },
@@ -61,14 +63,22 @@ const router = createBrowserRouter([
     element: localStorage.getItem("user") ? <Navigate to="/" replace/> : <Login handleLogin={handleLoginAdmin}/>,
   },
   {
-    path: "/settings",
+    path: "settings",
     element: <LayoutWithSidebar><ProtectedRoutes><Settings /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
   {
-    path: "/history",
+    path: "history",
     element: <LayoutWithSidebar><ProtectedRoutes><History /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
+  },
+  {
+    path: "privacy-policies",
+    element: <PrivacyPolicies />,
+  },
+  {
+    path: "terms-of-services",
+    element: <TermsOfServices />,
   },
 ]);
 
