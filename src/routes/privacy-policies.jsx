@@ -7,7 +7,7 @@ import {
 
 export default function PrivacyPolicies() {
   return (
-    <Flex bg="#FCFEFF">
+    <Flex bg="#E5F2FA">
       <Box h="100vh" w="full" flex={1} py={[4, 4, 4, 12]} mx={[4, 28]}>
         <Box bg="#FCFEFF" w="full" h="full" borderRadius="xl" boxShadow="md" display="flex" flexDirection="column">
           <Center w="full" h="full" display="flex" flexDirection="column">
