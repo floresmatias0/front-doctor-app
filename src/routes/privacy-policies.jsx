@@ -7,9 +7,9 @@ import {
 
 export default function PrivacyPolicies() {
   return (
-    <Flex bg="#E5F2FA">
+    <Flex bg="#FCFEFF">
       <Box h="100vh" w="full" flex={1} py={[4, 4, 4, 12]} mx={[4, 28]}>
-        <Box w="full" h="full" borderRadius="xl" boxShadow="md" display="flex" flexDirection="column">
+        <Box bg="#FCFEFF" w="full" h="full" borderRadius="xl" boxShadow="md" display="flex" flexDirection="column">
           <Center w="full" h="full" display="flex" flexDirection="column">
               <Text fontSize={["md", "lg", "xl"]} fontWeight="bold" color="#205583" my={2}>Políticas de privacidad</Text>
               <Box mb={4} overflow="auto" w={["full", "full", "50%"]} mx={[4, 4, "auto"]} p={4}>
