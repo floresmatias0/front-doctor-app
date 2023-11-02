@@ -1,13 +1,15 @@
-import { Box, Button, Flex, Text, Tooltip } from "@chakra-ui/react"
+import { Box, Flex, IconButton, Menu, MenuButton, MenuItem, MenuList, Select, Text, useToast } from "@chakra-ui/react"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { AppContext } from "../components/context"
 import { instance } from "../utils/axios"
-import { SlClose } from "react-icons/sl"
+import { FaEllipsis } from "react-icons/fa6"
 
 const History = () => {
-
+    const toast = useToast()
     const [dataBookings, setDataBookings] = useState([])
-    const { user } = useContext(AppContext)
+    const [originalDataBookings, setOriginalDataBookings] = useState([])
+    const [patientSelected, setPatientSelected] = useState({})
+    const { user, patients } = useContext(AppContext)
 
     const fetchBookings = useCallback(async () => {
         try {
@@ -16,11 +18,13 @@ const History = () => {
             if(user.role === "DOCTOR") {
                 bookings = await instance.get(`/calendars/all-events?doctor=${user.email}`)
                 
+                setOriginalDataBookings(bookings.data.data)
                 return setDataBookings(bookings.data.data)
             }
 
             bookings = await instance.get(`/calendars/all-events/${user._id}`)
 
+            setOriginalDataBookings(bookings.data.data)
             setDataBookings(bookings.data.data)
         }catch(err) {
           console.log(err.message)
@@ -55,23 +59,65 @@ const History = () => {
         }
     }
 
-    const statuses = {
-        'confirmed': 'CONFIRMADO',
-        'deleted': 'CANCELADO'
-    }
+    const handleChange = (e) => {
+        const { value } = e.target
 
+        const selected = patients.find((patient) => patient.value === value);
+        setPatientSelected(selected)
+
+        const isPatientInBookings = dataBookings.some((booking) => booking?.patient?.dni === value)
+
+        if(isPatientInBookings) {
+            let bookingsFiltered = dataBookings.filter((booking) => booking?.patient?.dni === value)
+            return setDataBookings(bookingsFiltered)
+        }
+
+        if(value) {
+            toast({
+                title: "Error en filtrado",
+                description: "No se encontro ningun paciente con ese nombre",
+                position: "top-right",
+                isClosable: true,
+                duration: 3000,
+                status: "error"
+            })
+        }
+        
+        setDataBookings(originalDataBookings)
+    }
     return (
-        <Box w={["280px", "100%"]} h="100%" bg="#FCFEFF" position="relative" variant="unstyled" borderRadius="xl" boxShadow="md" display="flex" flexDirection="column">
-            <Flex w="100%" h="100%" px={[0, 2]} flexDirection="column" overflow="auto">
-                <Text color="#205583" fontSize={["lg", "xl"]} fontWeight="bold"textAlign="center" my={4}>Historial de turnos</Text>
+        <Flex w={["280px", "100%"]} h="100%" flexDirection="column">
+            {user.role !== "DOCTOR" ? (
+                <Flex w="100%" justifyContent="space-between" alignItems="center" flexDirection={["column", "row"]} my={1} flex="0 0 auto">
+                    <Text color="#205583" fontSize={["md", "lg"]} fontWeight="bold">Historial de turnos</Text>
+                    <Select
+                        w={["auto", "250px"]}
+                        h={["28px", "36px"]}
+                        bg="#FFFFFF"
+                        placeholder='Selecciona un paciente'
+                        value={patientSelected?.value}
+                        onChange={handleChange}
+                        fontSize={["sm", "md"]}
+                    >
+                    {patients.map((patient, idx) => (
+                        <option key={idx} value={patient.value}>{patient.label}</option>
+                    ))}
+                    </Select>
+                </Flex>
+            ) : (
+                <Text color="#205583" fontSize={["md", "lg"]} fontWeight="bold">Historial de turnos</Text>
+            )}
+
+            <Flex w="100%" flex={1} bg="#FCFEFF" borderRadius="xl" boxShadow="md" px={[0, 2, 4]} py={4} flexDirection="column" overflow="auto">
                 <Flex justifyContent="space-between" display={["none", "none", "none", "none", "flex"]}>
-                    <Box flex="1" fontWeight="bold" textTransform="uppercase" color="#205583">Título</Box>
-                    <Box flex="1" fontWeight="bold" textTransform="uppercase" color="#205583">Reunion</Box>
-                    <Box flex="1" fontWeight="bold" textTransform="uppercase" color="#205583">Estado</Box>
-                    <Box flex="1" fontWeight="bold" textTransform="uppercase" color="#205583">Doctor</Box>
-                    <Box flex="1" fontWeight="bold" textTransform="uppercase" color="#205583">Paciente</Box>
-                    <Box flex="1" fontWeight="bold" textTransform="uppercase" color="#205583">Fecha</Box>
-                    <Box flex="1" fontWeight="bold" textTransform="uppercase" color="#205583">Acciones</Box>
+                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Día</Box>
+                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Hora</Box>
+                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Tipo</Box>
+                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Médico</Box>
+                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Link</Box>
+                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Estado Turno</Box>
+                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Paciente</Box>
+                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Acciones</Box>
                 </Flex>
                 {
                     dataBookings &&
@@ -81,69 +127,79 @@ const History = () => {
                         let bookingStart = new Date(x.start.dateTime);
                         let isBookingPassed = now > bookingStart || x.status === "deleted";
 
-                        let date = `${getFormattedDateTime(x.start.dateTime, {
-                            weekday: "short",
+                        let extraDate = `${getFormattedDateTime(x.start.dateTime, {
                             day: "numeric",
-                            month: "short",
+                            month: "numeric",
                             year: "numeric",
-                        })} de ${getFormattedDateTime(x.start.dateTime, {
+                        })}`
+
+                        let hour = `${getFormattedDateTime(x.start.dateTime, {
                             hour: "numeric",
                             minute: "numeric",
-                        })} a ${getFormattedDateTime(x.end.dateTime, {
-                            hour: "numeric",
-                            minute: "numeric",
-                        })}hs.`;
+                        })}`
 
                         return (
                             <Flex
                                 key={idx}
-                                borderWidth="1px"
-                                borderRadius="md"
-                                p={2}
-                                my={2}
                                 display={["block", "flex"]}
                                 flexDirection={["column", "column", "column", "column", "row"]}
                                 alignItems="center"
                             >
-                                <Box flex="1" display={["block", "flex"]} fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    <Text fontSize="lg">{x.summary}</Text>
+                                <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                    <Text fontSize={["sm", "md"]} color="#205583">{extraDate}</Text>
                                 </Box>
-                                <Box flex="1" display={["block", "flex"]} fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                    <Text fontSize={["sm", "md"]} color="#205583">{hour}</Text>
+                                </Box>
+                                <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                    <Text color="#205583">Online</Text>
+                                </Box>
+                                <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                    <Text color="#205583">{x.organizer.name}</Text>
+                                </Box>
+                                <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
                                     {x.status === "deleted" ? (
-                                        <Text>Google meet</Text>
+                                        <Text color="gray">Consulta</Text>
                                     ) : now > bookingStart ? (
-                                        <Text>Google meet</Text>
+                                        <Text color="gray">Consulta</Text>
                                     ) : (
                                         <a href={x.hangoutLink}>
-                                            <Text color='blue'>Google meet</Text>
+                                            <Text color="#205583" textDecoration="underline" _hover={{ textDecoration: "none" }}>Consulta</Text>
                                         </a>
                                     )}
                                 </Box>
-                                <Box flex="1" display={["block", "flex"]} fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    {statuses[x.status]}
+                                <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                    <Text color="#205583">{x.status === "deleted" ? "Cancelado" : now > bookingStart ? "Expiró" : "Confirmado"}</Text>
                                 </Box>
-                                <Box flex="1" display={["block", "flex"]} fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    {x.organizer.email}
+                                <Box flex="1" display={["block", "flex"]} justifyContent="center" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                    <Text color="#205583">{x?.patient?.name} {x?.patient?.lastName}</Text>
                                 </Box>
-                                <Box flex="1" display={["block", "flex"]} fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    {x?.patient?.name} {x?.patient?.lastName}
-                                </Box>
-                                <Box flex="1" display={["block", "flex"]} fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    {date}
-                                </Box>
-                                <Box display={["block", "flex"]} maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    <Tooltip label={x.status === "deleted" ? "Cancelado" : now > bookingStart ? "Expiró" : "Cancelar turno"}>
-                                        <Button onClick={() => handleDeleteEvent(x._id, x.organizer.email)} isDisabled={isBookingPassed}>
-                                            <SlClose />
-                                        </Button>
-                                    </Tooltip>
+                                <Box flex="1" display={["block", "flex"]} justifyContent="center" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                    <Menu>
+                                        <MenuButton
+                                            as={IconButton}
+                                            aria-label='Options'
+                                            icon={<FaEllipsis />}
+                                            variant='ghost'
+                                        />
+                                        <MenuList>
+                                            <MenuItem onClick={() => handleDeleteEvent(x._id, x.organizer.email)} isDisabled={isBookingPassed}>
+                                                {x.status === "deleted" ? "Cancelado" : now > bookingStart ? "Expiró" : "Cancelar turno"}
+                                            </MenuItem>
+                                            {user.role === "DOCTOR" && (
+                                                <MenuItem onClick={() => console.log("comming soon")}>
+                                                    Cargar certificado
+                                                </MenuItem>
+                                            )}
+                                        </MenuList>
+                                    </Menu>
                                 </Box>
                             </Flex>
                         );
                     }).reverse()
                 }
             </Flex>
-        </Box>
+        </Flex>
     )
 }
 

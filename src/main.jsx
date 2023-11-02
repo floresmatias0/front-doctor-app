@@ -22,6 +22,7 @@ import DoctorContext from "./components/context";
 import History from "./routes/history";
 import PrivacyPolicies from "./routes/privacy-policies";
 import TermsOfServices from "./routes/terms-of-services";
+import Turns from "./routes/turns";
 
 const colors = {
   brand: {
@@ -70,6 +71,11 @@ const router = createBrowserRouter([
   {
     path: "history",
     element: <LayoutWithSidebar><ProtectedRoutes><History /></ProtectedRoutes></LayoutWithSidebar>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "my-turns",
+    element: <LayoutWithSidebar><ProtectedRoutes><Turns /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
   {

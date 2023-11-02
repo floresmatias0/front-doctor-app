@@ -10,8 +10,8 @@ import { AiOutlinePlus } from 'react-icons/ai'
 import FormPatient from '../components/form-patient';
 import CardCustom from '../components/card-custom';
 import ListSymptoms from '../components/lists-symptoms';
-import Reserve from '../components/reserve';
 import { AppContext } from '../components/context';
+import Reserved from '../components/reserved';
 
 export default function Appointment() {
   const navigate = useNavigate()
@@ -138,7 +138,7 @@ export default function Appointment() {
     <ListDoctors key="second" onNext={handleNextDoctors} isActive={activeTab === 1}/>,
     <ListCalendar key="third" doctorSelected={doctorSelected} onNext={handleNextCalendar} isActive={activeTab === 2}/>,
     <Payment key="fourth" symptomsSelected={symptomsSelected} doctorSelected={doctorSelected} patientSelected={patientSelected} selectDay={daySelected} user={user} isActive={activeTab === 3}/>,
-    <Reserve key="fifth" isActive={activeTab === 4}/>
+    <Reserved key="fifth" isActive={activeTab === 4}/>
   ];
 
   return (

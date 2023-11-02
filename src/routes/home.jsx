@@ -14,9 +14,9 @@ const Home = () => {
         <Button bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["sm", "md"]} onClick={() => navigate('/appointment')}>
           SOLICITAR NUEVO TURNO
         </Button>
-        <Button bg="#FFFFFF" color="#205583" w={["220px","300px"]} size={["sm", "md"]} isDisabled>
+        {/* <Button bg="#FFFFFF" color="#205583" w={["220px","300px"]} size={["sm", "md"]} isDisabled>
           MODIFICAR TURNO EXISTENTE
-        </Button>
+        </Button> */}
       </Flex>
     </Flex>
   )

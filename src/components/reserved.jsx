@@ -3,8 +3,9 @@ import { Box, Button, Flex, Text } from "@chakra-ui/react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { es } from 'date-fns/locale'
 import { format } from "date-fns"
+import { AiOutlineCheckCircle } from "react-icons/ai"
 
-const Reserve = () => {
+const Reserved = () => {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams();
 
@@ -52,8 +53,8 @@ const Reserve = () => {
             </Flex>
             <Flex flexDirection="column" justifyContent="center" alignItems="center">
                 <Box w={["100%", "100%", "90%", "50%"]} px={[4, 4, 4, 0]}>
-                    <Text textAlign="center" fontSize={["lg","2xl"]} color="#205583" my={4} fontWeight="bold">
-                        El turno ya está reservado
+                    <Text textAlign="center" fontSize={["lg","2xl"]} color="#679283" my={4} fontWeight="bold">
+                        <AiOutlineCheckCircle color="#679283"/> El turno ya está reservado
                     </Text>
                     <Text textAlign="center" fontStyle="italic" fontSize={["sm", "lg"]} color="#205583">
                         En las próximas horas se confirmará tu pago, si surge algún problema nos comunicaremos con vos.
@@ -68,7 +69,7 @@ const Reserve = () => {
                 </Box>
                 <Flex gap={2} my={[2, 6]} flexDirection={["column", "row"]}>
                     <Button bg="#FFFFFF" color="#205583" w={["220px","300px"]} size={["sm", "md"]} onClick={() => navigate('/')}>VOLVER AL INICIO</Button>
-                    <Button bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["sm", "md"]} isDisabled>IR A MIS TURNOS</Button>
+                    <Button bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["sm", "md"]} onClick={() => navigate('/my-turns')}>IR A MIS TURNOS</Button>
                 </Flex>
             </Flex>
             <Flex flex={1} justifyContent="center" alignItems="flex-end" my={[2, 4]}>
@@ -80,7 +81,7 @@ const Reserve = () => {
     )
 }
 
-Reserve.propTypes = {
+Reserved.propTypes = {
     doctorSelected: PropTypes.shape({
       value: PropTypes.string,
       label: PropTypes.string,
@@ -97,4 +98,4 @@ Reserve.propTypes = {
     isActive: PropTypes.bool
 }
 
-export default Reserve
+export default Reserved
