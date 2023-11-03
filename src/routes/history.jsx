@@ -1,7 +1,7 @@
-import { Box, Flex, IconButton, Menu, MenuButton, MenuItem, MenuList, Select, Text, useToast } from "@chakra-ui/react"
+import { Box, Button, Center, Flex, IconButton, Input, Menu, MenuButton, MenuItem, MenuList, Select, Spinner, Text, useToast } from "@chakra-ui/react"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { AppContext } from "../components/context"
-import { instance } from "../utils/axios"
+import { instance, instanceUpload } from "../utils/axios"
 import { FaEllipsis } from "react-icons/fa6"
 
 const History = () => {
@@ -9,6 +9,7 @@ const History = () => {
     const [dataBookings, setDataBookings] = useState([])
     const [originalDataBookings, setOriginalDataBookings] = useState([])
     const [patientSelected, setPatientSelected] = useState({})
+    const [loading, setLoading] = useState(false)
     const { user, patients } = useContext(AppContext)
 
     const fetchBookings = useCallback(async () => {
@@ -85,6 +86,68 @@ const History = () => {
         
         setDataBookings(originalDataBookings)
     }
+
+    const handleFileInputChange = async (e, doctorId, patientId, bookingId) => {
+        const formData = new FormData()
+        const images = e.target.files
+        // Convierte la colección de archivos en un array
+        const files = Array.from(images)
+
+        // Utiliza Promise.all para esperar a que se completen todas las promesas
+        await Promise.all(
+            files.map(async (file) => {
+                return new Promise((resolve) => {
+                    // Haces el push al array dentro de la promesa
+                    // Esto asegura que el push se complete antes de continuar
+                    formData.append('files', file);
+                    resolve();
+                });
+            })
+        );
+
+        formData.append('doctorId', doctorId)
+        formData.append('patientId', patientId)
+        formData.append('bookingId', bookingId)
+
+        try {
+            if(images) {
+                setLoading(true)
+                await instanceUpload.post('/certificates/uploads', formData);
+                await fetchBookings();
+                setLoading(false)
+
+                return toast({
+                  title: "Certificado guardado",
+                  description: "Se ha guardado satisfactoriamente",
+                  position: "top-right",
+                  isClosable: true,
+                  duration: 6000,
+                  status: "success"
+                });
+            }
+
+            toast({
+                title: "Error al intentar guardar el certificado",
+                description: "Debe seleccionar uno o mas documentos",
+                position: "top-right",
+                isClosable: true,
+                duration: 6000,
+                status: "error"
+              });
+
+        } catch (error) {
+          // Maneja cualquier error de la solicitud, por ejemplo, muestra un mensaje de error.
+          return toast({
+            title: "Error al intentar guardar el certificado",
+            description: error.message,
+            position: "top-right",
+            isClosable: true,
+            duration: 6000,
+            status: "error"
+          });
+        }
+    };
+
     return (
         <Flex w={["280px", "100%"]} h="100%" flexDirection="column">
             {user.role !== "DOCTOR" ? (
@@ -108,97 +171,127 @@ const History = () => {
                 <Text color="#205583" fontSize={["md", "lg"]} fontWeight="bold">Historial de turnos</Text>
             )}
 
-            <Flex w="100%" flex={1} bg="#FCFEFF" borderRadius="xl" boxShadow="md" px={[0, 2, 4]} py={4} flexDirection="column" overflow="auto">
-                <Flex justifyContent="space-between" display={["none", "none", "none", "none", "flex"]}>
-                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Día</Box>
-                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Hora</Box>
-                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Tipo</Box>
-                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Médico</Box>
-                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Link</Box>
-                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Estado Turno</Box>
-                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Paciente</Box>
-                    <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Acciones</Box>
-                </Flex>
-                {
-                    dataBookings &&
-                    dataBookings?.length > 0 &&
-                    dataBookings?.map((x, idx) => {
-                        let now = new Date();
-                        let bookingStart = new Date(x.start.dateTime);
-                        let isBookingPassed = now > bookingStart || x.status === "deleted";
+            {loading ? 
+                (
+                    <Flex w="100%" flex={1} bg="#FCFEFF" borderRadius="xl" boxShadow="md" px={[2, 2, 4]} py={4} flexDirection="column" overflow="auto">
+                        <Center>
+                            <Spinner color="#205583"/>
+                        </Center>
+                    </Flex>
+                ) : (
+                    <Flex w="100%" flex={1} bg="#FCFEFF" borderRadius="xl" boxShadow="md" px={[0, 2, 4]} py={4} flexDirection="column" overflow="auto">
+                        <Flex justifyContent="space-between" display={["none", "none", "none", "none", "flex"]}>
+                            <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Día</Box>
+                            <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Hora</Box>
+                            <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Tipo</Box>
+                            <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Médico</Box>
+                            <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Link</Box>
+                            <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Estado Turno</Box>
+                            <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Paciente</Box>
+                            <Box flex="1" fontWeight="bold" fontSize={["sm", "md"]} textAlign="center" color="#205583">Acciones</Box>
+                        </Flex>
+                        {
+                            dataBookings &&
+                            dataBookings?.length > 0 &&
+                            dataBookings?.map((x, idx) => {
+                                let now = new Date();
+                                let bookingStart = new Date(x.start.dateTime);
+                                let isBookingPassed = now > bookingStart || x.status === "deleted";
 
-                        let extraDate = `${getFormattedDateTime(x.start.dateTime, {
-                            day: "numeric",
-                            month: "numeric",
-                            year: "numeric",
-                        })}`
+                                let extraDate = `${getFormattedDateTime(x.start.dateTime, {
+                                    day: "numeric",
+                                    month: "numeric",
+                                    year: "numeric",
+                                })}`
 
-                        let hour = `${getFormattedDateTime(x.start.dateTime, {
-                            hour: "numeric",
-                            minute: "numeric",
-                        })}`
+                                let hour = `${getFormattedDateTime(x.start.dateTime, {
+                                    hour: "numeric",
+                                    minute: "numeric",
+                                })}`
 
-                        return (
-                            <Flex
-                                key={idx}
-                                display={["block", "flex"]}
-                                flexDirection={["column", "column", "column", "column", "row"]}
-                                alignItems="center"
-                            >
-                                <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    <Text fontSize={["sm", "md"]} color="#205583">{extraDate}</Text>
-                                </Box>
-                                <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    <Text fontSize={["sm", "md"]} color="#205583">{hour}</Text>
-                                </Box>
-                                <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    <Text color="#205583">Online</Text>
-                                </Box>
-                                <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    <Text color="#205583">{x.organizer.name}</Text>
-                                </Box>
-                                <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    {x.status === "deleted" ? (
-                                        <Text color="gray">Consulta</Text>
-                                    ) : now > bookingStart ? (
-                                        <Text color="gray">Consulta</Text>
-                                    ) : (
-                                        <a href={x.hangoutLink}>
-                                            <Text color="#205583" textDecoration="underline" _hover={{ textDecoration: "none" }}>Consulta</Text>
-                                        </a>
-                                    )}
-                                </Box>
-                                <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    <Text color="#205583">{x.status === "deleted" ? "Cancelado" : now > bookingStart ? "Expiró" : "Confirmado"}</Text>
-                                </Box>
-                                <Box flex="1" display={["block", "flex"]} justifyContent="center" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    <Text color="#205583">{x?.patient?.name} {x?.patient?.lastName}</Text>
-                                </Box>
-                                <Box flex="1" display={["block", "flex"]} justifyContent="center" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
-                                    <Menu>
-                                        <MenuButton
-                                            as={IconButton}
-                                            aria-label='Options'
-                                            icon={<FaEllipsis />}
-                                            variant='ghost'
-                                        />
-                                        <MenuList>
-                                            <MenuItem onClick={() => handleDeleteEvent(x._id, x.organizer.email)} isDisabled={isBookingPassed}>
-                                                {x.status === "deleted" ? "Cancelado" : now > bookingStart ? "Expiró" : "Cancelar turno"}
-                                            </MenuItem>
-                                            {user.role === "DOCTOR" && (
-                                                <MenuItem onClick={() => console.log("comming soon")}>
-                                                    Cargar certificado
-                                                </MenuItem>
+                                return (
+                                    <Flex
+                                        key={idx}
+                                        display={["block", "flex"]}
+                                        flexDirection={["column", "column", "column", "column", "row"]}
+                                        alignItems="center"
+                                    >
+                                        <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                            <Text fontSize={["sm", "md"]} color="#205583">{extraDate}</Text>
+                                        </Box>
+                                        <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                            <Text fontSize={["sm", "md"]} color="#205583">{hour}</Text>
+                                        </Box>
+                                        <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                            <Text color="#205583">Online</Text>
+                                        </Box>
+                                        <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                            <Text color="#205583">{x.organizer.name}</Text>
+                                        </Box>
+                                        <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                            {x.status === "deleted" ? (
+                                                <Text color="gray">Consulta</Text>
+                                            ) : now > bookingStart ? (
+                                                <Text color="gray">Consulta</Text>
+                                            ) : (
+                                                <a href={x.hangoutLink}>
+                                                    <Text color="#205583" textDecoration="underline" _hover={{ textDecoration: "none" }}>Consulta</Text>
+                                                </a>
                                             )}
-                                        </MenuList>
-                                    </Menu>
-                                </Box>
-                            </Flex>
-                        );
-                    }).reverse()
-                }
-            </Flex>
+                                        </Box>
+                                        <Box flex="1" display={["block", "flex"]} justifyContent="center" fontWeight="normal" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                            <Text color="#205583">{x.status === "deleted" ? "Cancelado" : now > bookingStart ? "Expiró" : "Confirmado"}</Text>
+                                        </Box>
+                                        <Box flex="1" display={["block", "flex"]} justifyContent="center" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                            <Text color="#205583">{x?.patient?.name} {x?.patient?.lastName}</Text>
+                                        </Box>
+                                        <Box flex="1" display={["block", "flex"]} justifyContent="center" maxWidth={["auto", "auto", "auto", "auto", "14.28%"]}>
+                                            <Menu>
+                                                <MenuButton
+                                                    as={IconButton}
+                                                    aria-label='Options'
+                                                    icon={<FaEllipsis />}
+                                                    variant='ghost'
+                                                />
+                                                <MenuList>
+                                                    {user.role === "DOCTOR" && (
+                                                        <MenuItem display="flex" alignItems="center" justifyContent="center">
+                                                            <Button position="relative" w="full">
+                                                                <Input
+                                                                    id="file-input"
+                                                                    type="file"
+                                                                    placeholder="Cargar certificado"
+                                                                    size="sm"
+                                                                    onChange={(e) => handleFileInputChange(e, x?.organizer?._id, x?.patient?._id, x?._id)}
+                                                                    multiple
+                                                                    style={{ opacity: 0 }}
+                                                                    position="absolute"
+                                                                    top="0"
+                                                                    left="0"
+                                                                    w="full"
+                                                                />
+                                                                Cargar certificado
+                                                            </Button>
+                                                        </MenuItem>
+                                                    )}
+                                                    {x.certificate && x.certificate.length > 0 && (
+                                                        x.certificate.map((c, idx) => (
+                                                            <MenuItem key={idx} onClick={() => window.open(import.meta.env.VITE_VIEW_CERTIFICATE_URL + '/' + c.filename)}>Certificado {idx + 1}</MenuItem>
+                                                        ))
+                                                    )}
+                                                    <MenuItem onClick={() => handleDeleteEvent(x._id, x.organizer.email)} isDisabled={isBookingPassed}>
+                                                        {x.status === "deleted" ? "Cancelado" : now > bookingStart ? "Cancelar turno" : "Cancelar turno"}
+                                                    </MenuItem>
+                                                </MenuList>
+                                            </Menu>
+                                        </Box>
+                                    </Flex>
+                                );
+                            }).reverse()
+                        }
+                    </Flex>
+                )
+            }
         </Flex>
     )
 }
