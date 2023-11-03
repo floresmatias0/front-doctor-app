@@ -126,6 +126,7 @@ const History = () => {
                 });
             }
 
+            setLoading(false)
             toast({
                 title: "Error al intentar guardar el certificado",
                 description: "Debe seleccionar uno o mas documentos",
@@ -137,6 +138,7 @@ const History = () => {
 
         } catch (error) {
           // Maneja cualquier error de la solicitud, por ejemplo, muestra un mensaje de error.
+          setLoading(false)
           return toast({
             title: "Error al intentar guardar el certificado",
             description: error.message,
@@ -276,7 +278,7 @@ const History = () => {
                                                     )}
                                                     {x.certificate && x.certificate.length > 0 && (
                                                         x.certificate.map((c, idx) => (
-                                                            <MenuItem key={idx} onClick={() => window.open(import.meta.env.VITE_VIEW_CERTIFICATE_URL + '/' + c.filename)}>Certificado {idx + 1}</MenuItem>
+                                                            <MenuItem key={idx} onClick={() => window.open(c.url)}>Certificado {idx + 1}</MenuItem>
                                                         ))
                                                     )}
                                                     <MenuItem onClick={() => handleDeleteEvent(x._id, x.organizer.email)} isDisabled={isBookingPassed}>

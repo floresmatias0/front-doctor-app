@@ -92,6 +92,7 @@ const Turns = () => {
                   status: "success"
                 });
             }
+            setLoading(false)
 
             toast({
                 title: "Error al intentar guardar el certificado",
@@ -104,6 +105,7 @@ const Turns = () => {
 
         } catch (error) {
           // Maneja cualquier error de la solicitud, por ejemplo, muestra un mensaje de error.
+          setLoading(false)
           return toast({
             title: "Error al intentar guardar el certificado",
             description: error.message,
@@ -264,7 +266,7 @@ const Turns = () => {
                                                                         )}
                                                                         {x.certificate && x.certificate.length > 0 && (
                                                                             x.certificate.map((c, idx) => (
-                                                                                <MenuItem key={idx} onClick={() => window.open(import.meta.env.VITE_VIEW_CERTIFICATE_URL + '/' + c.filename)}>Certificado {idx + 1}</MenuItem>
+                                                                                <MenuItem key={idx} onClick={() => window.open(c.url)}>Certificado {idx + 1}</MenuItem>
                                                                             ))
                                                                         )}
                                                                 </MenuList>
