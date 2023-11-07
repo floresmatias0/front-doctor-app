@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Button, Flex, Text } from "@chakra-ui/react"
+import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import CardCustom from "./card-custom"
 import { instance } from "../utils/axios"
@@ -54,9 +54,9 @@ const ListSymptoms = ({ onNext, isActive }) => {
     };
 
     return (
-        <Flex h="100%" flexDirection="column" px={6}>
+        <Flex h="100%" flexDirection="column" px={4}>
             <Text color="#205583" my={[1, 4]} fontSize={["sm", "lg"]}>Indique cuál o cuáles son los síntomas actuales del paciente</Text>
-            <Flex flexDirection={["column", "row"]} flexWrap={["wrap", "no-wrap"]} gap={4}>
+            <SimpleGrid flex={1} columns={[1, 2, 3, 4]} spacingX='40px' spacingY='10px' templateRows="80px 80px 80px">
                 {symptoms?.length > 0 && symptoms.map((symptom, idx) => (
                   <CardCustom
                       key={idx}
@@ -66,12 +66,13 @@ const ListSymptoms = ({ onNext, isActive }) => {
                       picture=""
                       description=""
                       avatarSize="md"
-                      width={["100%", "220px", "200px", "230px", "268px", "290px"]}
+                      width="100%"
+                      height="80px"
                       headingAlign="center"
                       isSelected={selectedSymptoms.includes(symptom)}
                   />
                 ))}
-            </Flex>
+            </SimpleGrid>
             <Flex flex={1} justifyContent="center" alignItems="flex-end" my={[2, 4]}>
               {selectedSymptoms.length > 0 && (
                 <Button

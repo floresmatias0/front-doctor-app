@@ -9,7 +9,8 @@ const CardCustom = ({
     avatarSize = "sm",
     width = ["100%", "300px"],
     headingAlign = "left",
-    isSelected
+    isSelected,
+    height = "100%"
 }) => {
     return (
         <Card
@@ -22,6 +23,7 @@ const CardCustom = ({
                 borderColor: '#bec3c9',
             }}
             w={width}
+            h={height}
             borderWidth={isSelected ? '2px' : '1px'}
             borderColor={isSelected ? '#205583' : 'transparent'}
         >
@@ -30,7 +32,7 @@ const CardCustom = ({
                     <Flex flex={1} gap={2} alignItems='center'>
                         {picture && <Avatar size={avatarSize} name={heading} src={picture}/>}
 
-                        <Box w="100%">
+                        <Box w="100%" h="100%">
                             <Heading size='sm' textTransform="uppercase" color="#205583" fontSize={["xs", "sm"]} textAlign={headingAlign}>{heading}</Heading>
                             <Text color="#205583" fontSize="xs">{description}</Text>
                         </Box>
@@ -48,6 +50,7 @@ CardCustom.propTypes = {
     description: PropTypes.string,
     avatarSize: PropTypes.string,
     width: PropTypes.string,
+    height: PropTypes.string,
     headingAlign: PropTypes.string,
     isSelected: PropTypes.bool
 }

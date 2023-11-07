@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
 
 const TabsConsult = ({
     tabsHeading = [],
@@ -8,7 +8,7 @@ const TabsConsult = ({
     setActiveTab
 }) => {
     return (
-        <Tabs isFitted w={["280px", "100%"]} h="100%" bg="#FCFEFF" position="relative" variant="unstyled" borderRadius="xl" index={activeTab} boxShadow="md" display="flex" flexDirection="column">
+        <Tabs isFitted w={["280px", "100%"]} h="100%" maxH="100%" bg="#FCFEFF" position="relative" variant="unstyled" borderRadius="xl" index={activeTab} boxShadow="md" display="flex" flexDirection="column">
             <TabList p={[0, 2]} overflowX={["scroll", "scroll", "auto"]} flex="0 0 auto">
                 {tabsHeading?.map((head, index) =>
                     <Tab
@@ -16,7 +16,7 @@ const TabsConsult = ({
                         _selected={{ fontWeight: 'bold' }}
                         onClick={() => setActiveTab(index)}
                         color="#205583"
-                        fontSize={["sm", "md"]}
+                        fontSize={["xs", "sm", "sm", "sm", "md"]}
                         isDisabled={head.isDisabled}
                         p={1}
                         minW={["130px", "130px", "140px", "auto"]}
@@ -25,17 +25,8 @@ const TabsConsult = ({
                     </Tab>
                 )}
             </TabList>
-            <TabIndicator
-                mt={2}
-                h="3px"
-                bg="#F7D84C"
-                borderRadius="1px"
-                display={["none", "block"]}
-                flex="0 0 auto"
-                top={10}
-            />
             <TabPanels flex={1} overflow={["auto", "auto"]}>
-                {tabContents?.map((content, index) => <TabPanel h="100%" px={0} py={[0, 4]} key={index}>{content}</TabPanel>)}
+                {tabContents?.map((content, index) => <TabPanel overflowY="auto" h="100%" maxH="100%" px={0} py={[0, 2]} key={index}>{content}</TabPanel>)}
             </TabPanels>
         </Tabs>
     )
