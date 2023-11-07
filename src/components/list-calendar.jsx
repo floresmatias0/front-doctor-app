@@ -167,7 +167,7 @@ const ListCalendar = ({ doctorSelected, onNext, isActive }) => {
               className={emptyEvent ? `event ${new Date(hsSelected) === new Date(eventStartTime) && 'selected-event'}` : 'highlighted-event'}
               key={eventStartTime.toISOString()}
             >
-              <Text lineHeight="normal">{format(eventStartTime, 'HH:mm')}</Text>
+              <Text lineHeight="normal" textAlign="center">{format(eventStartTime, 'HH:mm')}</Text>
               {/* Puedes agregar más detalles del evento aquí si es necesario */}
             </Box>
           );
@@ -193,25 +193,27 @@ const ListCalendar = ({ doctorSelected, onNext, isActive }) => {
             <Spinner />
         </Center>
       ) : (
-        <Flex overflow="auto" flex={1} flexDirection="column">
-            <div className='calendar__header'>
-              <button onClick={goToPrevMonth}>
-                <ChevronLeftIcon />
-              </button>
-                <span>{format(currentDateState, "MMMM yyyy", { locale: es })}</span>
-              <button onClick={goToNextMonth}>
-                <ChevronRightIcon />
-              </button>
+        <Flex flex={1} flexDirection="column" justifyContent="space-between">
+            <Box>
+              <div className='calendar__header'>
+                <button onClick={goToPrevMonth}>
+                  <ChevronLeftIcon />
+                </button>
+                  <span>{format(currentDateState, "MMMM yyyy", { locale: es })}</span>
+                <button onClick={goToNextMonth}>
+                  <ChevronRightIcon />
+                </button>
 
-            </div>
-            <Grid templateColumns="repeat(7, 1fr)" gap={2} my={2}>
-              {generateDays()}
-            </Grid>
-            {daySelected && (
-              <Flex flexWrap="wrap" gap={2} justifyContent="space-between">
-                {mapEvents && mapEvents.length > 0 && mapEvents?.map(event => event)}
-              </Flex>
-            )}
+              </div>
+              <Grid templateColumns="repeat(7, 1fr)" gap={2} my={2} overflowX="auto" w="full">
+                {generateDays()}
+              </Grid>
+              {daySelected && (
+                <Grid templateColumns={["repeat(12, 1fr)", "repeat(8, 1fr)", "repeat(8, 1fr)", "repeat(8, 1fr)", "repeat(12, 1fr)", "repeat(15, 1fr)"]} gap={2} my={2} overflowX="auto" w="full">
+                  {mapEvents && mapEvents.length > 0 && mapEvents?.map(event => event)}
+                </Grid>
+              )}
+            </Box>
             <Flex justifyContent="center" alignItems="flex-end" my={[2, 4]}>
               {hsSelected && (
                 <Box>

@@ -56,7 +56,7 @@ const ListSymptoms = ({ onNext, isActive }) => {
     return (
         <Flex h="100%" flexDirection="column" px={4}>
             <Text color="#205583" my={[1, 4]} fontSize={["sm", "lg"]}>Indique cuál o cuáles son los síntomas actuales del paciente</Text>
-            <SimpleGrid flex={1} columns={[1, 2, 3, 4]} spacingX='40px' spacingY='10px' templateRows="80px 80px 80px">
+            <SimpleGrid flex={1} columns={[1, 2, 3, 4]} spacingX='40px' spacingY='10px' templateRows={[Array(Math.round(symptoms?.length)).fill('80px').join(' '), Array(Math.round(symptoms?.length / 4)).fill('80px').join(' ')]}>
                 {symptoms?.length > 0 && symptoms.map((symptom, idx) => (
                   <CardCustom
                       key={idx}
@@ -67,7 +67,7 @@ const ListSymptoms = ({ onNext, isActive }) => {
                       description=""
                       avatarSize="md"
                       width="100%"
-                      height="80px"
+                      height="100%"
                       headingAlign="center"
                       isSelected={selectedSymptoms.includes(symptom)}
                   />

@@ -8,7 +8,7 @@ const TabsConsult = ({
     setActiveTab
 }) => {
     return (
-        <Tabs isFitted w={["280px", "100%"]} h="100%" maxH="100%" bg="#FCFEFF" position="relative" variant="unstyled" borderRadius="xl" index={activeTab} boxShadow="md" display="flex" flexDirection="column">
+        <Tabs isFitted w={["280px", "480px", "620px", "940px", "1080px", "100%"]} h="100%" overflowY="auto" bg="#FCFEFF" position="relative" variant="unstyled" borderRadius="xl" index={activeTab} boxShadow="md" display="flex" flexDirection="column">
             <TabList p={[0, 2]} overflowX={["scroll", "scroll", "auto"]} flex="0 0 auto">
                 {tabsHeading?.map((head, index) =>
                     <Tab
@@ -25,7 +25,7 @@ const TabsConsult = ({
                     </Tab>
                 )}
             </TabList>
-            <TabPanels flex={1} overflow={["auto", "auto"]}>
+            <TabPanels flex={1}>
                 {tabContents?.map((content, index) => <TabPanel overflowY="auto" h="100%" maxH="100%" px={0} py={[0, 2]} key={index}>{content}</TabPanel>)}
             </TabPanels>
         </Tabs>

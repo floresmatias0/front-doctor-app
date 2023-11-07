@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Button, Flex } from "@chakra-ui/react"
+import { Button, Flex, SimpleGrid } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { instance } from "../utils/axios";
 import CardCustom from "./card-custom";
@@ -65,7 +65,7 @@ const ListDoctors = ({ onNext, isActive }) => {
 
     return (
       <Flex h="100%" flexDirection="column" px={6}>
-        <Flex flexDirection={["column", "row"]} flexWrap={["wrap", "no-wrap"]} gap={4}>
+        <SimpleGrid flex={1} columns={[1, 2, 3, 4]} spacingX='40px' spacingY='10px' templateRows={[Array(Math.round(doctors?.length)).fill('96px').join(' '), Array(Math.round(doctors?.length / 4)).fill('96px').join(' ')]}>
             {doctors?.length > 0 && doctors.map((doctor, idx) => (
               <CardCustom
                 key={idx}
@@ -75,11 +75,12 @@ const ListDoctors = ({ onNext, isActive }) => {
                 picture={doctor.picture}
                 description="Especializacion"
                 avatarSize="md"
-                width={["100%", "284px"]}
+                width="100%"
+                height="100%"
                 isSelected={selectedDoctor.label === doctor.label}
               />
             ))}
-        </Flex>
+        </SimpleGrid>
         <Flex flex={1} justifyContent="center" alignItems="flex-end" my={[2, 4]}>
         {Object.keys(selectedDoctor).length > 0 && (
           <Button
