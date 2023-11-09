@@ -2,7 +2,7 @@ import { Box, Button, Flex, FormControl, Input, Text, useDisclosure, useToast } 
 import { AppContext } from "../components/context"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { Field, Form, Formik } from "formik"
-import { FaPenAlt } from "react-icons/fa"
+import { FaPencilAlt } from "react-icons/fa"
 import { AiOutlineCloseCircle, AiOutlinePlus } from "react-icons/ai"
 import { instance } from "../utils/axios"
 import CardCustom from "../components/card-custom"
@@ -177,7 +177,7 @@ export default function Settings() {
                                                 ) : (
                                                     <Flex alignItems="center" justifyContent="space-between" gap={2}>
                                                         <Text fontSize={["sm", "lg"]} color="#205583">{user?.name}</Text>
-                                                        <FaPenAlt style={{ cursor: 'pointer' }} onClick={() => setIsEditable({...isEditable, name: true})}/>
+                                                        <FaPencilAlt style={{ cursor: 'pointer' }} onClick={() => setIsEditable({...isEditable, name: true})}/>
                                                     </Flex>
                                                 )}
                                             </Box>
@@ -201,7 +201,7 @@ export default function Settings() {
                                                 ) : (
                                                     <Flex alignItems="center" justifyContent="space-between" gap={2}>
                                                         <Text fontSize={["sm", "lg"]} color="#205583">{user?.email}</Text>
-                                                        <FaPenAlt style={{ cursor: 'pointer' }} onClick={() => setIsEditable({...isEditable, email: true})}/>
+                                                        <FaPencilAlt style={{ cursor: 'pointer' }} onClick={() => setIsEditable({...isEditable, email: true})}/>
                                                     </Flex>
                                                 )}
                                             </Box>
@@ -229,7 +229,7 @@ export default function Settings() {
                                                         ) : (
                                                             <Flex alignItems="center" justifyContent="space-between" gap={2}>
                                                                 <Text fontSize={["sm", "lg"]} color="#205583">{user?.reservePrice}</Text>
-                                                                <FaPenAlt style={{ cursor: 'pointer' }} onClick={() => setIsEditable({...isEditable, reservePrice: true})}/>
+                                                                <FaPencilAlt style={{ cursor: 'pointer' }} onClick={() => setIsEditable({...isEditable, reservePrice: true})}/>
                                                             </Flex>
                                                         )}
                                                     </Box>
@@ -255,7 +255,7 @@ export default function Settings() {
                                                         ) : (
                                                             <Flex alignItems="center" justifyContent="space-between" gap={2}>
                                                                 <Text fontSize={["sm", "lg"]} color="#205583">{user?.reserveTime}</Text>
-                                                                <FaPenAlt style={{ cursor: 'pointer' }} onClick={() => setIsEditable({...isEditable, reserveTime: true})}/>
+                                                                <FaPencilAlt style={{ cursor: 'pointer' }} onClick={() => setIsEditable({...isEditable, reserveTime: true})}/>
                                                             </Flex>
                                                         )}
                                                     </Box>

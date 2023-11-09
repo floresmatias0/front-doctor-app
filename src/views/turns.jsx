@@ -130,7 +130,7 @@ const Turns = () => {
                 <Fragment>
                     <Flex w="100%" justifyContent="space-between" alignItems="center" flexDirection={["column", "row"]} my={2} flex="0 0 auto">
                         <Text color="#205583" fontSize={["lg", "xl"]} fontWeight="bold">Mis turnos</Text>
-                        <Button leftIcon={<MdAdd/>} bg="#FCFEFF" size="sm" onClick={() => navigate('/appointment')}>Nuevo Turno</Button>
+                        {user.role !== 'DOCTOR' && <Button leftIcon={<MdAdd/>} bg="#FCFEFF" size="sm" onClick={() => navigate('/appointment')}>Nuevo Turno</Button>}
                     </Flex>
 
                     <Flex w="100%" flex={1} bg="#FCFEFF" borderRadius="xl" boxShadow="md" px={[2, 2, 4]} py={4} flexDirection="column" overflow="auto">
@@ -233,7 +233,6 @@ const Turns = () => {
                                                 <Flex key={idx} w="full" boxShadow="base" borderRadius="md" h={["220px"]} p={4} flexDirection="column" justifyContent="space-between">
                                                     <Flex justifyContent="space-between" alignItems="start" flexWrap="wrap">
                                                         <Box>
-                                                            <Text w="full" letterSpacing="3.2px" color="#205583" fontSize="md">Paciente {x?.patient?.name} {x?.patient?.lastName}</Text>
                                                             <Text w="full" letterSpacing="3.2px" color="#205583" fontSize="md" textTransform="capitalize">{x?.summary}</Text>
                                                         </Box>
                                                             <Menu>
@@ -290,9 +289,15 @@ const Turns = () => {
                                                                 </Text>
                                                             </Flex>
                                                         </Box>
+                                                        {user.role !== 'DOCTOR' && ( 
+                                                            <Box>
+                                                                <Text fontSize="sm" color="#205583" fontWeight="bold" textTransform="capitalize">Doctor</Text>
+                                                                <Text fontSize="sm" color="#205583">{x?.organizer?.name}</Text>
+                                                            </Box>
+                                                        )}
                                                         <Box>
-                                                            <Text fontSize="sm" color="#205583" fontWeight="bold" textTransform="capitalize">{x.organizer.name}</Text>
-                                                            <Text fontSize="sm" color="#205583">Especialidad</Text>
+                                                            <Text fontSize="sm" color="#205583" fontWeight="bold" textTransform="capitalize">Paciente</Text>
+                                                            <Text fontSize="sm" color="#205583">{x?.patient?.name} {x?.patient?.lastName}</Text>
                                                         </Box>
                                                     </Flex>
                                                 </Flex>

@@ -12,17 +12,17 @@ import {
 import ErrorPage from "./components/error-page";
 import { LayoutWithSidebar, ProtectedRoutes } from "./components/layouts";
 
-import Login from "./routes/login";
-import Verify from "./routes/verify";
-import Home from "./routes/home";
-import Appointment from "./routes/appointment";
-import Settings from "./routes/settings";
+import Login from "./views/login";
+import Verify from "./views/verify";
+import Home from "./views/home";
+import Appointment from "./views/appointment";
+import Settings from "./views/settings";
 import './styles/main.css';
 import DoctorContext from "./components/context";
-import History from "./routes/history";
-import PrivacyPolicies from "./routes/privacy-policies";
-import TermsOfServices from "./routes/terms-of-services";
-import Turns from "./routes/turns";
+import History from "./views/history";
+import PrivacyPolicies from "./views/privacy-policies";
+import TermsOfServices from "./views/terms-of-services";
+import Turns from "./views/turns";
 
 const colors = {
   brand: {
