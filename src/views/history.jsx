@@ -289,7 +289,7 @@ const History = () => {
                                         </Box>
                                     </Flex>
                                 );
-                            }).reverse()
+                            })
                         }
                     </Flex>
                 )

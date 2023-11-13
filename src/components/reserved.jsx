@@ -53,7 +53,7 @@ const Reserved = () => {
             </Flex>
             <Flex flexDirection="column" justifyContent="center" alignItems="center">
                 <Box w={["100%", "100%", "90%", "50%"]} px={[4, 4, 4, 0]}>
-                    <Text textAlign="center" fontSize={["lg","2xl"]} color="#679283" my={4} fontWeight="bold">
+                    <Text textAlign="center" fontSize={["lg","2xl"]} color="#679283" my={4} fontWeight="bold" display="flex" justifyContent="center" alignItems="center" gap={2}>
                         <AiOutlineCheckCircle color="#679283"/> El turno ya está reservado
                     </Text>
                     <Text textAlign="center" fontStyle="italic" fontSize={["sm", "lg"]} color="#205583">
