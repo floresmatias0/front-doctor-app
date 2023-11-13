@@ -202,22 +202,24 @@ const Turns = () => {
                                             return (
                                                 <Flex key={idx} w="full" boxShadow="base" borderRadius="md" h={["136px"]} p={4} flexDirection="column" justifyContent="space-between">
                                                     <Flex justifyContent="space-between">
-                                                        <Text letterSpacing="3.2px" color="#205583" fontSize="md">Paciente {x?.patient?.name} {x?.patient?.lastName}</Text>
+                                                        <Text letterSpacing="3.2px" color="#205583" fontSize="md">{x?.summary}</Text>
                                                         <Text letterSpacing="3.2px" color="#205583" style={x.status === "deleted" ? { opacity: "0.4" }: {}} fontSize="md" display="flex" justifyContent="center" alignItems="center">
                                                             {x.status === "deleted" ? "Cancelado" : "Consulta Online"}
-                                                            <Menu>
-                                                                <MenuButton
-                                                                    as={IconButton}
-                                                                    aria-label='Options'
-                                                                    icon={<FaEllipsis />}
-                                                                    variant='ghost'
-                                                                />
-                                                                <MenuList>
-                                                                    <MenuItem onClick={() => handleDeleteEvent(x._id, x.organizer.email)} isDisabled={x.status === "deleted"}>
-                                                                        {x.status === "deleted" ? "Cancelado" : now > bookingStart ? "Cancelar turno" : "Cancelar turno"}
-                                                                    </MenuItem>
-                                                                </MenuList>
-                                                            </Menu>
+                                                            {x.status !== "deleted" && (
+                                                                <Menu>
+                                                                    <MenuButton
+                                                                        as={IconButton}
+                                                                        aria-label='Options'
+                                                                        icon={<FaEllipsis />}
+                                                                        variant='ghost'
+                                                                    />
+                                                                    <MenuList>
+                                                                        <MenuItem onClick={() => handleDeleteEvent(x._id, x.organizer.email)}>
+                                                                            Cancelar turno
+                                                                        </MenuItem>
+                                                                    </MenuList>
+                                                                </Menu>
+                                                            )}
                                                         </Text>
                                                     </Flex>
                                                     <Flex justifyContent="space-between">
@@ -239,11 +241,11 @@ const Turns = () => {
                                                             </Flex>
                                                         </Box>
                                                         <Box>
-                                                            <Text fontSize="sm" color="#205583" fontWeight="bold" textTransform="capitalize">{x.organizer.name}</Text>
-                                                            <Text fontSize="sm" color="#205583">Especialidad</Text>
+                                                            <Text fontSize="sm" color="#205583" fontWeight="bold" textTransform="capitalize">{user === "DOCTOR" ? "Paciente" : "Doctor"}</Text>
+                                                            <Text fontSize="sm" color="#205583">{user === "DOCTOR" ? `${x?.patient?.name} ${x?.patient?.lastName}` : x.organizer.name}</Text>
                                                         </Box>
                                                         <Box>
-                                                            <Button rightIcon={<BiChevronRight color="#FCFFFF"/>} bg="#205583" color="#FFFFFF" onClick={() => window.open(x.hangoutLink, '_blank')}>Ir a la reunion</Button>
+                                                            <Button rightIcon={<BiChevronRight color="#FCFFFF"/>} bg="#205583" color="#FFFFFF" onClick={() => window.open(x.hangoutLink, '_blank')} isDisabled={x.status === "deleted"}>Ir a la reunion</Button>
                                                         </Box>
                                                     </Flex>
                                                 </Flex>
