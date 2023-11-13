@@ -203,8 +203,8 @@ const Turns = () => {
                                                 <Flex key={idx} w="full" boxShadow="base" borderRadius="md" h={["136px"]} p={4} flexDirection="column" justifyContent="space-between">
                                                     <Flex justifyContent="space-between">
                                                         <Text letterSpacing="3.2px" color="#205583" fontSize="md">Paciente {x?.patient?.name} {x?.patient?.lastName}</Text>
-                                                        <Text letterSpacing="3.2px" color="#205583" fontSize="md" display="flex" justifyContent="center" alignItems="center">
-                                                            Consulta Online
+                                                        <Text letterSpacing="3.2px" color="#205583" style={x.status === "deleted" ? { opacity: "0.4" }: {}} fontSize="md" display="flex" justifyContent="center" alignItems="center">
+                                                            {x.status === "deleted" ? "Cancelado" : "Consulta Online"}
                                                             <Menu>
                                                                 <MenuButton
                                                                     as={IconButton}
