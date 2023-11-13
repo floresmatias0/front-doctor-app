@@ -117,6 +117,42 @@ const Turns = () => {
         }
     };
 
+    const handleDeleteEvent = async (bookingId, userEmail) => {
+        try {
+            const response = await instance.delete(`/calendars/${bookingId}?email=${userEmail}`)
+            if(response.success) {
+                toast({
+                    title: "Cancelado con exito",
+                    description: "Vuelva a intentar porfavor",
+                    position: "top-right",
+                    isClosable: true,
+                    duration: 3000,
+                    status: "success"
+                })
+                return await fetchBookings();
+            }
+
+            toast({
+                title: "Error al intentar cancelar",
+                description: "Vuelva a intentar porfavor",
+                position: "top-right",
+                isClosable: true,
+                duration: 3000,
+                status: "error"
+            })
+        }catch(err) {
+          console.log(err.message)
+          toast({
+                title: "Error inesperado",
+                description: err.message,
+                position: "top-right",
+                isClosable: true,
+                duration: 3000,
+                status: "error"
+            })
+        }
+    }
+
     return (
         <Flex w={["280px", "100%"]} h="100%" flexDirection="column">
             {loading ? 
@@ -167,7 +203,22 @@ const Turns = () => {
                                                 <Flex key={idx} w="full" boxShadow="base" borderRadius="md" h={["136px"]} p={4} flexDirection="column" justifyContent="space-between">
                                                     <Flex justifyContent="space-between">
                                                         <Text letterSpacing="3.2px" color="#205583" fontSize="md">Paciente {x?.patient?.name} {x?.patient?.lastName}</Text>
-                                                        <Text letterSpacing="3.2px" color="#205583" fontSize="md">Consulta Online</Text>
+                                                        <Text letterSpacing="3.2px" color="#205583" fontSize="md" display="flex" justifyContent="center" alignItems="center">
+                                                            Consulta Online
+                                                            <Menu>
+                                                                <MenuButton
+                                                                    as={IconButton}
+                                                                    aria-label='Options'
+                                                                    icon={<FaEllipsis />}
+                                                                    variant='ghost'
+                                                                />
+                                                                <MenuList>
+                                                                    <MenuItem onClick={() => handleDeleteEvent(x._id, x.organizer.email)} isDisabled={x.status === "deleted"}>
+                                                                        {x.status === "deleted" ? "Cancelado" : now > bookingStart ? "Cancelar turno" : "Cancelar turno"}
+                                                                    </MenuItem>
+                                                                </MenuList>
+                                                            </Menu>
+                                                        </Text>
                                                     </Flex>
                                                     <Flex justifyContent="space-between">
                                                         <Box>
@@ -235,41 +286,58 @@ const Turns = () => {
                                                         <Box>
                                                             <Text w="full" letterSpacing="3.2px" color="#205583" fontSize="md" textTransform="capitalize">{x?.summary}</Text>
                                                         </Box>
+                                                        {user.role !== "DOCTOR" && x.certificate && x.certificate.length > 0 && (
                                                             <Menu>
                                                                 <MenuButton
                                                                     as={IconButton}
                                                                     aria-label='Options'
                                                                     icon={<FaEllipsis />}
                                                                     variant='ghost'
-                                                                    />
+                                                                />
                                                                 <MenuList>
-                                                                        {user.role === "DOCTOR" && (
-                                                                            <MenuItem display="flex" alignItems="center" justifyContent="center">
-                                                                                <Button position="relative" w="full">
-                                                                                    <Input
-                                                                                        id="file-input"
-                                                                                        type="file"
-                                                                                        placeholder="Cargar certificado"
-                                                                                        size="sm"
-                                                                                        onChange={(e) => handleFileInputChange(e, x?.organizer?._id, x?.patient?._id, x?._id)}
-                                                                                        multiple
-                                                                                        style={{ opacity: 0 }}
-                                                                                        position="absolute"
-                                                                                        top="0"
-                                                                                        left="0"
-                                                                                        w="full"
-                                                                                    />
-                                                                                    Cargar certificado
-                                                                                </Button>
-                                                                            </MenuItem>
-                                                                        )}
-                                                                        {x.certificate && x.certificate.length > 0 && (
+                                                                        {(
                                                                             x.certificate.map((c, idx) => (
                                                                                 <MenuItem key={idx} onClick={() => window.open(c.url)}>Certificado {idx + 1}</MenuItem>
                                                                             ))
                                                                         )}
                                                                 </MenuList>
                                                             </Menu>
+                                                        )}
+                                                        {user.role === "DOCTOR" && (
+                                                            <Menu>
+                                                                <MenuButton
+                                                                    as={IconButton}
+                                                                    aria-label='Options'
+                                                                    icon={<FaEllipsis />}
+                                                                    variant='ghost'
+                                                                />
+                                                                <MenuList>
+                                                                    <MenuItem display="flex" alignItems="center" justifyContent="center">
+                                                                        <Button position="relative" w="full">
+                                                                            <Input
+                                                                                id="file-input"
+                                                                                type="file"
+                                                                                placeholder="Cargar certificado"
+                                                                                size="sm"
+                                                                                onChange={(e) => handleFileInputChange(e, x?.organizer?._id, x?.patient?._id, x?._id)}
+                                                                                multiple
+                                                                                style={{ opacity: 0 }}
+                                                                                position="absolute"
+                                                                                top="0"
+                                                                                left="0"
+                                                                                w="full"
+                                                                            />
+                                                                            Cargar certificado
+                                                                        </Button>
+                                                                    </MenuItem>
+                                                                    {x.certificate && x.certificate.length > 0 && (
+                                                                        x.certificate.map((c, idx) => (
+                                                                            <MenuItem key={idx} onClick={() => window.open(c.url)}>Certificado {idx + 1}</MenuItem>
+                                                                        ))
+                                                                    )}
+                                                                </MenuList>
+                                                            </Menu>
+                                                        )}
                                                     </Flex>
                                                     <Flex justifyContent="space-between" flexDirection="column" gap={2}>
                                                         <Box>

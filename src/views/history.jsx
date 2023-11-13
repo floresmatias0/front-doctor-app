@@ -54,9 +54,37 @@ const History = () => {
     
     const handleDeleteEvent = async (bookingId, userEmail) => {
         try {
-          await instance.delete(`/calendars/${bookingId}?email=${userEmail}`)
+            const response = await instance.delete(`/calendars/${bookingId}?email=${userEmail}`)
+            if(response.success) {
+                toast({
+                    title: "Cancelado con exito",
+                    description: "Vuelva a intentar porfavor",
+                    position: "top-right",
+                    isClosable: true,
+                    duration: 3000,
+                    status: "success"
+                })
+                return await fetchBookings();
+            }
+
+            toast({
+                title: "Error al intentar cancelar",
+                description: "Vuelva a intentar porfavor",
+                position: "top-right",
+                isClosable: true,
+                duration: 3000,
+                status: "error"
+            })
         }catch(err) {
           console.log(err.message)
+          toast({
+            title: "Error inesperado",
+            description: err.message,
+            position: "top-right",
+            isClosable: true,
+            duration: 3000,
+            status: "error"
+            })
         }
     }
 
