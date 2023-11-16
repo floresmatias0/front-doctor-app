@@ -41,6 +41,10 @@ const FormPatient = ({handleSubmit, initialValues}) => {
       if (!values.dni) {
         errors.dni = "Por favor, coloque su DNI";
       }
+
+      if (!values.socialWorkId) {
+        errors.socialWorkId = "Por favor, es necesario completar este dato";
+      }
   
       return errors;
     };
@@ -59,6 +63,7 @@ const FormPatient = ({handleSubmit, initialValues}) => {
             history: initialValues?.history || '',
             dni: initialValues?.dni || '',
             socialWork: initialValues?.socialWork || '',
+            socialWorkId: initialValues?.socialWorkId || '',
             proceedings: initialValues?.proceedings || ''
          }}
           onSubmit={handleSubmit}
@@ -66,7 +71,7 @@ const FormPatient = ({handleSubmit, initialValues}) => {
         >
           {() => (
             <Form>
-              <Box maxH={["400px", "700px"]} overflowY="auto">
+              <Box maxH={["400px", "700px"]} overflowY="auto" px={2}>
                 <Grid templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap={4} my={2}>
                   <Field name='name' colSpan={1}>
                     {({ field, form }) => (
@@ -123,7 +128,7 @@ const FormPatient = ({handleSubmit, initialValues}) => {
                     {({ field, form }) => (
                         <FormControl isInvalid={form.errors.dni && form.touched.dni}>
                             <FormLabel fontSize="sm" fontWeight="normal">DNI</FormLabel>
-                            <Input {...field} placeholder='99999999' fontSize="sm" size={["sm", "md"]} rounded="md"/>
+                            <Input {...field} type="number" placeholder='99999999' fontSize="sm" size={["sm", "md"]} rounded="md" maxLength={12}/>
                             <FormErrorMessage fontSize="xs">{form.errors.dni}</FormErrorMessage>
                         </FormControl>
                     )}
@@ -132,7 +137,7 @@ const FormPatient = ({handleSubmit, initialValues}) => {
                     {({ field, form }) => (
                         <FormControl isInvalid={form.errors.phone && form.touched.phone}>
                             <FormLabel fontSize="sm" fontWeight="normal">Teléfono de contacto</FormLabel>
-                            <Input {...field} placeholder='1122334455' fontSize="sm" size={["sm", "md"]} rounded="md"/>
+                            <Input {...field} type="number" placeholder='01122334455' fontSize="sm" size={["sm", "md"]} rounded="md" maxLength={12}/>
                             <FormErrorMessage fontSize="xs">{form.errors.phone}</FormErrorMessage>
                         </FormControl>
                     )}
@@ -146,12 +151,23 @@ const FormPatient = ({handleSubmit, initialValues}) => {
                         </FormControl>
                     )}
                   </Field>
+                </Grid>
+                <Grid templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap={4} my={2}>
                   <Field name='socialWork' colSpan={1}>
                     {({ field, form }) => (
                         <FormControl isInvalid={form.errors.socialWork && form.touched.socialWork}>
                             <FormLabel fontSize="sm" fontWeight="normal">Obra social</FormLabel>
                             <Input {...field} placeholder='OSECAC' fontSize="sm" size={["sm", "md"]} rounded="md"/>
                             <FormErrorMessage fontSize="xs">{form.errors.socialWork}</FormErrorMessage>
+                        </FormControl>
+                    )}
+                  </Field>
+                  <Field name='socialWorkId' colSpan={1}>
+                    {({ field, form }) => (
+                        <FormControl isInvalid={form.errors.socialWorkId && form.touched.socialWorkId}>
+                            <FormLabel fontSize="sm" fontWeight="normal">N.º Obra social</FormLabel>
+                            <Input {...field} type="number" placeholder='000000' fontSize="sm" size={["sm", "md"]} rounded="md" maxLength={20}/>
+                            <FormErrorMessage fontSize="xs">{form.errors.socialWorkId}</FormErrorMessage>
                         </FormControl>
                     )}
                   </Field>
@@ -188,11 +204,12 @@ FormPatient.propTypes = {
     birthdate: PropTypes.string,
     picture: PropTypes.string,
     genre: PropTypes.string,
-    phone: PropTypes.string,
+    phone: PropTypes.number,
     email: PropTypes.string,
     history: PropTypes.string,
-    dni: PropTypes.string,
+    dni: PropTypes.number,
     socialWork: PropTypes.string,
+    socialWorkId: PropTypes.number,
     proceedings: PropTypes.string
   })
 }

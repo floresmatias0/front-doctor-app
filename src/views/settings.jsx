@@ -1,4 +1,4 @@
-import { Box, Button, Flex, FormControl, Input, Text, useDisclosure, useToast } from "@chakra-ui/react"
+import { Box, Button, Flex, FormControl, Input, Text, useDisclosure, useToast, SimpleGrid } from "@chakra-ui/react"
 import { AppContext } from "../components/context"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { Field, Form, Formik } from "formik"
@@ -282,8 +282,8 @@ export default function Settings() {
                             </Formik>
                     </Box>
                 </Flex>
-                <Box bgColor="#E5F2FA"  gap={2} h="237px" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-                    <Flex flexWrap="wrap" gap={4} my={4} justifyContent="center" alignItems="center" overflow={["auto", "none"]}>
+                <Box bgColor="#E5F2FA"  gap={2} py={4} h="237px" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+                    <SimpleGrid columns={[1, 2, 3]} spacingX='40px' spacingY='10px' overflow="auto">
                         {patients.length > 0 && patients.map((patient, idx) => (
                             <CardCustom
                                 key={idx}
@@ -292,10 +292,11 @@ export default function Settings() {
                                 name={patient.label}
                                 description={`DNI ${patient.value}`}
                                 avatarSize="sm"
-                                width="190px"
+                                width="100%"
+                                height="100%"
                             />
                         ))}
-                    </Flex>
+                    </SimpleGrid>
                     <Box w="full" textAlign="center">
                         <Button 
                             leftIcon={<AiOutlinePlus/>}

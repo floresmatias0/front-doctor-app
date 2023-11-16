@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Button, Flex, Select, Text, useDisclosure, useToast } from '@chakra-ui/react';
+import { Button, Flex, Select, Text, useDisclosure, useToast, SimpleGrid } from '@chakra-ui/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import TabsConsult from '../components/tabs';
 import ListDoctors from '../components/list-doctors';
@@ -175,7 +175,7 @@ export default function Appointment() {
         isOpen={isOpenFirst}
         alertHeader="¿Para quien desea solicitar un turno?"
         alertBody={
-          <Flex flexDirection={["column", "row"]} flexWrap={["wrap", "no-wrap"]} gap={4}>
+          <SimpleGrid flex={1} columns={[1, 2]} spacingX='40px' spacingY='10px'>
             {patients.map((patient, idx) => (
               <CardCustom
                 key={idx}
@@ -184,10 +184,11 @@ export default function Appointment() {
                 name={patient.label}
                 description={`DNI ${patient.value}`}
                 avatarSize="sm"
-                width="190px"
+                width="100%"
+                height="100%"
               />
             ))}
-          </Flex>
+          </SimpleGrid>
         }
         isLoading={false}
         customButtonCancel={

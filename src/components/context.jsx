@@ -42,6 +42,7 @@ export default function DoctorContext({ children }) {
       try {
         let filters = `{ "userId": "${user._id}" }`
         const { data } = await instance.get(`/patients?filters=${filters}`);
+
         const response = data;
   
         if(response.success) {
