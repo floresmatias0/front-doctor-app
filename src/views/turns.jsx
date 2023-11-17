@@ -120,7 +120,7 @@ const Turns = () => {
     const handleDeleteEvent = async (bookingId, userEmail) => {
         try {
             const response = await instance.delete(`/calendars/${bookingId}?email=${userEmail}`)
-            if(response.success) {
+            if(response.data.success) {
                 toast({
                     title: "Cancelado con exito",
                     description: "Vuelva a intentar porfavor",
@@ -170,7 +170,7 @@ const Turns = () => {
                     </Flex>
 
                     <Flex w="100%" flex={1} bg="#FCFEFF" borderRadius="xl" boxShadow="md" px={[2, 2, 4]} py={4} flexDirection="column" overflow="auto">
-                        <Flex gap={4} flexDirection={["column", "column", "column", "row",  "row"]}>
+                        <Flex gap={4} flexDirection={["column", "column", "column", "column",  "row"]}>
                             <Flex flex={1} flexDirection="column" gap={2}>
                                 <Text color="#205583" fontSize={["md", "lg"]} fontWeight="bold" mb={2}>Próximos turnos</Text>
                                 {

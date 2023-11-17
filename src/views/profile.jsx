@@ -193,10 +193,10 @@ export default function Profile() {
             }}
             onSubmit={handleSubmit}
           >
-            {(props) => (
+            {({ isSubmitting }) => (
               <Form>
                 <Field name='name'>
-                  {({ field, form }) => (
+                  {({ field }) => (
                     <FormControl id="name">
                       <FormLabel>Nombre</FormLabel>
                       <Input
@@ -209,7 +209,7 @@ export default function Profile() {
                   )}
                 </Field>
                 <Field name='email'>
-                  {({ field, form }) => (
+                  {({ field }) => (
                     <FormControl id="email">
                       <FormLabel>Correo electronico</FormLabel>
                       <Input
@@ -224,7 +224,7 @@ export default function Profile() {
                 {user?.role === "DOCTOR" && (
                   <>
                     <Field name='reservePrice' type="number">
-                      {({ field, form }) => (
+                      {({ field }) => (
                         <FormControl id="reservePrice">
                           <FormLabel>Precio por consulta</FormLabel>
                           <Input
@@ -236,7 +236,7 @@ export default function Profile() {
                       )}
                     </Field>
                     <Field name='reserveTime' type="number">
-                      {({ field, form }) => (
+                      {({ field }) => (
                         <FormControl id="reserveTime">
                           <FormLabel>Tiempo por consulta</FormLabel>
                           <Input
@@ -251,7 +251,7 @@ export default function Profile() {
                       mt={4}
                       colorScheme='teal'
                       w="full"
-                      isLoading={props.isSubmitting}
+                      isLoading={isSubmitting}
                       type='submit'
                     >
                       Actualizar
