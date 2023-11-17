@@ -179,7 +179,7 @@ const Turns = () => {
                                     dataBookings?.map((x, idx) => {
                                         let now = new Date();
                                         let bookingStart = new Date(x.start.dateTime);
-                                        let isBookingPassed = bookingStart > now;
+                                        let isBookingPassed = (bookingStart > now) && x.status !== "deleted";
                 
                                         let extraDate = `${getFormattedDateTime(x.start.dateTime, {
                                             day: "2-digit",
@@ -200,11 +200,10 @@ const Turns = () => {
 
                                         if(isBookingPassed) {
                                             return (
-                                                <Flex key={idx} w="full" boxShadow="base" borderRadius="md" h={["136px"]} p={4} flexDirection="column" justifyContent="space-between">
+                                                <Flex key={idx} w="full" boxShadow="base" borderRadius="md" h={["auto", "auto", "auto", "142px"]} p={4} gap={2} flexDirection="column" justifyContent="space-between">
                                                     <Flex justifyContent="space-between">
-                                                        <Text letterSpacing="3.2px" color="#205583" fontSize="md">{x?.summary}</Text>
+                                                        <Text letterSpacing="3.2px" color="#205583" fontSize="md" alignSelf="center">{x?.summary}</Text>
                                                         <Text letterSpacing="3.2px" color="#205583" style={x.status === "deleted" ? { opacity: "0.4" }: {}} fontSize="md" display="flex" justifyContent="center" alignItems="center">
-                                                            {x.status === "deleted" ? "Cancelado" : "Consulta Online"}
                                                             {x.status !== "deleted" && (
                                                                 <Menu>
                                                                     <MenuButton
@@ -222,7 +221,7 @@ const Turns = () => {
                                                             )}
                                                         </Text>
                                                     </Flex>
-                                                    <Flex justifyContent="space-between" flexDirection={["column", "row"]}>
+                                                    <Flex justifyContent="space-between" flexDirection={["column", "column", "column", "row"]} gap={2}>
                                                         <Box>
                                                             <Flex gap={2}>
                                                                 <AiOutlineCalendar color="#205583"/>
@@ -244,8 +243,8 @@ const Turns = () => {
                                                             <Text fontSize="sm" color="#205583" fontWeight="bold" textTransform="capitalize">{user === "DOCTOR" ? "Paciente" : "Doctor"}</Text>
                                                             <Text fontSize="sm" color="#205583">{user === "DOCTOR" ? `${x?.patient?.name} ${x?.patient?.lastName}` : x.organizer.name}</Text>
                                                         </Box>
-                                                        <Box>
-                                                            <Button rightIcon={<BiChevronRight color="#FCFFFF"/>} bg="#205583" color="#FFFFFF" onClick={() => window.open(x.hangoutLink, '_blank')} isDisabled={x.status === "deleted"}>Ir a la reunion</Button>
+                                                        <Box display="flex" alignItems="end">
+                                                            <Button size="sm" rightIcon={<BiChevronRight color="#FCFFFF"/>} bg="#205583" color="#FFFFFF" onClick={() => window.open(x.hangoutLink, '_blank')} isDisabled={x.status === "deleted"}>Ir a la reunion</Button>
                                                         </Box>
                                                     </Flex>
                                                 </Flex>
@@ -288,58 +287,62 @@ const Turns = () => {
                                                         <Box>
                                                             <Text w="full" letterSpacing="3.2px" color="#205583" fontSize="md" textTransform="capitalize">{x?.summary}</Text>
                                                         </Box>
-                                                        {user.role !== "DOCTOR" && x.certificate && x.certificate.length > 0 && (
-                                                            <Menu>
-                                                                <MenuButton
-                                                                    as={IconButton}
-                                                                    aria-label='Options'
-                                                                    icon={<FaEllipsis />}
-                                                                    variant='ghost'
-                                                                />
-                                                                <MenuList>
-                                                                        {(
+                                                        <Box>
+                                                            {x.status === "deleted" && "Cancelado"}
+                                                            {user.role !== "DOCTOR" && x.certificate && x.certificate.length > 0 && (
+                                                                <Menu>
+                                                                    <MenuButton
+                                                                        as={IconButton}
+                                                                        aria-label='Options'
+                                                                        icon={<FaEllipsis />}
+                                                                        variant='ghost'
+                                                                    />
+                                                                    <MenuList>
+                                                                            {(
+                                                                                x.certificate.map((c, idx) => (
+                                                                                    <MenuItem key={idx} onClick={() => window.open(c.url)}>Certificado {idx + 1}</MenuItem>
+                                                                                ))
+                                                                            )}
+                                                                    </MenuList>
+                                                                </Menu>
+                                                            )}
+                                                            {user.role === "DOCTOR" && (
+                                                                <Menu>
+                                                                    <MenuButton
+                                                                        as={IconButton}
+                                                                        aria-label='Options'
+                                                                        icon={<FaEllipsis />}
+                                                                        variant='ghost'
+                                                                    />
+                                                                    <MenuList>
+                                                                        <MenuItem display="flex" alignItems="center" justifyContent="center">
+                                                                            <Button position="relative" w="full">
+                                                                                <Input
+                                                                                    id="file-input"
+                                                                                    type="file"
+                                                                                    placeholder="Cargar certificado"
+                                                                                    size="sm"
+                                                                                    onChange={(e) => handleFileInputChange(e, x?.organizer?._id, x?.patient?._id, x?._id)}
+                                                                                    multiple
+                                                                                    style={{ opacity: 0 }}
+                                                                                    position="absolute"
+                                                                                    top="0"
+                                                                                    left="0"
+                                                                                    w="full"
+                                                                                    disabled={x.status === "deleted"}
+                                                                                />
+                                                                                Cargar certificado
+                                                                            </Button>
+                                                                        </MenuItem>
+                                                                        {x.certificate && x.certificate.length > 0 && (
                                                                             x.certificate.map((c, idx) => (
                                                                                 <MenuItem key={idx} onClick={() => window.open(c.url)}>Certificado {idx + 1}</MenuItem>
                                                                             ))
                                                                         )}
-                                                                </MenuList>
-                                                            </Menu>
-                                                        )}
-                                                        {user.role === "DOCTOR" && (
-                                                            <Menu>
-                                                                <MenuButton
-                                                                    as={IconButton}
-                                                                    aria-label='Options'
-                                                                    icon={<FaEllipsis />}
-                                                                    variant='ghost'
-                                                                />
-                                                                <MenuList>
-                                                                    <MenuItem display="flex" alignItems="center" justifyContent="center">
-                                                                        <Button position="relative" w="full">
-                                                                            <Input
-                                                                                id="file-input"
-                                                                                type="file"
-                                                                                placeholder="Cargar certificado"
-                                                                                size="sm"
-                                                                                onChange={(e) => handleFileInputChange(e, x?.organizer?._id, x?.patient?._id, x?._id)}
-                                                                                multiple
-                                                                                style={{ opacity: 0 }}
-                                                                                position="absolute"
-                                                                                top="0"
-                                                                                left="0"
-                                                                                w="full"
-                                                                            />
-                                                                            Cargar certificado
-                                                                        </Button>
-                                                                    </MenuItem>
-                                                                    {x.certificate && x.certificate.length > 0 && (
-                                                                        x.certificate.map((c, idx) => (
-                                                                            <MenuItem key={idx} onClick={() => window.open(c.url)}>Certificado {idx + 1}</MenuItem>
-                                                                        ))
-                                                                    )}
-                                                                </MenuList>
-                                                            </Menu>
-                                                        )}
+                                                                    </MenuList>
+                                                                </Menu>
+                                                            )}
+                                                        </Box>
                                                     </Flex>
                                                     <Flex justifyContent="space-between" flexDirection="column" gap={2}>
                                                         <Box>
