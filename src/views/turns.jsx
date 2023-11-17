@@ -282,8 +282,8 @@ const Turns = () => {
 
                                         if(isOldBooking) {
                                             return (
-                                                <Flex key={idx} w="full" boxShadow="base" borderRadius="md" h={["220px"]} p={4} flexDirection="column" justifyContent="space-between">
-                                                    <Flex justifyContent="space-between" alignItems="start" flexWrap="wrap" style={x.status === "deleted" ? { opacity: "0.4" } : {}}>
+                                                <Flex key={idx} w="full" boxShadow="base" borderRadius="md" h={["220px"]} p={4} flexDirection="column" justifyContent="space-between" style={x.status === "deleted" ? { opacity: "0.4" } : {}}>
+                                                    <Flex justifyContent="space-between" alignItems="start" flexWrap="wrap">
                                                         <Box>
                                                             <Text w="full" letterSpacing="3.2px" color="#205583" fontSize="md" textTransform="capitalize">{x?.summary}</Text>
                                                         </Box>
