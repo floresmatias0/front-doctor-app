@@ -222,7 +222,7 @@ const Turns = () => {
                                                             )}
                                                         </Text>
                                                     </Flex>
-                                                    <Flex justifyContent="space-between">
+                                                    <Flex justifyContent="space-between" flexDirection={["column", "row"]}>
                                                         <Box>
                                                             <Flex gap={2}>
                                                                 <AiOutlineCalendar color="#205583"/>
