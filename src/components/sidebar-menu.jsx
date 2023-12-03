@@ -1,38 +1,52 @@
 import { Box, Button, Center, Flex, Link, Text } from '@chakra-ui/react'
-import { useState } from 'react'
-import { AiOutlineCalendar, AiOutlineHistory, AiOutlineSetting } from 'react-icons/ai'
+import { useContext, useState } from 'react'
+import { AiOutlineCalendar, AiOutlineHistory, AiOutlineSetting, AiOutlinePieChart } from 'react-icons/ai'
 import { BiHomeAlt } from 'react-icons/bi'
 import { TbStethoscope } from 'react-icons/tb'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import { RiLogoutBoxLine } from 'react-icons/ri'
+import { AppContext } from './context'
+
 import '../styles/sidebarmenu.css';
 
-const receiveMenu = (isOpen) => {
-    return [
+const receiveMenu = (isOpen, admin) => {
+    const icons = [
         {
-            icon: <BiHomeAlt color='#205583' className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
+            icon: <BiHomeAlt color='#205583' title="Home" className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
             title: "Home",
             href: "/"
         },
         {
-            icon: <AiOutlineHistory color='#205583' className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
+            icon: <AiOutlineHistory color='#205583' title="Historial" className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
             title: "Historial",
             href: "/history"
         },
         {
-            icon: <AiOutlineCalendar color='#205583' className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
+            icon: <AiOutlineCalendar color='#205583' title="Mis turnos" className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
             title: "Mis turnos",
             href: "/my-turns"
         },
         {
-            icon: <AiOutlineSetting color='#205583' className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
+            icon: <AiOutlineSetting color='#205583' title="Ajustes" className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
             title: "Ajustes",
             href: "/settings"
+        },
+        {
+            icon: <AiOutlinePieChart color='#205583' title="Graficos" className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
+            title: "Graficos",
+            href: "/graphs"
         }
     ]
+
+    if(!admin) {
+        icons.pop()
+    }
+
+    return icons
 }
 
 const SidebarMenu = () => {
+    const { user } = useContext(AppContext)
     const [isOpen, setIsOpen] = useState(false)
 
     const handleOpen = () => setIsOpen(!isOpen)
@@ -40,7 +54,7 @@ const SidebarMenu = () => {
     const sliderTransform = isOpen ? 'translateX(0)' : 'translateX(-120px)'
     const sliderTransformIcons = isOpen ? 'translateX(0)' : 'translateX(100px)'
     
-    const menuItems = receiveMenu(isOpen);
+    const menuItems = receiveMenu(isOpen, user?.super);
 
     const logout = () => {
         localStorage.removeItem("user");
@@ -75,7 +89,7 @@ const SidebarMenu = () => {
                     <Center>
                         <Button onClick={logout} bg="transparent">
                             <Flex gap={2}>
-                                <RiLogoutBoxLine color='#205583' className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>
+                                <RiLogoutBoxLine color='#205583' title="Cerrar sesión" className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>
                                 <Text className="fade-in-text" display={isOpen ? 'block' : 'none'} w="96px" fontSize='sm' color='#205583' style={{ fontWeight: 'bold', lineHeight: 'normal', opacity: isOpen ? 1 : 0, transition: 'opacity 0.3s ease-in-out' }}>Cerrar sesión</Text>
                             </Flex>
                         </Button>

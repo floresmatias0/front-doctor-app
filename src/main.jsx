@@ -10,7 +10,7 @@ import {
 
 /* existing imports */
 import ErrorPage from "./components/error-page";
-import { LayoutWithSidebar, ProtectedRoutes } from "./components/layouts";
+import { LayoutWithSidebar, ProtectedRoutes, ProtectedRoutesAdmin } from "./components/layouts";
 
 import Login from "./views/login";
 import Verify from "./views/verify";
@@ -23,6 +23,8 @@ import History from "./views/history";
 import PrivacyPolicies from "./views/privacy-policies";
 import TermsOfServices from "./views/terms-of-services";
 import Turns from "./views/turns";
+import Upgrade from "./views/upgrade";
+import Graphs from "./views/charts";
 
 const colors = {
   brand: {
@@ -76,6 +78,16 @@ const router = createBrowserRouter([
   {
     path: "my-turns",
     element: <LayoutWithSidebar><ProtectedRoutes><Turns /></ProtectedRoutes></LayoutWithSidebar>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "upgrade-user",
+    element: <LayoutWithSidebar><ProtectedRoutesAdmin><Upgrade /></ProtectedRoutesAdmin></LayoutWithSidebar>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "graphs",
+    element: <LayoutWithSidebar><ProtectedRoutesAdmin><Graphs /></ProtectedRoutesAdmin></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
   {

@@ -1,4 +1,4 @@
-import { Box, Button, Flex, FormControl, Input, Text, useDisclosure, useToast, SimpleGrid } from "@chakra-ui/react"
+import { Box, Button, Flex, FormControl, Input, Text, useDisclosure, useToast, SimpleGrid, Link } from "@chakra-ui/react"
 import { AppContext } from "../components/context"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { Field, Form, Formik } from "formik"
@@ -137,12 +137,17 @@ export default function Settings() {
     }, [code, connectMercadopago])
 
     return (
-        <Flex w="100%" h="100%" px={[0, 2]} flexDirection="column">
+        <Flex w="100%" h="100%" px={[0, 2]} flexDirection="column" justifyContent="space-between">
             <Flex w="100%" justifyContent="space-between" alignItems="center" flexDirection={["column", "row"]} my={2}>
                 <Text color="#205583" fontSize={["lg", "xl"]} fontWeight="bold">Ajustes</Text>
+                {user?.super && (
+                    <Link color="#205583" fontSize="xs" fontWeight="bold" href="/upgrade-user">
+                        Administrar usuarios
+                    </Link>
+                )}
             </Flex>
-            <Box bg="#FFFFFF" w={["280px", "100%"]} h="100%" borderRadius="xl" boxShadow="md">
-                <Flex flexDirection="column" justifyContent="center" alignItems="center">
+            <Flex bg="#FFFFFF" w={["280px", "100%"]} h="100%" borderRadius="xl" boxShadow="md" justifyContent="space-between" alignItems="center" flexDirection="column">
+                <Flex flexDirection="column" justifyContent="center" alignItems="center" w="100%">
                     <Box w={["100%", "100%", "90%"]} px={[4, 4, 4, 0]} mb={2}>
                         <Text textAlign="center" fontSize={["lg","xl"]} color="#205583" my={[2, 4]} fontWeight="bold">Datos del usuario</Text>
                             <Formik
@@ -282,7 +287,7 @@ export default function Settings() {
                             </Formik>
                     </Box>
                 </Flex>
-                <Box bgColor="#E5F2FA"  gap={2} py={4} h="237px" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+                <Box bgColor="#E5F2FA"  gap={2} py={4} h="auto" w="100%" display="flex" flexDirection="column" justifyContent="center" alignItems="center" borderBottomRadius="xl">
                     <SimpleGrid columns={[1, 2, 3]} spacingX='40px' spacingY='10px' overflow="auto">
                         {patients.length > 0 && patients.map((patient, idx) => (
                             <CardCustom
@@ -336,7 +341,7 @@ export default function Settings() {
                         )}
                     </Box>
                 </Box>
-            </Box>
+            </Flex>
             <AlertModal
               onClose={() => onCloseFirst()}
               isOpen={isOpenFirst}
