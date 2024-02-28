@@ -166,7 +166,7 @@ const Turns = () => {
                 <Fragment>
                     <Flex w="100%" justifyContent="space-between" alignItems="center" flexDirection={["column", "row"]} my={2} flex="0 0 auto">
                         <Text color="#205583" fontSize={["lg", "xl"]} fontWeight="bold">Mis turnos</Text>
-                        {user.role !== 'DOCTOR' && <Button leftIcon={<MdAdd/>} bg="#FCFEFF" size="sm" onClick={() => navigate('/appointment')}>Nuevo Turno</Button>}
+                        {user.role !== 'DOCTOR' && <Button leftIcon={<MdAdd/>} bg="#FCFEFF" size="sm" onClick={() => navigate('/turnos')}>Nuevo Turno</Button>}
                     </Flex>
 
                     <Flex w="100%" flex={1} bg="#FCFEFF" borderRadius="xl" boxShadow="md" px={[2, 2, 4]} py={4} flexDirection="column" overflow="auto">

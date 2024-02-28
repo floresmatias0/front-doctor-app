@@ -27,7 +27,7 @@ export const ProtectedRoutes = ({children}) => {
     }
 
     if(!user) {
-        return <Navigate to="/login" replace/>
+        return <Navigate to="/iniciar-sesion" replace/>
     }
 
     return children
@@ -53,7 +53,7 @@ export const ProtectedRoutesAdmin = ({children}) => {
     }
 
     if(!user) 
-        return <Navigate to="/login" replace/>
+        return <Navigate to="/iniciar-sesion" replace/>
 
     if(user && !user?.super) 
         return <Navigate to="/" replace/>

@@ -17,7 +17,7 @@ const Home = () => {
         <div dangerouslySetInnerHTML={{__html: welcomeText }}></div>
       </Text>
       {user.role !== "DOCTOR" && <Flex justifyContent="center" alignItems="center" gap={4} flexDirection="column" my={2}>
-        <Button bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["sm", "md"]} onClick={() => navigate('/appointment')}>
+        <Button bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["sm", "md"]} onClick={() => navigate('/turnos')}>
           SOLICITAR NUEVO TURNO
         </Button>
       </Flex>}

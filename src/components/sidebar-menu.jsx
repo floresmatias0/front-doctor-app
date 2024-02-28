@@ -19,22 +19,22 @@ const receiveMenu = (isOpen, admin) => {
         {
             icon: <AiOutlineHistory color='#205583' title="Historial" className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
             title: "Historial",
-            href: "/history"
+            href: "/historial"
         },
         {
             icon: <AiOutlineCalendar color='#205583' title="Mis turnos" className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
             title: "Mis turnos",
-            href: "/my-turns"
+            href: "/mis-turnos"
         },
         {
             icon: <AiOutlineSetting color='#205583' title="Ajustes" className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
             title: "Ajustes",
-            href: "/settings"
+            href: "/configuracion"
         },
         {
             icon: <AiOutlinePieChart color='#205583' title="Graficos" className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
             title: "Graficos",
-            href: "/graphs"
+            href: "/graficos"
         }
     ]
 

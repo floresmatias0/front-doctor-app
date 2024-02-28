@@ -8,7 +8,6 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-/* existing imports */
 import ErrorPage from "./components/error-page";
 import { LayoutWithSidebar, ProtectedRoutes, ProtectedRoutesAdmin } from "./components/layouts";
 
@@ -48,54 +47,54 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "appointment",
+    path: "turnos",
     element: <LayoutWithSidebar><ProtectedRoutes><Appointment /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
   {
-    path: "verify",
+    path: "verificacion",
     element: <Verify />,
     errorElement: <ErrorPage />
   },
   {
-    path: "login",
+    path: "iniciar-sesion",
     element: localStorage.getItem("user") ? <Navigate to="/" replace/> : <Login handleLogin={handleLogin}/>,
   },
   {
-    path: "admin",
+    path: "administrador",
     element: localStorage.getItem("user") ? <Navigate to="/" replace/> : <Login handleLogin={handleLoginAdmin}/>,
   },
   {
-    path: "settings",
+    path: "configuracion",
     element: <LayoutWithSidebar><ProtectedRoutes><Settings /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
   {
-    path: "history",
+    path: "historial",
     element: <LayoutWithSidebar><ProtectedRoutes><History /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
   {
-    path: "my-turns",
+    path: "mis-turnos",
     element: <LayoutWithSidebar><ProtectedRoutes><Turns /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
   {
-    path: "upgrade-user",
+    path: "mejora-de-usuario",
     element: <LayoutWithSidebar><ProtectedRoutesAdmin><Upgrade /></ProtectedRoutesAdmin></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
   {
-    path: "graphs",
+    path: "graficos",
     element: <LayoutWithSidebar><ProtectedRoutesAdmin><Graphs /></ProtectedRoutesAdmin></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
   {
-    path: "privacy-policies",
+    path: "politica-de-privacidad",
     element: <PrivacyPolicies />,
   },
   {
-    path: "terms-of-services",
+    path: "condiciones-del-servicio",
     element: <TermsOfServices />,
   },
 ]);

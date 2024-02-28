@@ -108,7 +108,7 @@ export default function Settings() {
             })
 
             setTimeout(() => {
-                navigate("/settings")
+                navigate("/configuracion")
             }, 2000)
         }catch(err) {
             toast({
@@ -147,7 +147,7 @@ export default function Settings() {
             <Flex w="100%" justifyContent="space-between" alignItems="center" flexDirection={["column", "row"]} my={2}>
                 <Text color="#205583" fontSize={["lg", "xl"]} fontWeight="bold">Ajustes</Text>
                 {user?.super && (
-                    <Link color="#205583" fontSize="xs" fontWeight="bold" href="/upgrade-user">
+                    <Link color="#205583" fontSize="xs" fontWeight="bold" href="/mejora-de-usuario">
                         Administrar usuarios
                     </Link>
                 )}

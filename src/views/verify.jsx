@@ -14,7 +14,7 @@ export default function Verify() {
       return navigate("/")
     }
 
-    navigate("/login")
+    navigate("/iniciar-sesion")
   }, [idUser, navigate]);
 
   return null;
