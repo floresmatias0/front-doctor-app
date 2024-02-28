@@ -10,6 +10,7 @@ import { AlertModal } from "../components/alerts"
 import { useSearchParams } from "react-router-dom"
 import FormPatient from "../components/form-patient"
 import { SiMercadopago } from "react-icons/si"
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
     name: false,
@@ -19,6 +20,7 @@ const initialState = {
 }
 
 export default function Settings() {
+    const navigate = useNavigate()
     const toast = useToast()
     const [searchParams] = useSearchParams();
   
@@ -102,7 +104,7 @@ export default function Settings() {
             })
 
             setTimeout(() => {
-                window.location.reload()
+                navigate("/settings")
             }, 2000)
         }catch(err) {
             toast({

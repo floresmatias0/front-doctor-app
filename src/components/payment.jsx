@@ -30,7 +30,8 @@ const Payment = ({
                 endDateTime: `${format(endDateTime, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`,
                 unit_price: doctorSelected.reservePrice,
                 symptoms: symptomsSelected
-            });
+            })
+            
             const { init_point, sandbox_init_point } = payment.data.data;
 
             if(import.meta.env.VITE_ENVIRONMENT === "localhost") {
