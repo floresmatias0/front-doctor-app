@@ -16,7 +16,8 @@ const initialState = {
     name: false,
     email: false,
     reservePrice: false,
-    reserveTime: false
+    reserveTime: false,
+    especialization: false
 }
 
 export default function Settings() {
@@ -39,8 +40,11 @@ export default function Settings() {
     const handleSubmit = async (values) => {
         try {
           const updatedUser = await instance.put(`/users/${user?._id}`, {
+            name: values.name,
+            email: values.email,
             reservePrice: values.reservePrice,
-            reserveTime: values.reserveTime
+            reserveTime: values.reserveTime,
+            especialization: values.especialization
           })
           setUser(updatedUser.data.data)
           setIsEditable(initialState)
@@ -157,7 +161,8 @@ export default function Settings() {
                                     name: user?.name,
                                     email: user?.email,
                                     reservePrice: user?.reservePrice,
-                                    reserveTime: user?.reserveTime
+                                    reserveTime: user?.reserveTime,
+                                    especialization: user?.especialization
                                 }}
                                 onSubmit={handleSubmit}
                             >
@@ -263,6 +268,32 @@ export default function Settings() {
                                                             <Flex alignItems="center" justifyContent="space-between" gap={2}>
                                                                 <Text fontSize={["sm", "lg"]} color="#205583">{user?.reserveTime}</Text>
                                                                 <FaPencilAlt style={{ cursor: 'pointer' }} onClick={() => setIsEditable({...isEditable, reserveTime: true})}/>
+                                                            </Flex>
+                                                        )}
+                                                    </Box>
+                                                    <Box w={["100%", "auto"]}>
+                                                        <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Especialización</Text>
+                                                        {isEditable.especialization ? (
+                                                            <Flex alignItems="center" justifyContent="space-between" gap={2}>
+                                                                <Field name='especialization'>
+                                                                {({ field }) => (
+                                                                    <FormControl id="especialization">
+                                                                        <Input
+                                                                            placeholder="Pediatría"
+                                                                            _placeholder={{ color: "gray.500" }}
+                                                                            type="text"
+                                                                            {...field}
+                                                                            maxW={["auto", "150px"]}
+                                                                        />
+                                                                    </FormControl>
+                                                                )}
+                                                                </Field>
+                                                                <AiOutlineCloseCircle style={{ cursor: 'pointer' }} onClick={() => setIsEditable({...isEditable, especialization: false})}/>
+                                                            </Flex>
+                                                        ) : (
+                                                            <Flex alignItems="center" justifyContent="space-between" gap={2}>
+                                                                <Text fontSize={["sm", "lg"]} color="#205583">{user?.especialization}</Text>
+                                                                <FaPencilAlt style={{ cursor: 'pointer' }} onClick={() => setIsEditable({...isEditable, especialization: true})}/>
                                                             </Flex>
                                                         )}
                                                     </Box>

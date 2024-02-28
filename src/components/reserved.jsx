@@ -4,6 +4,8 @@ import { useNavigate, useSearchParams } from "react-router-dom"
 import { es } from 'date-fns/locale'
 import { format } from "date-fns"
 import { AiOutlineCheckCircle } from "react-icons/ai"
+import { useCallback, useEffect, useState } from 'react'
+import { instance } from '../utils/axios'
 
 const Reserved = () => {
     const navigate = useNavigate()
@@ -17,24 +19,73 @@ const Reserved = () => {
     const month = fechaStart.getMonth() + 1;
     const year = fechaStart.getFullYear();
 
+    const [dataDoctor, setDataDoctor] = useState(null)
+    const [dataPatient, setDataPatient] = useState(null)
+
+    const fetchDataDoctor = useCallback(async() => {
+        try {
+            let filters = `{ "email": "${doctor}" }`
+            const { data } = await instance.get(`/users?filters=${filters}`)
+            const response = data;
+  
+            if(response.success) {
+                let user = response.data;
+    
+                return setDataDoctor(user?.length > 0 && user[0])
+            }
+        }catch(err) {
+            console.log(err)
+        }
+    }, [doctor])
+
+    const fetchDataPatient = useCallback(async() => {
+        try {
+            const { data } = await instance.get(`/patients/${patient}`)
+            const response = data;
+  
+            if(response.success) {
+                let user = response.data;
+    
+                return setDataPatient(user)
+            }
+        }catch(err) {
+            console.log(err)
+        }
+    }, [doctor])
+
+    useEffect(() => {
+        const fetchDataUsers = async () => {
+            try {
+              await fetchDataDoctor()
+              await fetchDataPatient()
+            }catch(err){
+              console.log(err)
+            }
+        }
+
+        fetchDataUsers()
+    }, [])
+
+    console.log({dataDoctor, dataPatient})
+
     return (
         <Flex h="100%" flexDirection="column">
             <Flex bgColor="#E5F2FA" flexDirection="column" justifyContent="center" alignItems="center" h={["auto", "237px"]}>
                 <Box w={["100%", "100%", "100%", "50%"]} px={[4, 4, 4, 0]}>
                     <Text textAlign={["center", "left"]} fontSize={["md", "lg"]} color="#205583" my={2}>
-                        Detalles del turno médico de
-                        {patient}
+                        Detalles del turno médico para el paciente: 
+                        {` ${dataPatient?.name}`}
                     </Text>
                     <Flex w="100%" justifyContent="space-between" alignItems="center" my={[2, 8]} flexWrap={["wrap"]} gap={[3, 0]}>
                         <Box>
                             <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Médico</Text>
                             <Text fontSize={["sm", "lg"]} color="#205583">
-                                {doctor}
+                                {dataDoctor?.name}
                             </Text>
                         </Box>
                         <Box>
                             <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Especialización</Text>
-                            <Text fontSize={["sm", "lg"]} color="#205583">Especializacion</Text>
+                            <Text fontSize={["sm", "lg"]} color="#205583">{dataDoctor?.especialization}</Text>
                         </Box>
                         <Box>
                             <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Día</Text>
@@ -45,7 +96,7 @@ const Reserved = () => {
                         <Box>
                             <Text fontSize={["sm", "lg"]} color="#205583" fontWeight="bold">Hora</Text>
                             <Text fontSize={["sm", "lg"]} color="#205583">
-                                {endDateTime && format(new Date(endDateTime), 'HH:mm', { locale: es })}hs
+                                {startDateTime && format(new Date(startDateTime), 'HH:mm', { locale: es })}hs
                             </Text>
                         </Box>
                     </Flex>
