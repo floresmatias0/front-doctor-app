@@ -15,7 +15,7 @@ import {
                     <Box mb={4} overflow="auto" w={["full", "full", "50%"]} mx={[4, 4, "auto"]} p={4}>
                     <Box mt={4}>
                         <Text fontSize="md" fontWeight="bold" color="#205583" my={2}>Última actualización: 27/10/2023</Text>
-                        <Text>Al utilizar nuestra aplicación DoctorApp, aceptas cumplir con las siguientes condiciones de servicio:</Text>
+                        <Text>Al utilizar nuestra aplicación <b>ZonaPediatrica</b>, aceptas cumplir con las siguientes condiciones de servicio:</Text>
                     </Box>
 
                     <Box mt={4}>

@@ -11,11 +11,11 @@ export default function PrivacyPolicies() {
       <Box h="100vh" w="full" flex={1} py={[4, 4, 4, 12]} mx={[4, 28]}>
         <Box bg="#FCFEFF" w="full" h="full" borderRadius="xl" boxShadow="md" display="flex" flexDirection="column">
           <Center w="full" h="full" display="flex" flexDirection="column">
-              <Text fontSize={["md", "lg", "xl"]} fontWeight="bold" color="#205583" my={2}>Políticas de privacidad</Text>
+              <Text fontSize={["md", "lg", "xl"]} fontWeight="bold" color="#205583" my={2}>Política de privacidad</Text>
               <Box mb={4} overflow="auto" w={["full", "full", "50%"]} mx={[4, 4, "auto"]} p={4}>
                 <Box mt={4}>
-                    <Text fontSize="md" fontWeight="bold" color="#205583" my={2}>Última actualización: 27/10/2023</Text>
-                    <Text>Agradecemos que utilices nuestra aplicación <b>DoctorApp</b>. La protección de tus datos personales es una prioridad para nosotros. Esta Política de Privacidad describe cómo recopilamos, utilizamos y compartimos información personal a través de nuestra aplicación. Al utilizar la aplicación, aceptas los términos de esta política.</Text>
+                    <Text fontSize="md" fontWeight="bold" color="#205583" my={2}>Última actualización: 28/02/2024</Text>
+                    <Text>Agradecemos que utilices nuestra aplicación <b>ZonaPediatrica</b>. La protección de tus datos personales es una prioridad para nosotros. Esta Política de Privacidad describe cómo recopilamos, utilizamos y compartimos información personal a través de nuestra aplicación. Al utilizar la aplicación, aceptas los términos de esta política.</Text>
                 </Box>
 
                 <Box mt={4}>

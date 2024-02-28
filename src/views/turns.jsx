@@ -203,7 +203,7 @@ const Turns = () => {
                                                 <Flex key={idx} w="full" boxShadow="base" borderRadius="md" h={["auto", "auto", "auto", "142px"]} p={4} gap={2} flexDirection="column" justifyContent="space-between">
                                                     <Flex justifyContent="space-between">
                                                         <Text letterSpacing="3.2px" color="#205583" fontSize="md" alignSelf="center">{x?.summary}</Text>
-                                                        <Text letterSpacing="3.2px" color="#205583" style={x.status === "deleted" ? { opacity: "0.4" }: {}} fontSize="md" display="flex" justifyContent="center" alignItems="center">
+                                                        <Box letterSpacing="3.2px" color="#205583" style={x.status === "deleted" ? { opacity: "0.4" }: {}} fontSize="md" display="flex" justifyContent="center" alignItems="center">
                                                             {x.status !== "deleted" && (
                                                                 <Menu>
                                                                     <MenuButton
@@ -219,7 +219,7 @@ const Turns = () => {
                                                                     </MenuList>
                                                                 </Menu>
                                                             )}
-                                                        </Text>
+                                                        </Box>
                                                     </Flex>
                                                     <Flex justifyContent="space-between" flexDirection={["column", "column", "column", "row"]} gap={2}>
                                                         <Box>

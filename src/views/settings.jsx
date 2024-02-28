@@ -145,7 +145,7 @@ export default function Settings() {
     return (
         <Flex w="100%" h="100%" px={[0, 2]} flexDirection="column" justifyContent="space-between">
             <Flex w="100%" justifyContent="space-between" alignItems="center" flexDirection={["column", "row"]} my={2}>
-                <Text color="#205583" fontSize={["lg", "xl"]} fontWeight="bold">Ajustes</Text>
+                <Text color="#205583" fontSize={["lg", "xl"]} fontWeight="bold">Configuración</Text>
                 {user?.super && (
                     <Link color="#205583" fontSize="xs" fontWeight="bold" href="/mejora-de-usuario">
                         Administrar usuarios
@@ -321,7 +321,8 @@ export default function Settings() {
                     </Box>
                 </Flex>
                 <Box bgColor="#E5F2FA"  gap={2} py={4} h="auto" w="100%" display="flex" flexDirection="column" justifyContent="center" alignItems="center" borderBottomRadius="xl">
-                    <SimpleGrid columns={[1, 2, 3]} spacingX='40px' spacingY='10px' overflow="auto">
+                    <Text textAlign="center" fontSize={["lg","xl"]} color="#205583" my={[1, 2]} fontWeight="bold">A cargo</Text>
+                    <SimpleGrid columns={[1, 2, 3]} spacingX='40px' spacingY='5px' overflow="auto">
                         {patients.length > 0 && patients.map((patient, idx) => (
                             <CardCustom
                                 key={idx}
@@ -335,7 +336,7 @@ export default function Settings() {
                             />
                         ))}
                     </SimpleGrid>
-                    <Box w="full" textAlign="center">
+                    <Box w="full" textAlign="center" my={[1, 2]}>
                         <Button 
                             leftIcon={<AiOutlinePlus/>}
                             onClick={() => onOpenFirst()}

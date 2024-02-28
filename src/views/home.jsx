@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Button, Flex, Text } from "@chakra-ui/react"
+import { Button, Flex, Text, Box } from "@chakra-ui/react"
 import { useContext } from "react";
 import { AppContext } from "../components/context";
 
@@ -13,9 +13,9 @@ const Home = () => {
   return (
     <Flex w="100%" h="100%" justifyContent={["center", "top"]} alignItems="center" flexDirection="column">
       <Text color="#205583" fontSize={["xl", "2xl"]} fontWeight="bold" my={2}>{titleText}</Text>
-      <Text color="#205583" fontSize={["md", "xl"]} w={["auto","462px"]} my={2} textAlign="center" style={{ lineHeight: "110%" }}>
+      <Box color="#205583" fontSize={["md", "xl"]} w={["auto","462px"]} my={2} textAlign="center" style={{ lineHeight: "110%" }}>
         <div dangerouslySetInnerHTML={{__html: welcomeText }}></div>
-      </Text>
+      </Box>
       {user.role !== "DOCTOR" && <Flex justifyContent="center" alignItems="center" gap={4} flexDirection="column" my={2}>
         <Button bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["sm", "md"]} onClick={() => navigate('/turnos')}>
           SOLICITAR NUEVO TURNO

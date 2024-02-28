@@ -25,7 +25,8 @@ const ListDoctors = ({ onNext, isActive }) => {
                   value: doctors[i].email,
                   picture: doctors[i].picture,
                   reservePrice: doctors[i].reservePrice,
-                  reserveTime: doctors[i].reserveTime
+                  reserveTime: doctors[i].reserveTime,
+                  especialization: doctors[i].especialization
                 })
               }
               setDoctors(auxDoctors)
@@ -69,15 +70,15 @@ const ListDoctors = ({ onNext, isActive }) => {
             {doctors?.length > 0 && doctors.map((doctor, idx) => (
               <CardCustom
                 key={idx}
-                heading={doctor.label}
+                heading={doctor?.label}
                 handleSelect={() => handleDoctorsSelect(doctor)}
-                name={doctor.name}
-                picture={doctor.picture}
-                description="Especializacion"
+                name={doctor?.name}
+                picture={doctor?.picture}
+                description={doctor?.especialization}
                 avatarSize="md"
                 width="100%"
                 height="100%"
-                isSelected={selectedDoctor.label === doctor.label}
+                isSelected={selectedDoctor.label === doctor?.label}
               />
             ))}
         </SimpleGrid>

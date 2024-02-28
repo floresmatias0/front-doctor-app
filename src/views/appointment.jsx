@@ -153,7 +153,7 @@ export default function Appointment() {
           placeholder='Selecciona un paciente'
           value={patientSelected.value}
           onChange={(e) => {
-            const selected = patients.find((patient) => patient.value === e.target.value);
+            const selected = patients.find((patient) => parseInt(patient.value) === parseInt(e.target.value));
             setPatientSelected(selected);
           }}
           fontSize={["sm", "md"]}
