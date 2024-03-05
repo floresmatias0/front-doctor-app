@@ -322,7 +322,7 @@ export default function Settings() {
                 </Flex>
                 <Box bgColor="#E5F2FA"  gap={2} py={4} h="auto" w="100%" display="flex" flexDirection="column" justifyContent="center" alignItems="center" borderBottomRadius="xl">
                     <Text textAlign="center" fontSize={["lg","xl"]} color="#205583" my={[1, 2]} fontWeight="bold">A cargo</Text>
-                    <SimpleGrid columns={[1, 2, 3]} spacingX='40px' spacingY='5px' overflow="auto">
+                    <SimpleGrid columns={[1, 2, 4]} spacingX='40px' spacingY='5px' overflow="auto" minHeight="100px" maxHeight="100px">
                         {patients.length > 0 && patients.map((patient, idx) => (
                             <CardCustom
                                 key={idx}
