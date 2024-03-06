@@ -66,8 +66,6 @@ const Reserved = () => {
         fetchDataUsers()
     }, [])
 
-    console.log({dataDoctor, dataPatient})
-
     return (
         <Flex h="100%" flexDirection="column">
             <Flex bgColor="#E5F2FA" flexDirection="column" justifyContent="center" alignItems="center" h={["auto", "237px"]}>
