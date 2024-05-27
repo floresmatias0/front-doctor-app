@@ -11,7 +11,7 @@ export default function Verify() {
   useEffect(() => {
     if (idUser) {
       localStorage.setItem("user", idUser);
-      return navigate("/")
+      return navigate("/inicio")
     }
 
     navigate("/iniciar-sesion")
