@@ -116,7 +116,8 @@ const LandingHome = () => {
                     </Grid>
                     <Grid templateColumns='repeat(5, 1fr)'>
                         <GridItem colSpan={[5, 3, 3, 2]} alignContent='center'>
-                            <Heading as='h1' size={['xl', '2xl', '2xl', '4xl']} color='white' fontWeight='700'>
+                            <Heading as="h1" size="xl" visibility='hidden' position='absolute'>Servicios de Atención Médica Infantil</Heading>
+                            <Heading as='h2' size={['xl', '2xl', '2xl', '4xl']} color='white' fontWeight='700'>
                                 Brindando bienestar y seguridad a tus pequeños
                             </Heading>
                             <Text color='white' fontSize='xl' pt={['0','20px']}>
@@ -149,7 +150,7 @@ const LandingHome = () => {
                 <Container maxW='container.xl'>
                     <Flex justifyContent='end' flexDirection='column'>
                         <Text color='brand.900' textAlign='right'>SERVICIOS</Text>
-                        <Text color='brand.900' fontWeight='700' fontSize={['lg','xl','xl', '2xl']} textAlign='right'>ACCESO RÁPIDO Y CONVENIENTE</Text>
+                        <Heading as="h2" size="lg" color='brand.900' textAlign='right' textTransform='uppercase'>Acceso rápido y conveniente</Heading>
                     </Flex>
                     <Flex flexDirection={['column', 'row']} justifyContent='space-between' alignItems='center' my={10} gap={4}>
                         {principalServices?.length > 0 && principalServices?.map((item, key) => (
@@ -164,7 +165,7 @@ const LandingHome = () => {
             <Box w='full'>
                 <Container maxW='container.xl'>
                     <Flex justifyContent='end' flexDirection='column'>
-                        <Text color='brand.900' textAlign='left'>¿CÓMO FUNCIONA?</Text>
+                        <Heading as="h2" size="lg" color='brand.900' textAlign='left' textTransform='uppercase'>¿Cómo Funciona?</Heading>
                     </Flex>
                     <Flex flexDirection={['column', 'row']} justifyContent='space-between' alignItems='center' my={10} gap={4}>
                         {steps?.length > 0 && steps?.map((item, key) => (
@@ -188,7 +189,7 @@ const LandingHome = () => {
             </Box>
             <Box w='full' ref={refWhoUs}>
                 <Container maxW='container.xl'>
-                    <Img src={banner} alt='Banner' w='full' maxH='250px' objectFit='cover' objectPosition='top' boxShadow='xl'/>
+                    <Img src={banner} alt="Consulta médica online con pediatras" w='full' maxH='250px' objectFit='cover' objectPosition='top' boxShadow='xl' loading="lazy"/>
                     <Flex justifyContent='end' flexDirection='column' mt='10'>
                         <Text color='brand.900' fontWeight='700' fontSize={['lg','xl','xl', '2xl']} textAlign='left'>Quiénes somos</Text>
                     </Flex>
