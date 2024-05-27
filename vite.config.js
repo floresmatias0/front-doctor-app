@@ -9,9 +9,9 @@ export default defineConfig({
     VitePWA({
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'maskable-icon.png'],
       manifest: {
-        name: 'My Awesome App',
-        short_name: 'MyApp',
-        description: 'My Awesome App description',
+        name: 'Atencion Pediatrica',
+        short_name: 'ZonaPediatrica',
+        description: 'Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.',
         theme_color: '#ffffff',
         icons: [
           {
