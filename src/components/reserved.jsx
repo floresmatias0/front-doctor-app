@@ -117,7 +117,7 @@ const Reserved = () => {
                     </Text>
                 </Box>
                 <Flex gap={2} my={[2, 6]} flexDirection={["column", "row"]}>
-                    <Button bg="#FFFFFF" color="#205583" w={["220px","300px"]} size={["sm", "md"]} onClick={() => navigate('/')}>VOLVER AL INICIO</Button>
+                    <Button bg="#FFFFFF" color="#205583" w={["220px","300px"]} size={["sm", "md"]} onClick={() => navigate('/inicio')}>VOLVER AL INICIO</Button>
                     <Button bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["sm", "md"]} onClick={() => navigate('/mis-turnos')}>IR A MIS TURNOS</Button>
                 </Flex>
             </Flex>

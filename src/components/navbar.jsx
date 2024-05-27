@@ -66,7 +66,7 @@ export default function Navbar() {
 
         <HStack spacing={8} alignItems={"center"}>
           <Avatar
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/inicio')}
             size="xl"
             src={logo}
             cursor="pointer"

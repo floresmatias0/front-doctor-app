@@ -14,7 +14,7 @@ const receiveMenu = (isOpen, admin) => {
         {
             icon: <BiHomeAlt color='#205583' title="Home" className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
             title: "Home",
-            href: "/"
+            href: "/inicio"
         },
         {
             icon: <AiOutlineHistory color='#205583' title="Historial" className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
