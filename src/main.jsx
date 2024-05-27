@@ -8,6 +8,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
+import DoctorContext from "./components/context";
 import ErrorPage from "./components/error-page";
 import { LayoutWithSidebar, ProtectedRoutes, ProtectedRoutesAdmin } from "./components/layouts";
 
@@ -16,8 +17,6 @@ import Verify from "./views/verify";
 import Home from "./views/home";
 import Appointment from "./views/appointment";
 import Settings from "./views/settings";
-import './styles/main.css';
-import DoctorContext from "./components/context";
 import History from "./views/history";
 import PrivacyPolicies from "./views/privacy-policies";
 import TermsOfServices from "./views/terms-of-services";
@@ -25,17 +24,21 @@ import Turns from "./views/turns";
 import Upgrade from "./views/upgrade";
 import Graphs from "./views/charts";
 
+import './styles/main.css';
+import LandingHome from "./views/landing";
+
 const colors = {
   brand: {
     900: '#1a365d',
     800: '#153e75',
     700: '#2a69ac',
   },
+  gray: {
+    200: '#DCDCDC'
+  }
 }
 
-const theme = extendTheme({ 
-  colors,
-})
+const theme = extendTheme({ colors });
 
 const handleLogin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google/?role=PATIENT`, "_self");
 const handleLoginAdmin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google/?role=DOCTOR`, "_self");
@@ -43,6 +46,11 @@ const handleLoginAdmin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <LandingHome/>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/inicio",
     element: <LayoutWithSidebar><ProtectedRoutes><Home /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },
@@ -58,11 +66,11 @@ const router = createBrowserRouter([
   },
   {
     path: "iniciar-sesion",
-    element: localStorage.getItem("user") ? <Navigate to="/" replace/> : <Login handleLogin={handleLogin}/>,
+    element: localStorage.getItem("user") ? <Navigate to="/inicio" replace/> : <Login handleLogin={handleLogin}/>,
   },
   {
     path: "administrador",
-    element: localStorage.getItem("user") ? <Navigate to="/" replace/> : <Login handleLogin={handleLoginAdmin}/>,
+    element: localStorage.getItem("user") ? <Navigate to="/inicio" replace/> : <Login handleLogin={handleLoginAdmin}/>,
   },
   {
     path: "configuracion",

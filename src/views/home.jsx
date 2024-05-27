@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Button, Flex, Text, Box } from "@chakra-ui/react"
+import { Button, Flex, Text, Box } from "@chakra-ui/react";
 import { useContext } from "react";
 import { AppContext } from "../components/context";
 
