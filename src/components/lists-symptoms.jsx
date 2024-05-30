@@ -26,18 +26,6 @@ const ListSymptoms = ({ onNext, isActive }) => {
         }
     }
 
-    useEffect(() => {
-        const fetchDataSymptoms = async () => {
-            try {
-                await fetchSymptoms()
-            }catch(err){
-              console.log(err)
-            }
-          }
-          
-          if(isActive) fetchDataSymptoms()
-    }, [isActive])
-
     const handleSymptomSelect = (symptom) => {
       const isSelected = selectedSymptoms.includes(symptom);
       if (isSelected) {
@@ -52,6 +40,22 @@ const ListSymptoms = ({ onNext, isActive }) => {
         onNext(selectedSymptoms);
       }
     };
+
+    useEffect(() => {
+      const fetchDataSymptoms = async () => {
+          try {
+              await fetchSymptoms()
+          }catch(err){
+            console.log(err)
+          }
+        }
+        
+        if(isActive) fetchDataSymptoms()
+    }, [isActive])
+
+    if(!isActive) {
+      return null
+    }
 
     return (
         <Flex h="100%" flexDirection="column" px={4}>

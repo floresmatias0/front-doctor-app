@@ -50,7 +50,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/inicio",
+    path: "inicio",
     element: <LayoutWithSidebar><ProtectedRoutes><Home /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },

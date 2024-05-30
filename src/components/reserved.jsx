@@ -7,7 +7,7 @@ import { AiOutlineCheckCircle } from "react-icons/ai"
 import { useCallback, useEffect, useState } from 'react'
 import { instance } from '../utils/axios'
 
-const Reserved = () => {
+const Reserved = ({ isActive }) => {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams();
 
@@ -56,16 +56,20 @@ const Reserved = () => {
     useEffect(() => {
         const fetchDataUsers = async () => {
             try {
-              await fetchDataDoctor()
-              await fetchDataPatient()
+                if(doctor) await fetchDataDoctor()
+                if(patient) await fetchDataPatient()
             }catch(err){
               console.log(err)
             }
         }
 
-        fetchDataUsers()
-    }, [])
+        if(isActive) fetchDataUsers()
+    }, [isActive])
 
+    if(!isActive) {
+        return null
+    }
+    
     return (
         <Flex h="100%" flexDirection="column">
             <Flex bgColor="#E5F2FA" flexDirection="column" justifyContent="center" alignItems="center" h={["auto", "237px"]}>
@@ -131,19 +135,6 @@ const Reserved = () => {
 }
 
 Reserved.propTypes = {
-    doctorSelected: PropTypes.shape({
-      value: PropTypes.string,
-      label: PropTypes.string,
-      reservePrice: PropTypes.number
-    }),
-    patientSelected: PropTypes.shape({
-        value: PropTypes.string,
-        label: PropTypes.string
-    }),
-    selectDay: PropTypes.instanceOf(Date),
-    user: PropTypes.shape(),
-    paymentStatus: PropTypes.bool,
-    onNext: PropTypes.func,
     isActive: PropTypes.bool
 }
 

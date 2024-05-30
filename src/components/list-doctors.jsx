@@ -5,6 +5,7 @@ import { instance } from "../utils/axios";
 import CardCustom from "./card-custom";
 
 const ListDoctors = ({ onNext, isActive }) => {
+
     const [doctors, setDoctors] = useState([]);
     const [selectedDoctor, setSelectedDoctor] = useState({});
 
@@ -57,13 +58,18 @@ const ListDoctors = ({ onNext, isActive }) => {
           try {
             await fetchDoctors();
           }catch(err){
-            console.log(err)
+            throw new Error(err.message)
+
           }
         }
     
         if(isActive) fetchDataDoctors();
     }, [isActive]);
 
+    if(!isActive) {
+      return null
+    }
+    
     return (
       <Flex h="100%" flexDirection="column" px={6}>
         <SimpleGrid flex={1} columns={[1, 2, 3, 4]} spacingX='40px' spacingY='10px' templateRows={[Array(Math.round(doctors?.length)).fill('96px').join(' '), Array(Math.round(doctors?.length / 4)).fill('96px').join(' ')]}>

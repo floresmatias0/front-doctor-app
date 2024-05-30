@@ -56,20 +56,6 @@ const ListCalendar = ({ doctorSelected, onNext, isActive }) => {
       }
   }, [doctorSelected])
 
-  useEffect(() => {
-    const fetchDataCalendars = async () => {
-        try {
-          await fetchDataCalendar();
-        }catch(err){
-          console.log(err)
-        }
-    }
-    
-    if(doctorSelected && isActive) {
-        fetchDataCalendars()
-    }
-  }, [doctorSelected, isActive, fetchDataCalendar])
-
   const generateDays = () => {
     const days = [];
     const startOfMonthDate = startOfMonth(currentDateState);
@@ -126,6 +112,26 @@ const ListCalendar = ({ doctorSelected, onNext, isActive }) => {
     }
   }
 
+  const handleNextClick = () => {
+    if (hsSelected) {
+      onNext(hsSelected);
+    }
+  }
+
+  useEffect(() => {
+    const fetchDataCalendars = async () => {
+        try {
+          await fetchDataCalendar();
+        }catch(err){
+          console.log(err)
+        }
+    }
+    
+    if(doctorSelected && isActive) {
+        fetchDataCalendars()
+    }
+  }, [doctorSelected, isActive, fetchDataCalendar])
+
   useEffect(() => {
     if (daySelected) {
       const eventDivs = [];
@@ -180,12 +186,10 @@ const ListCalendar = ({ doctorSelected, onNext, isActive }) => {
     }
   }, [daySelected, currentDateState, hsSelected, selectedDoc?.reserveTime, calendarEvents]);
 
-  const handleNextClick = () => {
-    if (hsSelected) {
-      onNext(hsSelected);
-    }
+  if(!isActive) {
+    return null
   }
-
+  
   return (
     <Flex h="100%" maxHeight="100%" flexDirection="column" px={6}>
       {loadingCalendar ? (

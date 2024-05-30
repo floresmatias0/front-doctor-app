@@ -141,6 +141,7 @@ export default function Appointment() {
     <Reserved key="fifth" isActive={activeTab === 4}/>
   ];
 
+  console.log({activeTab})
   return (
     <Flex w="100%" h="100%" px={[0, 2]} flexDirection="column">
       {/* HEADER */}

@@ -23,12 +23,12 @@ const Payment = ({
             endDateTime.setMinutes(endDateTime.getMinutes() + doctorSelected?.reserveTime);
             
             const payment = await instance.post('/payments/create', {
-                user_email: doctorSelected.value,
+                user_email: doctorSelected?.value,
                 tutor_email: user?.email,
                 patient: patientSelected?._id,
                 startDateTime: `${format(selectDay, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`,
                 endDateTime: `${format(endDateTime, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`,
-                unit_price: doctorSelected.reservePrice,
+                unit_price: doctorSelected?.reservePrice,
                 symptoms: symptomsSelected
             })
             
@@ -42,7 +42,7 @@ const Payment = ({
             setUrlMercadopago(init_point)
             setIsLoading(false)
         }catch(err) {
-            console.log(err.message)
+            throw new Error(err.message)
         }
     }, [doctorSelected, user, symptomsSelected, selectDay, patientSelected])
     
@@ -51,20 +51,24 @@ const Payment = ({
     const month = fecha.getMonth() + 1;
     const year = fecha.getFullYear();
 
+    const handleClick = () => window.location.replace(urlMercadopago)
+
     useEffect(() => {
         const fetchPaymentData = async () => {
             try {
               await confirmReserve();
             }catch(err){
-              console.log(err)
+                throw new Error(err.message)
             }
           }
       
           if(isActive) fetchPaymentData();
     }, [confirmReserve, isActive])
 
-    const handleClick = () => window.location.replace(urlMercadopago)
-
+    if(!isActive) {
+        return null
+    }
+    
     return (
         <Flex h="100%" flexDirection="column">
             <Flex bgColor="#E5F2FA" flexDirection="column" justifyContent="center" alignItems="center" h={["auto", "237px"]}>
@@ -141,13 +145,13 @@ Payment.propTypes = {
       label: PropTypes.string,
       reservePrice: PropTypes.number,
       reserveTime: PropTypes.number
-    }).isRequired,
+    }),
     patientSelected: PropTypes.shape({
-        value: PropTypes.string,
+        value: PropTypes.number,
         label: PropTypes.string,
         _id: PropTypes.string
-    }).isRequired,
-    selectDay: PropTypes.instanceOf(Date).isRequired,
+    }),
+    selectDay: PropTypes.instanceOf(Date),
     user: PropTypes.shape(),
     isActive: PropTypes.bool
 }
