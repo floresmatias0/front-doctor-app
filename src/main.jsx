@@ -23,9 +23,12 @@ import TermsOfServices from "./views/terms-of-services";
 import Turns from "./views/turns";
 import Upgrade from "./views/upgrade";
 import Graphs from "./views/charts";
-
-import './styles/main.css';
 import LandingHome from "./views/landing";
+
+
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import './styles/main.css';
 
 const colors = {
   brand: {
@@ -38,10 +41,15 @@ const colors = {
   }
 }
 
-const theme = extendTheme({ colors });
+const fonts = {
+  heading: 'Roboto'
+}
 
-const handleLogin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google/?role=PATIENT`, "_self");
-const handleLoginAdmin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google/?role=DOCTOR`, "_self");
+const theme = extendTheme({ colors, fonts });
+
+const handleLogin = (role) => {
+  window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google/?role=${role}`, "_self");
+};
 
 const router = createBrowserRouter([
   {
@@ -66,11 +74,7 @@ const router = createBrowserRouter([
   },
   {
     path: "iniciar-sesion",
-    element: localStorage.getItem("user") ? <Navigate to="/inicio" replace/> : <Login handleLogin={handleLogin}/>,
-  },
-  {
-    path: "administrador",
-    element: localStorage.getItem("user") ? <Navigate to="/inicio" replace/> : <Login handleLogin={handleLoginAdmin}/>,
+    element: localStorage.getItem("user") ? <Navigate to="/inicio" replace /> : <Login handleLogin={handleLogin} />,
   },
   {
     path: "configuracion",
@@ -78,7 +82,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "historial",
+    path: "historial-clinico",
     element: <LayoutWithSidebar><ProtectedRoutes><History /></ProtectedRoutes></LayoutWithSidebar>,
     errorElement: <ErrorPage />,
   },

@@ -19,7 +19,7 @@ const receiveMenu = (isOpen, admin) => {
         {
             icon: <AiOutlineHistory color='#205583' title="Historial" className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
             title: "Historial",
-            href: "/historial"
+            href: "/historial-clinico"
         },
         {
             icon: <AiOutlineCalendar color='#205583' title="Mis turnos" className={isOpen ? "fade-in-text" : ""} style={{ width: "24px", height: "24px" }}/>,
