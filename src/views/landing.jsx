@@ -75,8 +75,8 @@ const Card = ({ index, icon, title, description, url }) => {
         href={url}
         key={index}
         background="white"
-        w="233px"
-        h="auto"
+        w={["233px", "272px"]}
+        minH={["auto", "260px"]}
         rounded="xl"
         _hover={{ background: "gray.200" }}
         display="flex"
@@ -110,23 +110,17 @@ const Card = ({ index, icon, title, description, url }) => {
             color="#104DBA"
             fontWeight="700"
             textAlign="center"
-            fontSize={["sm"]}
+            fontSize={["sm", "xl"]}
             textTransform='uppercase'
-            style={{
-                lineHeight: "15.23px",
-               
-            }}
+            lineHeight={["15.23px", "23.44px"]}
         >
           {title}
         </Text>
         <Text
             fontWeight="400"
             textAlign="center"
-            fontSize={["sm"]}
-            style={{
-                lineHeight: "15.23px",
-               
-            }}
+            fontSize={["sm", "xl"]}
+            lineHeight={["15.23px", "23.44px"]}
         >
           {description}
         </Text>
@@ -138,8 +132,8 @@ const Card = ({ index, icon, title, description, url }) => {
     <Flex
       key={index}
       background="white"
-      w="233px"
-      h="auto"
+      w={["233px", "272px"]}
+      minH={["auto", "260px"]}
       rounded="xl"
       boxShadow="xl"
       flexDirection="column"
@@ -172,23 +166,17 @@ const Card = ({ index, icon, title, description, url }) => {
             color="#104DBA"
             fontWeight="700"
             textAlign="center"
-            fontSize={["sm"]}
+            fontSize={["sm", "xl"]}
             textTransform='uppercase'
-            style={{
-                lineHeight: "15.23px",
-               
-            }}
+            lineHeight={["15.23px", "23.44px"]}
         >
           {title}
         </Text>
         <Text
             fontWeight="400"
             textAlign="center"
-            fontSize={["sm"]}
-            style={{
-                lineHeight: "15.23px",
-               
-            }}
+            fontSize={["sm", "xl"]}
+            lineHeight={["15.23px", "23.44px"]}
         >
           {description}
         </Text>
@@ -259,7 +247,7 @@ const LandingHome = () => {
   }
 
   return (
-    <VStack style={isOpen ? { overflow: "hidden" } : { overflow: "scroll"} }>
+    <VStack gap={0}>
       {/* Menu mobile */}
       {isOpen && (
         <Flex w="full" h="100vh" zIndex={2} bgColor="white" flexDirection="column" >
