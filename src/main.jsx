@@ -25,7 +25,7 @@ import Upgrade from "./views/upgrade";
 import Graphs from "./views/charts";
 import LandingHome from "./views/landing";
 
-
+import "@fontsource-variable/roboto-flex";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './styles/main.css';
@@ -42,7 +42,8 @@ const colors = {
 }
 
 const fonts = {
-  heading: 'Roboto'
+  heading: `'Roboto Flex', sans-serif`,
+  body: `'Roboto Flex', sans-serif`
 }
 
 const theme = extendTheme({ colors, fonts });

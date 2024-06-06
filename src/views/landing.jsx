@@ -114,7 +114,7 @@ const Card = ({ index, icon, title, description, url }) => {
             textTransform='uppercase'
             style={{
                 lineHeight: "15.23px",
-                fontFamily: "Roboto"
+               
             }}
         >
           {title}
@@ -125,7 +125,7 @@ const Card = ({ index, icon, title, description, url }) => {
             fontSize={["sm"]}
             style={{
                 lineHeight: "15.23px",
-                fontFamily: "Roboto"
+               
             }}
         >
           {description}
@@ -176,7 +176,7 @@ const Card = ({ index, icon, title, description, url }) => {
             textTransform='uppercase'
             style={{
                 lineHeight: "15.23px",
-                fontFamily: "Roboto"
+               
             }}
         >
           {title}
@@ -187,7 +187,7 @@ const Card = ({ index, icon, title, description, url }) => {
             fontSize={["sm"]}
             style={{
                 lineHeight: "15.23px",
-                fontFamily: "Roboto"
+               
             }}
         >
           {description}
@@ -313,7 +313,7 @@ const LandingHome = () => {
                 color="#104DBA"
                 textAlign="left"
                 w="78px"
-                style={{ lineHeight: "18.75px", fontFamily: "Roboto" }}
+                style={{ lineHeight: "18.75px", }}
               >
                 Zona Pediatrica
               </Heading>
@@ -333,7 +333,7 @@ const LandingHome = () => {
               fontSize={['xs']}
               style={{
                 lineHeight: "14px",
-                fontFamily: "Roboto"
+               
               }}
               w="120px"
               h="24px"
@@ -352,7 +352,7 @@ const LandingHome = () => {
               fontSize={['xs']}
               style={{
                 lineHeight: "14px",
-                fontFamily: "Roboto"
+               
               }}
               w="120px"
               h="24px"
@@ -424,8 +424,8 @@ const LandingHome = () => {
               fontSize={["xs"]}
               color="#104DBA"
               textAlign="left"
-              w="55px"
-              style={{ lineHeight: "12.3px", fontFamily: "Roboto" }}
+              w="58px"
+              style={{ lineHeight: "12.3px", }}
             >
               Zona Pediatrica
             </Heading>
@@ -456,7 +456,7 @@ const LandingHome = () => {
               fontSize={['xs']}
               style={{
                 lineHeight: "14px",
-                fontFamily: "Roboto"
+               
               }}
               minW="120px"
               h="24px"
@@ -475,7 +475,7 @@ const LandingHome = () => {
               fontSize={['xs']}
               style={{
                 lineHeight: "14px",
-                fontFamily: "Roboto"
+               
               }}
               minW="120px"
               h="24px"
@@ -539,7 +539,7 @@ const LandingHome = () => {
                     color="#104DBA"
                     textAlign="center"
                     mt={3}
-                    style={{ lineHeight: "17.41px", fontFamily: "Roboto" }}
+                    style={{ lineHeight: "17.41px", }}
                   >
                     Zona Pediatrica
                   </Heading>
@@ -560,7 +560,7 @@ const LandingHome = () => {
                   w={["247px", "auto", "auto", "494px"]}
                   lineHeight={['28.13px', '56.25px']}
                   style={{
-                    fontFamily: "Roboto",
+                   
                   }}
                 >
                   Bienestar y seguridad para tus pequeños desde casa.
@@ -581,9 +581,6 @@ const LandingHome = () => {
                       fontWeight="400"
                       fontSize={['sm', 'xl']}
                       lineHeight={['15.23px','23.44px']}
-                      style={{
-                        fontFamily: "Roboto",
-                      }}
                     >
                       Nuestra plataforma cuenta con una red de médicos
                       especializados en pediatría y otras áreas de la salud
@@ -598,7 +595,7 @@ const LandingHome = () => {
                       fontSize={['sm', 'xl']}
                       lineHeight={['15.23px','23.44px']}
                       style={{
-                        fontFamily: "Roboto"
+                       
                       }}
                     >
                       Ahorra tiempo con consultas médicas eficientes y de
@@ -613,7 +610,7 @@ const LandingHome = () => {
                       fontSize={['sm', 'xl']}
                       lineHeight={['15.23px','23.44px']}
                       style={{
-                        fontFamily: "Roboto"
+                       
                       }}
                     >
                       Recuerda que nuestra plataforma es un recurso extra, ¡tu
@@ -628,7 +625,7 @@ const LandingHome = () => {
                   fontSize={['sm', 'xl']}
                   lineHeight={['15.23px','23.44px']}
                   style={{
-                    fontFamily: "Roboto"
+                   
                   }}
                   my={4}
                 >
@@ -647,7 +644,7 @@ const LandingHome = () => {
                   fontSize={['xs', 'md']}
                   lineHeight={['14px','18.75px']}
                   style={{
-                    fontFamily: "Roboto"
+                   
                   }}
                   h="24px"
                 >
@@ -671,8 +668,7 @@ const LandingHome = () => {
                 fontWeight="400"
                 color="#104DBA"
                 style={{
-                    lineHeight: "15.23px",
-                    fontFamily: "Roboto"
+                    lineHeight: "15.23px"
                 }}
                 mt={2}
                 mb={12}
@@ -724,7 +720,7 @@ const LandingHome = () => {
                         fontWeight="700"
                         style={{
                           lineHeight: "23.44px",
-                          fontFamily: "Roboto"
+                         
                         }}
                         bgColor='white'
                         borderRadius='50%'
@@ -752,7 +748,7 @@ const LandingHome = () => {
                               textTransform='uppercase'
                               style={{
                                   lineHeight: "15.23px",
-                                  fontFamily: "Roboto"
+                                 
                               }}
                               mb={1}
                           >
@@ -764,8 +760,7 @@ const LandingHome = () => {
                               textAlign="left"
                               fontSize={["sm"]}
                               style={{
-                                  lineHeight: "15.23px",
-                                  fontFamily: "Roboto"
+                                  lineHeight: "15.23px" 
                               }}
                           >
                             {item?.description}
@@ -775,38 +770,6 @@ const LandingHome = () => {
                     </Box>
               ))}
             </Flex>
-            {/* <Box display="flex" flexDirection={['column']} flex={1}>
-              {steps?.length > 0 &&
-                steps?.map((item, key) => (
-                  <Box key={key} w='175px' mt={10}>
-                    <Text
-                        color="#FFF"
-                        fontWeight="700"
-                        textAlign="left"
-                        fontSize={["sm"]}
-                        textTransform='uppercase'
-                        style={{
-                            lineHeight: "15.23px",
-                            fontFamily: "Roboto"
-                        }}
-                    >
-                      {item?.title}
-                    </Text>
-                    <Text
-                        color="#FFF"
-                        fontWeight="400"
-                        textAlign="left"
-                        fontSize={["sm"]}
-                        style={{
-                            lineHeight: "15.23px",
-                            fontFamily: "Roboto"
-                        }}
-                    >
-                      {item?.description}
-                    </Text>
-                  </Box>
-                ))}
-            </Box> */}
           </Flex>
         </Container>
       </Box>
@@ -823,8 +786,7 @@ const LandingHome = () => {
                 fontWeight="400"
                 color="#104DBA"
                 style={{
-                    lineHeight: "15.23px",
-                    fontFamily: "Roboto"
+                    lineHeight: "15.23px"
                 }}
                 mt={2}
                 mb={12}
@@ -952,7 +914,7 @@ const LandingHome = () => {
                 fontWeight="400"
                 style={{
                   lineHeight: "11.72px",
-                  fontFamily: "Roboto"
+                 
                 }}
               >
                 Estamos aquí para garantizar la salud y el bienestar de tus hijos.
@@ -1034,8 +996,8 @@ const LandingHome = () => {
               fontSize={["xs"]}
               color="#FFF"
               textAlign="left"
-              w="55px"
-              style={{ lineHeight: "12.3px", fontFamily: "Roboto" }}
+              w="58px"
+              style={{ lineHeight: "12.3px", }}
             >
               Zona Pediatrica
             </Heading>
@@ -1066,7 +1028,7 @@ const LandingHome = () => {
             fontWeight="400"
             style={{ 
               lineHeight: "11.72px",
-              fontFamily: "Roboto"
+             
             }}
             mt={3}
           >
@@ -1081,8 +1043,7 @@ const LandingHome = () => {
               color="white"
               fontWeight="400"
               style={{ 
-                lineHeight: "11.72px",
-                fontFamily: "Roboto"
+                lineHeight: "11.72px"
               }}
               mt={2}
             >
@@ -1096,7 +1057,7 @@ const LandingHome = () => {
             fontWeight="400"
             style={{ 
               lineHeight: "11.72px",
-              fontFamily: "Roboto"
+             
             }}
             mt={4}
           >
