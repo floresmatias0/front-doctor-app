@@ -40,8 +40,9 @@ const colors = {
 
 const theme = extendTheme({ colors });
 
-const handleLogin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google/?role=PATIENT`, "_self");
-const handleLoginAdmin = () => window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google/?role=DOCTOR`, "_self");
+const handleLogin = (role) => {
+  window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google/?role=${role}`, "_self");
+};
 
 const router = createBrowserRouter([
   {
@@ -66,11 +67,7 @@ const router = createBrowserRouter([
   },
   {
     path: "iniciar-sesion",
-    element: localStorage.getItem("user") ? <Navigate to="/inicio" replace/> : <Login handleLogin={handleLogin}/>,
-  },
-  {
-    path: "administrador",
-    element: localStorage.getItem("user") ? <Navigate to="/inicio" replace/> : <Login handleLogin={handleLoginAdmin}/>,
+    element: localStorage.getItem("user") ? <Navigate to="/inicio" replace /> : <Login handleLogin={handleLogin} />,
   },
   {
     path: "configuracion",
