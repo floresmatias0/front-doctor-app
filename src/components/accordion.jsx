@@ -10,7 +10,7 @@ import {
 export const CustomAccordion = ({ title, description }) => {
   return (
     <Accordion allowToggle>
-      <AccordionItem border='none' _hover={{ boxShadow: '0px 4px 4px 0px #00000040' }} borderEndEndRadius='xl' borderEndStartRadius='xl'>
+      <AccordionItem border='none' boxShadow='0px 4px 4px 0px #00000040' borderEndEndRadius='xl' borderEndStartRadius='xl'>
         <h2>
           <AccordionButton bg='#104DBA' _hover={{ backgroundColor: '#104DBA' }} borderRadius={['md', 'xl']} h={['auto', '46px']}>
             <Box flex="1" textAlign="left" color="white" fontSize={['xs', 'xl']} textTransform="uppercase" fontWeight={700} style={{ fontFamily: 'Roboto' }} >
