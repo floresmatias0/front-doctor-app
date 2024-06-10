@@ -11,7 +11,7 @@ import {
   Image,
   Button,
   Divider,
-  ScaleFade
+  Fade
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import ok from "../assets/ok.png";
@@ -897,6 +897,7 @@ const LandingHome = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         margin: "0 auto",
+                        cursor: "pointer"
                       }}
                     >
                       <Box
@@ -929,7 +930,7 @@ const LandingHome = () => {
                           </Text>
                         </Box>
                         {selectedDoctorIndex === idx && (
-                          <ScaleFade initialScale={0.9} in={selectedDoctorIndex === idx}>
+                          <Fade initialScale={0.9} in={selectedDoctorIndex === idx}>
                             <Button
                               bgColor="transparent"
                               position='absolute'
@@ -995,7 +996,7 @@ const LandingHome = () => {
                                 {dr.enrollment}
                               </Text>
                             </Box>
-                          </ScaleFade>
+                          </Fade>
                         )}
                       </Box>
                     </div>
