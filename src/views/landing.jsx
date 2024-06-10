@@ -1050,27 +1050,32 @@ const LandingHome = () => {
               px={4}
               gap={5}
               my={6}
-              w={["full", "auto", "auto", "600px"]}
+              w={["full", "auto", "auto", "800px"]}
               ref={refQuestions}
             >
               <CustomAccordion
-                title="Pregunta 1"
-                description="Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen."
+                title="¿Como puedo abonar?"
+                description="de momento solo se puede abonar a través de mercado pago cuando querés solicitar el turno para una videollamada."
               />
 
               <CustomAccordion
-                title="Pregunta 2"
-                description="Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen."
+                title="¿Para quien está destinado el uso de la plataforma?"
+                description="está destinado para todos los pacientes pediátricos inicialmente."
               />
 
               <CustomAccordion
-                title="Pregunta 3"
-                description="Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen."
+                title="¿Como recibo la invitación para la videollamada?"
+                description="La estarás recibiendo a través del correo que indiques para que la llamda sea a través de google meets en el día y horario que indiques al momento de sacar el turno."
               />
 
               <CustomAccordion
-                title="Pregunta 4"
-                description="Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen."
+                title="¿Puedo cancelar un turno?"
+                description="Si claro! pero siempre que sea antes de las 24hs de que se cumpla el turno, pasado ese tiempo el pago de la atención no será devuelto a tu cuenta de MercadoPago"
+              />
+
+              <CustomAccordion
+                title="¿Como recibo mi orden médica?"
+                description="La estarás recibiendo tanto por mail como a través de la app en la que gestionas el turno."
               />
             </Flex>
           </Flex>
