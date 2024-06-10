@@ -266,13 +266,11 @@ const LandingHome = () => {
   };
 
   useEffect(() => {
-    // Modificar el overflow del body cuando el menú está abierto
     if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
-    // Limpiar el efecto al desmontar el componente
     return () => {
       document.body.style.overflow = "";
     };
@@ -388,6 +386,8 @@ const LandingHome = () => {
                 display={["none", "none", "none", "inline-block"]}
                 bgColor="transparent"
                 onClick={() => handleRefFocus(refServices)}
+                cursor='pointer'
+                _hover={{ textDecoration: 'underline' }}
               >
                 <Text fontSize="14px" color="#474747">
                   Servicios
@@ -397,6 +397,8 @@ const LandingHome = () => {
                 display={["none", "none", "none", "inline-block"]}
                 bgColor="transparent"
                 onClick={() => handleRefFocus(refHowWork)}
+                cursor='pointer'
+                _hover={{ textDecoration: 'underline' }}
               >
                 <Text fontSize="14px" color="#474747">
                   ¿Cómo funciona?
@@ -406,6 +408,8 @@ const LandingHome = () => {
                 display={["none", "none", "none", "inline-block"]}
                 bgColor="transparent"
                 onClick={() => handleRefFocus(refWhoUs)}
+                cursor='pointer'
+                _hover={{ textDecoration: 'underline' }}
               >
                 <Text fontSize="14px" color="#474747">
                   ¿Quienes somos?
@@ -415,6 +419,8 @@ const LandingHome = () => {
                 display={["none", "none", "none", "inline-block"]}
                 bgColor="transparent"
                 onClick={() => handleRefFocus(refQuestions)}
+                cursor='pointer'
+                _hover={{ textDecoration: 'underline' }}
               >
                 <Text fontSize="14px" color="#474747">
                   Preguntas frecuentes
@@ -453,7 +459,6 @@ const LandingHome = () => {
         w="full"
         h={["auto", 'auto', "888px", "838px", "838px"]}
         boxShadow="0px 6px 22px 0px #D9D9D94D"
-        ref={refServices}
       >
         <Container
           maxW={["8xl", "full"]}
@@ -607,7 +612,7 @@ const LandingHome = () => {
         </Container>
       </Box>
       {/* Servicios */}
-      <Box w="full" py={10} ref={refHowWork}>
+      <Box w="full" py={10} ref={refServices}>
         <Container maxW="container.xl">
           <Flex flexDirection="column">
             <Box ml={4}>
@@ -653,10 +658,9 @@ const LandingHome = () => {
       <Box
         w="full"
         bgGradient="linear-gradient(61.63deg, #104DBA 26.71%, #88A6DD 85.17%, #FFFFFF 134.61%)"
-        ref={refWhoUs}
       >
         <Container maxW="container.xl" py={5}>
-          <Box ml={4}>
+          <Box ml={4} ref={refHowWork}>
             <TitleCustom
               text="¿Cómo funciona?"
               theme="light"
@@ -858,10 +862,10 @@ const LandingHome = () => {
         </Container>
       </Box>
       {/* Quienes somos */}
-      <Box w="full" py={10} ref={refQuestions}>
+      <Box w="full" py={10}>
         <Container maxW="container.xl">
           <Flex flexDirection="column">
-            <Box ml={4}>
+            <Box ml={4} ref={refWhoUs}>
               <TitleCustom
                 text="¿Quienes somos?"
                 theme="light"
@@ -1047,6 +1051,7 @@ const LandingHome = () => {
               gap={5}
               my={6}
               w={["full", "auto", "auto", "600px"]}
+              ref={refQuestions}
             >
               <CustomAccordion
                 title="Pregunta 1"
