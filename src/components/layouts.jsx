@@ -80,18 +80,15 @@ export const LayoutWithSidebarAndHeader = ({children}) => {
     )
 }
 
-export const LayoutWithSidebar = ({children}) => {
+export const LayoutWithSidebarAndFooter = ({children}) => {
     return (
-        <Flex bg="#E5F2FA">
-            <SidebarMenu/>
-            <Box h="100vh" w="100%" flex={1} py={4} mx={[24, 28]}>
-                {children}
-            </Box>
-        </Flex>
+        <SidebarMenu>
+            {children}
+        </SidebarMenu>
     )
 }
 
-LayoutWithSidebar.propTypes = {
+LayoutWithSidebarAndFooter.propTypes = {
     children: PropTypes.node,
 }
 

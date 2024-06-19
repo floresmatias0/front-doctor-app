@@ -154,7 +154,7 @@ const Turns = () => {
     }
 
     return (
-        <Flex w={["280px", "100%"]} h="100%" flexDirection="column">
+        <Flex w={["calc(100% - 60px)", "calc(100% - 155px)"]} h="100%" justifyContent={["center", "top"]} flexDirection="column">
             {loading ? 
                 (
                     <Flex w="100%" flex={1} bg="#FCFEFF" borderRadius="xl" boxShadow="md" px={[2, 2, 4]} py={4} flexDirection="column" overflow="auto">
@@ -164,12 +164,12 @@ const Turns = () => {
                     </Flex>
                 ) : (
                 <Fragment>
-                    <Flex w="100%" justifyContent="space-between" alignItems="center" flexDirection={["column", "row"]} my={2} flex="0 0 auto">
+                    {/* <Flex w="100%" justifyContent="space-between" alignItems="center" flexDirection={["column", "row"]} my={2} flex="0 0 auto">
                         <Text color="#205583" fontSize={["lg", "xl"]} fontWeight="bold">Mis turnos</Text>
                         {user.role !== 'DOCTOR' && <Button leftIcon={<MdAdd/>} bg="#FCFEFF" size="sm" onClick={() => navigate('/turnos')}>Nuevo Turno</Button>}
-                    </Flex>
+                    </Flex> */}
 
-                    <Flex w="100%" flex={1} bg="#FCFEFF" borderRadius="xl" boxShadow="md" px={[2, 2, 4]} py={4} flexDirection="column" overflow="auto">
+                    <Flex w={["100%", "920px"]} h={['100%', '468px']} bg="#FCFEFF" borderRadius="xl" boxShadow="md" px={[2, 2, 4]} py={4} flexDirection="column" overflow="auto">
                         <Flex gap={4} flexDirection={["column", "column", "column", "column",  "row"]}>
                             <Flex flex={1} flexDirection="column" gap={2}>
                                 <Text color="#205583" fontSize={["md", "lg"]} fontWeight="bold" mb={2}>Próximos turnos</Text>

@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
-import { Button, Flex, SimpleGrid } from "@chakra-ui/react"
+import { Button, Flex, Text } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { instance } from "../utils/axios";
-import CardCustom from "./card-custom";
+import { MdOutlineNavigateNext } from 'react-icons/md';
 
-const ListDoctors = ({ onNext, isActive }) => {
+const ListDoctors = ({ onNext, isActive, patientSelected }) => {
 
     const [doctors, setDoctors] = useState([]);
     const [selectedDoctor, setSelectedDoctor] = useState({});
@@ -69,34 +69,59 @@ const ListDoctors = ({ onNext, isActive }) => {
     if(!isActive) {
       return null
     }
+
+    console.log({doctors})
     
     return (
-      <Flex h="100%" flexDirection="column" px={6}>
-        <SimpleGrid flex={1} columns={[1, 2, 3, 4]} spacingX='40px' spacingY='10px' templateRows={[Array(Math.round(doctors?.length)).fill('96px').join(' '), Array(Math.round(doctors?.length / 4)).fill('96px').join(' ')]}>
-            {doctors?.length > 0 && doctors.map((doctor, idx) => (
-              <CardCustom
-                key={idx}
-                heading={doctor?.label}
-                handleSelect={() => handleDoctorsSelect(doctor)}
-                name={doctor?.name}
-                picture={doctor?.picture}
-                description={doctor?.especialization}
-                avatarSize="md"
-                width="100%"
-                height="100%"
-                isSelected={selectedDoctor.label === doctor?.label}
-              />
-            ))}
-        </SimpleGrid>
-        <Flex flex={1} justifyContent="center" alignItems="flex-end" my={[2, 4]}>
-        {Object.keys(selectedDoctor).length > 0 && (
-          <Button
-            bg="#205583" color="#FFFFFF" w={["220px","300px"]} size={["xs", "sm"]}
-            onClick={handleNextClick}
-          >
-            SIGUIENTE
-          </Button>
-        )}
+      <Flex h="100%" flexDirection="column" p={4} gap={5}>
+        <Text color="#FFF" bg="#104DBA" borderRadius='xl' w="120px" fontSize="xs" lineHeight="14.06px" textAlign="center" py={1}>Paciente: {patientSelected && patientSelected?.label}</Text>
+        <Text
+          fontWeight={400}
+          fontSize="lg"
+          lineHeight="18.75px"
+        >
+          Estos son los profesionales actualmente disponibles
+        </Text>
+        <Flex gap={5} flexWrap="wrap">
+          {doctors?.length > 0 && doctors.map((doctor, idx) => (
+            <Text
+              key={idx}
+              onClick={() => handleDoctorsSelect(doctor)}
+              borderWidth="1px"
+              borderColor="#104DBA"
+              color={selectedDoctor.label === doctor?.label ? "#FFF" : "#104DBA"}
+              px={3}
+              borderRadius="xl"
+              fontSize="md"
+              textTransform="capitalize"
+              cursor="pointer"
+              bgColor={selectedDoctor.label === doctor?.label ? "#104DBA" : "#FFF"}
+              _hover={{ backgroundColor: "#104DBA", color: "#FFF" }}
+            >
+              {doctor?.label}
+            </Text>
+          ))}
+        </Flex>
+        <Flex flex={1} justifyContent="flex-end" alignItems="flex-end" my={[2, 4]}>
+          {Object.keys(selectedDoctor).length > 0 && (
+            <Button
+              bg="#104DBA"
+              color="#FFFFFF"
+              w="120px"
+              size="xs"
+              rightIcon={<MdOutlineNavigateNext style={{ width: '20px', height: '20px' }} />}
+              onClick={handleNextClick}
+            >
+              <Text
+                fontSize="xs"
+                lineHeight="16px"
+                fontWeight={500}
+                textTransform="uppercase"
+              >
+                Continuar
+              </Text>
+            </Button>
+          )}
         </Flex>
       </Flex>
     )

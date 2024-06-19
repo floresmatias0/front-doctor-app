@@ -12,6 +12,7 @@ import CardCustom from '../components/card-custom';
 import ListSymptoms from '../components/lists-symptoms';
 import { AppContext } from '../components/context';
 import Reserved from '../components/reserved';
+import ListPatient from '../components/list-patients';
 
 export default function Appointment() {
   const navigate = useNavigate()
@@ -21,7 +22,8 @@ export default function Appointment() {
   const { user, patients, createPatient } = useContext(AppContext)
 
   const initialStateTabs = {
-    symptoms: false,
+    patient: false,
+    symptoms: true,
     doctors: true,
     days: true,
     payment: true,
@@ -48,9 +50,19 @@ export default function Appointment() {
     isOpenFirst && onCloseFirst()
   }
 
+  const handleNextPatient = () => {
+    if(patientSelected?.value) {
+      setActiveTab(1)
+      setDisableTabs({
+        ...disableTabs,
+        symptoms: false
+      })
+    }
+  }
+
   const handleNextSymptoms = (values) => {
     setSymptomsSelected(values)
-    setActiveTab(1)
+    setActiveTab(2)
     setDisableTabs({
       ...disableTabs,
       doctors: false
@@ -59,7 +71,7 @@ export default function Appointment() {
 
   const handleNextDoctors = (values) => {
     setDoctorSelected(values)
-    setActiveTab(2)
+    setActiveTab(3)
     setDisableTabs({
       ...disableTabs,
       days: false
@@ -68,7 +80,7 @@ export default function Appointment() {
 
   const handleNextCalendar = (values) => {
     setDaySelected(values)
-    setActiveTab(3)
+    setActiveTab(4)
     setDisableTabs({
       ...disableTabs,
       payment: false
@@ -111,21 +123,18 @@ export default function Appointment() {
   }, [paymentStatus, navigate, toast]);
 
   useEffect(() => {
-    if(!paymentStatus && user && activeTab === 0) {
-      onOpenFirst()
-    }
-
     if(paymentStatus && paymentStatus === "approved"){
-      setActiveTab(4)
+      setActiveTab(5)
       setDisableTabs((prevDisableTabs) => ({
         ...prevDisableTabs,
-        symptoms: true,
+        patient: true,
         reserve: false
       }))
     }
   }, [user, activeTab, onOpenFirst, paymentStatus]);
  
   const tabsHeading = [
+    { title: "Paciente", isDisabled: disableTabs.patient },
     { title: "Síntomas", isDisabled: disableTabs.symptoms },
     { title: "Seleccionar doctor", isDisabled: disableTabs.doctors },
     { title: "Seleccionar fecha", isDisabled: disableTabs.days }, 
@@ -134,36 +143,16 @@ export default function Appointment() {
   ];
 
   const tabContents = [
-    <ListSymptoms key="first" onNext={handleNextSymptoms} isActive={activeTab === 0}/>,
-    <ListDoctors key="second" onNext={handleNextDoctors} isActive={activeTab === 1}/>,
-    <ListCalendar key="third" doctorSelected={doctorSelected} onNext={handleNextCalendar} isActive={activeTab === 2}/>,
-    <Payment key="fourth" symptomsSelected={symptomsSelected} doctorSelected={doctorSelected} patientSelected={patientSelected} selectDay={daySelected} user={user} isActive={activeTab === 3}/>,
-    <Reserved key="fifth" isActive={activeTab === 4}/>
+    <ListPatient key="first" onNext={handleNextPatient} patients={patients} patientSelected={patientSelected} setPatientSelected={setPatientSelected} onOpenSecond={onOpenSecond} isActive={activeTab === 0}/>,
+    <ListSymptoms key="second" onNext={handleNextSymptoms} patientSelected={patientSelected} isActive={activeTab === 1}/>,
+    <ListDoctors key="third" onNext={handleNextDoctors} patientSelected={patientSelected} isActive={activeTab === 2}/>,
+    <ListCalendar key="fourth" doctorSelected={doctorSelected} onNext={handleNextCalendar} isActive={activeTab === 3}/>,
+    <Payment key="fifth" symptomsSelected={symptomsSelected} doctorSelected={doctorSelected} patientSelected={patientSelected} selectDay={daySelected} user={user} isActive={activeTab === 4}/>,
+    <Reserved key="sixth" isActive={activeTab === 5}/>
   ];
 
-  console.log({activeTab})
   return (
-    <Flex w="100%" h="100%" px={[0, 2]} flexDirection="column">
-      {/* HEADER */}
-      <Flex w="100%" justifyContent="space-between" alignItems="center" flexDirection={["column", "row"]} my={2}>
-        <Text color="#205583" fontSize={["md", "lg"]} fontWeight="bold">Solicitar un turno médico</Text>
-        <Select
-          w={["auto", "250px"]}
-          h={["28px", "36px"]}
-          bg="#FFFFFF"
-          placeholder='Selecciona un paciente'
-          value={patientSelected.value}
-          onChange={(e) => {
-            const selected = patients.find((patient) => parseInt(patient.value) === parseInt(e.target.value));
-            setPatientSelected(selected);
-          }}
-          fontSize={["sm", "md"]}
-        >
-          {patients.map((patient, idx) => (
-            <option key={idx} value={patient.value}>{patient.label}</option>
-          ))}
-        </Select>
-      </Flex>
+    <Flex w={["calc(100% - 60px)", "calc(100% - 155px)"]} h="100%" flexDirection="column" justifyContent="center" alignItems="center">
       {/* CONTENT */}
       <TabsConsult
         tabsHeading={tabsHeading}

@@ -143,16 +143,16 @@ export default function Settings() {
     }, [code, connectMercadopago])
 
     return (
-        <Flex w="100%" h="100%" px={[0, 2]} flexDirection="column" justifyContent="space-between">
-            <Flex w="100%" justifyContent="space-between" alignItems="center" flexDirection={["column", "row"]} my={2}>
+        <Flex w={["calc(100% - 60px)", "calc(100% - 155px)"]} h="100%" px={[0, 2]} flexDirection="column" justifyContent={["center", "top"]}>
+            {/* <Flex w="100%" justifyContent="space-between" alignItems="center" flexDirection={["column", "row"]} my={2}>
                 <Text color="#205583" fontSize={["lg", "xl"]} fontWeight="bold">Configuración</Text>
                 {user?.super && (
                     <Link color="#205583" fontSize="xs" fontWeight="bold" href="/mejora-de-usuario">
                         Administrar usuarios
                     </Link>
                 )}
-            </Flex>
-            <Flex bg="#FFFFFF" w={["280px", "100%"]} h="100%" borderRadius="xl" boxShadow="md" justifyContent="space-between" alignItems="center" flexDirection="column">
+            </Flex> */}
+            <Flex bg="#FFFFFF" w={["100%", "920px"]} h={['100%', '468px']} mx="auto" borderRadius="xl" boxShadow="md" justifyContent="space-between" alignItems="center" flexDirection="column">
                 <Flex flexDirection="column" justifyContent="center" alignItems="center" w="100%">
                     <Box w={["100%", "100%", "90%"]} px={[4, 4, 4, 0]} mb={2}>
                         <Text textAlign="center" fontSize={["lg","xl"]} color="#205583" my={[2, 4]} fontWeight="bold">Datos del usuario</Text>

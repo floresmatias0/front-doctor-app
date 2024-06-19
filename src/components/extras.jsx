@@ -2,14 +2,19 @@ import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 
 export const LogoCustom = ({
   svgWidth = "33px",
+  maxSvgWidth = "65px",
   svgHeight = "19px",
+  maxSvgWeight = "38px",
   titleWidth = "58px",
+  maxTitleWidth = "74px",
   titleLineHeight = "12px",
   titleSize = "xs",
   theme = "light",
+  flexDirection = 'row',
+  displayText = 'inline-block'
 }) => (
-  <Flex gap={2}>
-    <Box w={[svgWidth, "65px"]} h={[svgHeight, "38px"]}>
+  <Flex gap={2} flexDirection={flexDirection}>
+    <Box w={[svgWidth, maxSvgWidth]} h={[svgHeight, maxSvgWeight]}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 462 276"
@@ -52,9 +57,10 @@ export const LogoCustom = ({
       fontSize={[titleSize, "sm"]}
       color={theme === "light" ? "#104DBA" : "#FFFFFF"}
       textAlign="left"
-      w={[titleWidth, "74px"]}
+      w={[titleWidth, maxTitleWidth]}
       lineHeight={[titleLineHeight, "16px"]}
       alignContent="end"
+      display={displayText}
     >
       Zona Pediatrica
     </Heading>

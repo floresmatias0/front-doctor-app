@@ -416,8 +416,8 @@ const History = () => {
   };
 
   return (
-    <Flex w={["280px", "100%"]} h="100%" flexDirection="column">
-      {user.role !== "DOCTOR" ? (
+    <Flex w={["calc(100% - 60px)", "calc(100% - 155px)"]} h="100%" justifyContent={["center", "top"]} flexDirection="column">
+      {/* {user.role !== "DOCTOR" ? (
         <Flex
           w="100%"
           justifyContent="space-between"
@@ -449,7 +449,7 @@ const History = () => {
         <Text color="#205583" fontSize={["md", "lg"]} fontWeight="bold">
           Historial de turnos
         </Text>
-      )}
+      )} */}
 
       {loading ? (
         <Flex
@@ -469,8 +469,8 @@ const History = () => {
         </Flex>
       ) : (
         <Flex
-          w="100%"
-          flex={1}
+          w={["100%", "920px"]}
+          h={['100%', '468px']}
           bg="#FCFEFF"
           borderRadius="xl"
           boxShadow="md"

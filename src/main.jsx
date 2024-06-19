@@ -10,7 +10,7 @@ import {
 
 import DoctorContext from "./components/context";
 import ErrorPage from "./components/error-page";
-import { LayoutWithSidebar, ProtectedRoutes, ProtectedRoutesAdmin } from "./components/layouts";
+import { LayoutWithSidebarAndFooter, ProtectedRoutes, ProtectedRoutesAdmin } from "./components/layouts";
 
 import Login from "./views/login";
 import Verify from "./views/verify";
@@ -59,12 +59,12 @@ const router = createBrowserRouter([
   },
   {
     path: "inicio",
-    element: <LayoutWithSidebar><ProtectedRoutes><Home /></ProtectedRoutes></LayoutWithSidebar>,
+    element: <LayoutWithSidebarAndFooter><ProtectedRoutes><Home /></ProtectedRoutes></LayoutWithSidebarAndFooter>,
     errorElement: <ErrorPage />,
   },
   {
     path: "turnos",
-    element: <LayoutWithSidebar><ProtectedRoutes><Appointment /></ProtectedRoutes></LayoutWithSidebar>,
+    element: <LayoutWithSidebarAndFooter><ProtectedRoutes><Appointment /></ProtectedRoutes></LayoutWithSidebarAndFooter>,
     errorElement: <ErrorPage />,
   },
   {
@@ -78,27 +78,27 @@ const router = createBrowserRouter([
   },
   {
     path: "configuracion",
-    element: <LayoutWithSidebar><ProtectedRoutes><Settings /></ProtectedRoutes></LayoutWithSidebar>,
+    element: <LayoutWithSidebarAndFooter><ProtectedRoutes><Settings /></ProtectedRoutes></LayoutWithSidebarAndFooter>,
     errorElement: <ErrorPage />,
   },
   {
     path: "historial-clinico",
-    element: <LayoutWithSidebar><ProtectedRoutes><History /></ProtectedRoutes></LayoutWithSidebar>,
+    element: <LayoutWithSidebarAndFooter><ProtectedRoutes><History /></ProtectedRoutes></LayoutWithSidebarAndFooter>,
     errorElement: <ErrorPage />,
   },
   {
     path: "mis-turnos",
-    element: <LayoutWithSidebar><ProtectedRoutes><Turns /></ProtectedRoutes></LayoutWithSidebar>,
+    element: <LayoutWithSidebarAndFooter><ProtectedRoutes><Turns /></ProtectedRoutes></LayoutWithSidebarAndFooter>,
     errorElement: <ErrorPage />,
   },
   {
     path: "mejora-de-usuario",
-    element: <LayoutWithSidebar><ProtectedRoutesAdmin><Upgrade /></ProtectedRoutesAdmin></LayoutWithSidebar>,
+    element: <LayoutWithSidebarAndFooter><ProtectedRoutesAdmin><Upgrade /></ProtectedRoutesAdmin></LayoutWithSidebarAndFooter>,
     errorElement: <ErrorPage />,
   },
   {
     path: "graficos",
-    element: <LayoutWithSidebar><ProtectedRoutesAdmin><Graphs /></ProtectedRoutesAdmin></LayoutWithSidebar>,
+    element: <LayoutWithSidebarAndFooter><ProtectedRoutesAdmin><Graphs /></ProtectedRoutesAdmin></LayoutWithSidebarAndFooter>,
     errorElement: <ErrorPage />,
   },
   {
