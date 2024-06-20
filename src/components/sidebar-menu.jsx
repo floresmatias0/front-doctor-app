@@ -190,7 +190,7 @@ const SidebarMenu = ({ children }) => {
                   color="#104DBA"
                   title="Cerrar sesión"
                   className={isOpen ? "fade-in-text" : ""}
-                  style={{ width: "24px", height: "24px" }}
+                  style={{ width: "24px", height: "24px", cursor: "pointer" }}
                 />
                 <Text
                   className="fade-in-text"
@@ -214,6 +214,7 @@ const SidebarMenu = ({ children }) => {
         justifyContent={['flex-end', 'center']}
         alignItems="center"
         px={4}
+        bgColor="#FFFFFF"
       >
         {children}
       </Flex>

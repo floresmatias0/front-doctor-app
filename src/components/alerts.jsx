@@ -45,7 +45,7 @@ export const AlertModal = ({
           <AlertDialogOverlay />
   
           <AlertDialogContent  mx={["20px", 0]}>
-            <AlertDialogHeader color="#205583">{alertHeader}</AlertDialogHeader>
+            <AlertDialogHeader color="#104DBA">{alertHeader}</AlertDialogHeader>
             {onClose && <AlertDialogCloseButton />}
             <AlertDialogBody>
               {alertBody}

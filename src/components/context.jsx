@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { instance } from '../utils/axios';
-import { useToast } from '@chakra-ui/react';
+import { Box, Text, useToast } from '@chakra-ui/react';
+import { HiOutlineBadgeCheck } from 'react-icons/hi';
 
 export const AppContext = createContext(null);
 
@@ -78,13 +79,14 @@ export default function DoctorContext({ children }) {
         await instance.post('/patients', { ...values, userId: user?._id })
   
         toast({
-          title: "Paciente creado",
-          description: "Haz agregado un nuevo paciente a tu cuenta",
-          position: "top-right",
-          isClosable: true,
-          duration: 6000,
-          status: "success"
-        });
+          position: "top",
+          render: () => (
+              <Box py={4} px={8} bg='white' borderRadius="md" maxW={["auto","428px"]} boxShadow="2xl">
+                  <HiOutlineBadgeCheck  style={{ width: "36px", height: "36px", color:"#104DBA" }}/>
+                  <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">El paciente ha sido registrado exitosamente.</Text>
+              </Box>
+          )
+        })
   
         onClose()
         await fetchPatients();
@@ -106,13 +108,14 @@ export default function DoctorContext({ children }) {
         await instance.put(`/patients/${values._id}`, { ...values })
   
         toast({
-          title: "Paciente actualizado",
-          description: `El paciente ${values.name} se actualizo correctamente`,
-          position: "top-right",
-          isClosable: true,
-          duration: 6000,
-          status: "success"
-        });
+          position: "top",
+          render: () => (
+              <Box py={4} px={8} bg='white' borderRadius="md" maxW={["auto","428px"]} boxShadow="2xl">
+                  <HiOutlineBadgeCheck  style={{ width: "36px", height: "36px", color:"#104DBA" }}/>
+                  <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">El paciente se ha actualizado exitosamente.</Text>
+              </Box>
+          )
+        })
   
         onClose()
         await fetchPatients();
