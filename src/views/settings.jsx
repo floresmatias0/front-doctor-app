@@ -27,9 +27,13 @@ import { SiMercadopago } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
 import { FaCircleCheck } from "react-icons/fa6";
 import { ChevronRightIcon } from "@chakra-ui/icons";
+import { MdErrorOutline } from "react-icons/md";
+import { HiOutlineBadgeCheck } from "react-icons/hi";
+
 
 const initialState = {
-  name: false,
+  firstName: false,
+  lastName: false,
   email: false,
   reservePrice: false,
   reserveTime: false,
@@ -64,31 +68,42 @@ export default function Settings() {
   const handleSubmit = async (values) => {
     try {
       const updatedUser = await instance.put(`/users/${user?._id}`, {
-        name: values.name,
-        email: values.email,
-        reservePrice: values.reservePrice,
-        reserveTime: values.reserveTime,
-        especialization: values.especialization,
+        firstName: values?.firstName,
+        lastName: values?.lastName,
+        email: values?.email,
+        dateOfBirth: values?.dateOfBirth,
+        identityType: values?.identityType,
+        identityId: values?.identityId,
+        genre: values?.genre,
+        phone: values?.phone,
+        socialWork: values?.socialWork,
+        socialWorkId: values?.socialWorkId,
+        reservePrice: values?.reservePrice,
+        reserveTime: values?.reserveTime,
+        especialization: values?.especialization,
+        enrollment: values?.enrollment
       });
       setUser(updatedUser.data.data);
       setIsEditable(initialState);
       toast({
-        title: "Datos actualizados",
-        description: "Actualizacion de datos satisfactoria",
-        position: "top-right",
-        isClosable: true,
-        duration: 6000,
-        status: "success",
-      });
+        position: "top",
+        render: () => (
+            <Box py={4} px={8} bg='white' borderRadius="md" maxW={["auto","428px"]} boxShadow="2xl">
+                <HiOutlineBadgeCheck  style={{ width: "36px", height: "36px", color:"#104DBA" }}/>
+                <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">El usuario se ha actualizado exitosamente.</Text>
+            </Box>
+        )
+      })
     } catch (err) {
       toast({
-        title: "Datos no actualizados",
-        description: err.message,
-        position: "top-right",
-        isClosable: true,
-        duration: 6000,
-        status: "error",
-      });
+        position: "top",
+        render: () => (
+            <Box py={4} px={8} bg='white' borderRadius="md" maxW={["auto","428px"]} boxShadow="2xl">
+                <MdErrorOutline  style={{ width: "36px", height: "36px", color:"red" }}/>
+                <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">El usuario no se pudo actualizar.</Text>
+            </Box>
+        )
+      })
       throw new Error(err.message);
     }
   };
@@ -171,7 +186,6 @@ export default function Settings() {
       fetchDataMP();
     }
   }, [code, connectMercadopago]);
-
   return (
     <Flex
       w={["calc(100% - 60px)", "calc(100% - 155px)"]}
@@ -179,7 +193,7 @@ export default function Settings() {
       px={[0, 2]}
       flexDirection="column"
       justifyContent="flex-start"
-      overflowY="scroll"
+      overflowY="auto"
     >
       <Flex
         flexDirection={["column", "row"]}
@@ -194,7 +208,7 @@ export default function Settings() {
         >
           Ajustes
         </Heading>
-        {user?.role === "PATIENT" && (
+        {user?.role === "PACIENTE" && (
           <Button
             bg="#104DBA"
             rightIcon={<ChevronRightIcon style={{ fontSize: "24px" }} />}
@@ -213,17 +227,20 @@ export default function Settings() {
       <Box my={4}>
         <Formik
           initialValues={{
-            firstName: user?.name,
-            lastName: user?.name,
+            firstName: user?.firstName,
+            lastName: user?.lastName,
             email: user?.email,
-            dateOfBirth: "",
-            typeIdentity: "",
-            numIdentity: "",
-            genre: "",
-            telephone: "",
+            dateOfBirth: user?.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : '',
+            identityType: user?.identityType,
+            identityId: user?.identityId,
+            genre: user?.genre,
+            phone: user?.phone,
             reservePrice: user?.reservePrice,
             reserveTime: user?.reserveTime,
             especialization: user?.especialization,
+            socialWork: user?.socialWork,
+            socialWorkId: user?.socialWorkId,
+            enrollment: user?.enrollment
           }}
           onSubmit={handleSubmit}
         >
@@ -334,9 +351,9 @@ export default function Settings() {
                     </FormControl>
                   )}
                 </Field>
-                <Field name="typeIdentity">
+                <Field name="identityType">
                   {({ field }) => (
-                    <FormControl id="typeIdentity" w={["100%", "220px"]}>
+                    <FormControl id="identityType" w={["100%", "220px"]}>
                       <FormLabel
                         fontSize="md"
                         color="#104DBA"
@@ -360,9 +377,9 @@ export default function Settings() {
                     </FormControl>
                   )}
                 </Field>
-                <Field name="numIdentity">
+                <Field name="identityId">
                   {({ field }) => (
-                    <FormControl id="numIdentity" w={["100%", "220px"]}>
+                    <FormControl id="identityId" w={["100%", "220px"]}>
                       <FormLabel
                         fontSize="md"
                         color="#104DBA"
@@ -381,7 +398,7 @@ export default function Settings() {
                     </FormControl>
                   )}
                 </Field>
-                <Field name="telephone">
+                <Field name="phone">
                   {({ field }) => (
                     <FormControl id="lastName" w={["100%", "220px"]}>
                       <FormLabel
@@ -417,6 +434,7 @@ export default function Settings() {
                       <Input
                         _placeholder={{ color: "gray.500" }}
                         w={["100%", "220px"]}
+                        disabled
                         {...field}
                       />
                     </FormControl>
@@ -424,7 +442,7 @@ export default function Settings() {
                 </Field>
                 <Field name="socialWork">
                   {({ field }) => (
-                    <FormControl id="genre" w={["100%", "220px"]}>
+                    <FormControl id="socialWork" w={["100%", "220px"]}>
                       <FormLabel
                         fontSize="md"
                         color="#104DBA"
@@ -442,9 +460,9 @@ export default function Settings() {
                     </FormControl>
                   )}
                 </Field>
-                <Field name="numSocialWork">
+                <Field name="socialWorkId">
                   {({ field }) => (
-                    <FormControl id="numSocialWork" w={["100%", "220px"]}>
+                    <FormControl id="socialWorkId" w={["100%", "220px"]}>
                       <FormLabel
                         fontSize="md"
                         color="#104DBA"
@@ -483,6 +501,27 @@ export default function Settings() {
                     gap={5}
                     py={4}
                   >
+                    <Field name="enrollment">
+                      {({ field }) => (
+                        <FormControl id="enrollment" w={["100%", "220px"]}>
+                          <FormLabel
+                            fontSize="md"
+                            color="#104DBA"
+                            fontWeight={400}
+                            lineHeight="16.24px"
+                            w={["100%", "220px"]}
+                          >
+                            Matrícula
+                          </FormLabel>
+                          <Input
+                            placeholder="99"
+                            _placeholder={{ color: "gray.500" }}
+                            w={["100%", "220px"]}
+                            {...field}
+                          />
+                        </FormControl>
+                      )}
+                    </Field>
                     <Field name="reservePrice">
                       {({ field }) => (
                         <FormControl id="reservePrice" w={["100%", "220px"]}>
@@ -538,7 +577,7 @@ export default function Settings() {
                             Especialización
                           </FormLabel>
                           <Input
-                            placeholder="99"
+                            placeholder="Pediatra"
                             _placeholder={{ color: "gray.500" }}
                             w={["100%", "220px"]}
                             {...field}
@@ -549,25 +588,25 @@ export default function Settings() {
                   </Flex>
                 </Fragment>
               )}
-              {Object.values(isEditable).includes(true) && (
                 <Box w="full" textAlign="center">
-                  <Button
-                    bg="#205583"
-                    color="#FFFFFF"
-                    w={["220px", "300px"]}
-                    size={["xs", "sm"]}
-                    mx="auto"
-                    isLoading={isSubmitting}
-                    type="submit"
-                  >
-                    Actualizar
-                  </Button>
+                    <Button
+                        bg="#104DBA"
+                        color="#FFFFFF"
+                        w={["220px", "300px"]}
+                        size="sm"
+                        borderRadius="2xl"
+                        fontWeight={500}
+                        mx="auto"
+                        isLoading={isSubmitting}
+                        type="submit"
+                    >
+                        Actualizar
+                    </Button>
                 </Box>
-              )}
             </Form>
           )}
         </Formik>
-        {user?.role === "PATIENT" && (
+        {user?.role === "PACIENTE" && (
           <Text
             fontSize="xl"
             fontWeight={700}
@@ -578,54 +617,59 @@ export default function Settings() {
             A cargo
           </Text>
         )}
-        {user?.role === "PATIENT" && (
-          <Accordion allowToggle={patients?.length > 0 ? true : false} mt={2}>
-            <AccordionItem
-              border="none"
-              boxShadow="0px 4px 4px 0px #00000040"
-              borderEndEndRadius="xl"
-              borderEndStartRadius="xl"
-            >
-              <h2>
-                <AccordionButton
-                  bg={patients?.length > 0 ? "#104DBA" : "#87A6DD"}
-                  _hover={{ backgroundColor: "#104DBA" }}
-                  borderRadius={["md", "xl"]}
-                  h={["auto", "46px"]}
-                  justifyContent="flex-end"
-                >
-                  <AccordionIcon
-                    color="white"
-                    w={["30px", "40px"]}
-                    h={["30px", "40px"]}
-                  />
-                </AccordionButton>
-              </h2>
-
-              <AccordionPanel
-                fontSize={["sm", "lg"]}
-                fontWeight="400"
-                color="#000000"
-                textTransform="capitalize"
-                lineHeight={["15px", "24px"]}
-                overflowY="scroll"
-                maxH="150px"
-              >
-                {patients?.length > 0 &&
-                  patients.map((patient, idx) => (
-                    <Text
-                        key={idx}
-                        onClick={() => handleSelectPatient(patient)}
-                        _hover={{ textDecoration: "#104DBA", color: "#104DBA" }}
-                        cursor="pointer"
-                        my={1}
+        {user?.role === "PACIENTE" && (
+            patients?.length > 0 ? (
+                <Accordion allowToggle mt={2}>
+                    <AccordionItem
+                        border="none"
+                        boxShadow="0px 4px 4px 0px #00000040"
+                        borderEndEndRadius="xl"
+                        borderEndStartRadius="xl"
                     >
-                      {patient?.name} {patient?.lastName}
-                    </Text>
-                  ))}
-              </AccordionPanel>
-            </AccordionItem>
-          </Accordion>
+                    <h2>
+                        <AccordionButton
+                        bg={patients?.length > 0 ? "#104DBA" : "#87A6DD"}
+                        _hover={{ backgroundColor: "#104DBA" }}
+                        borderRadius={["md", "xl"]}
+                        h={["auto", "46px"]}
+                        justifyContent="flex-end"
+                        >
+                        <AccordionIcon
+                            color="white"
+                            w={["30px", "40px"]}
+                            h={["30px", "40px"]}
+                        />
+                        </AccordionButton>
+                    </h2>
+
+                    <AccordionPanel
+                        fontSize={["sm", "lg"]}
+                        fontWeight="400"
+                        color="#000000"
+                        textTransform="capitalize"
+                        lineHeight={["15px", "24px"]}
+                        overflowY="scroll"
+                        maxH="150px"
+                    >
+                        {patients?.length > 0 &&
+                        patients.map((patient, idx) => (
+                            <Text
+                                key={idx}
+                                onClick={() => handleSelectPatient(patient)}
+                                _hover={{ textDecoration: "#104DBA", color: "#104DBA" }}
+                                cursor="pointer"
+                                my={1}
+                            >
+                            {patient?.firstName} {patient?.lastName}
+                            </Text>
+                        ))}
+                    </AccordionPanel>
+                    </AccordionItem>
+                </Accordion>
+
+            ) : (
+                <Text mt={2} fontSize="lg">No tienes usuarios a cargo.</Text>  
+            )
         )}
         {user?.role === "DOCTOR" && (
           <Text

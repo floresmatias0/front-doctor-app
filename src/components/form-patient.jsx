@@ -6,9 +6,9 @@ import '../styles/form-patient.css'
 const FormPatient = ({handleSubmit, initialValues}) => {
 
     const optionsGenres = [
-        { value: 'male', label: 'Masculino' },
-        { value: 'female', label: 'Femenino' },
-        { value: 'other', label: 'Otro' },
+        { value: 'MASCULINO', label: 'Masculino' },
+        { value: 'FEMENINO', label: 'Femenino' },
+        { value: 'OTRO', label: 'Otro' },
     ];
 
     const validate = (values) => {
@@ -16,8 +16,8 @@ const FormPatient = ({handleSubmit, initialValues}) => {
   
       const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
   
-      if (!values.name) {
-        errors.name = "Por favor, coloque su nombre";
+      if (!values.firstName) {
+        errors.firstName = "Por favor, coloque su nombre";
       }
 
       if (!values.lastName) {
@@ -34,12 +34,12 @@ const FormPatient = ({handleSubmit, initialValues}) => {
       if (!values.genre) {
         errors.genre = "Por favor, elija una opcion";
       }
-      if (!values.birthdate) {
+      if (!values.dateOfBirth) {
         errors.birthdate = "Por favor, coloque su fecha de nacimiento";
       }
 
-      if (!values.dni) {
-        errors.dni = "Por favor, coloque su DNI";
+      if (!values.identityId) {
+        errors.identityId = "Por favor, coloque su numero de documento";
       }
 
       if (!values.socialWorkId) {
@@ -55,13 +55,15 @@ const FormPatient = ({handleSubmit, initialValues}) => {
             _id: initialValues?._id || '',
             name: initialValues?.name || '',
             lastName: initialValues?.lastName || '',
-            birthdate: initialValues?.birthdate || '',
+            firstName: initialValues?.firstName || '',
+            dateOfBirth: initialValues?.dateOfBirth ? new Date(initialValues.dateOfBirth).toISOString().split('T')[0] : '',
             picture: initialValues?.picture || '',
             genre: initialValues?.genre || '',
             phone: initialValues?.phone || '',
             email: initialValues?.email || '',
             history: initialValues?.history || '',
-            dni: initialValues?.dni || '',
+            identityType: initialValues?.identityType || '',
+            identityId: initialValues?.identityId || '',
             socialWork: initialValues?.socialWork || '',
             socialWorkId: initialValues?.socialWorkId || '',
             proceedings: initialValues?.proceedings || ''
@@ -73,12 +75,12 @@ const FormPatient = ({handleSubmit, initialValues}) => {
             <Form>
               <Box maxH={["400px", "700px"]} overflowY="auto" px={2}>
                 <Grid templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap={4} my={2}>
-                  <Field name='name' colSpan={1}>
+                  <Field name='firstName' colSpan={1}>
                     {({ field, form }) => (
-                        <FormControl isInvalid={form.errors.name && form.touched.name}>
+                        <FormControl isInvalid={form.errors.firstName && form.touched.firstName}>
                             <FormLabel fontSize="sm" fontWeight="normal" color="#104DBA">Nombre</FormLabel>
                             <Input {...field} placeholder='John' fontSize="sm" size={["sm", "md"]} rounded="md"/>
-                            <FormErrorMessage fontSize="xs">{form.errors.name}</FormErrorMessage>
+                            <FormErrorMessage fontSize="xs">{form.errors.firstName}</FormErrorMessage>
                         </FormControl>
                     )}
                   </Field>
@@ -91,12 +93,12 @@ const FormPatient = ({handleSubmit, initialValues}) => {
                         </FormControl>
                     )}
                   </Field>
-                  <Field name='birthdate' colSpan={1}>
+                  <Field name='dateOfBirth' colSpan={1}>
                     {({ field, form }) => (
-                        <FormControl isInvalid={form.errors.birthdate && form.touched.birthdate}>
+                        <FormControl isInvalid={form.errors.dateOfBirth && form.touched.dateOfBirth}>
                             <FormLabel fontSize="sm" fontWeight="normal" color="#104DBA">Fecha de nacimiento</FormLabel>
                             <Input {...field} placeholder='Fecha de nacimiento' type='date' fontSize="sm" size={["sm", "md"]} rounded="md"/>
-                            <FormErrorMessage fontSize="xs">{form.errors.birthdate}</FormErrorMessage>
+                            <FormErrorMessage fontSize="xs">{form.errors.dateOfBirth}</FormErrorMessage>
                         </FormControl>
                     )}
                   </Field>
@@ -124,12 +126,33 @@ const FormPatient = ({handleSubmit, initialValues}) => {
                   </Field>
                 </Grid>
                 <Grid templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)']} gap={4} my={2}>
-                  <Field name='dni' colSpan={1}>
+                <Field name='identityType' colSpan={1}>
                     {({ field, form }) => (
-                        <FormControl isInvalid={form.errors.dni && form.touched.dni}>
-                            <FormLabel fontSize="sm" fontWeight="normal" color="#104DBA">DNI</FormLabel>
+                        <FormControl isInvalid={form.errors.identityType && form.touched.identityType}>
+                            <FormLabel fontSize="sm" fontWeight="normal" color="#104DBA">Tipo de documento</FormLabel>
+                            <Select
+                                {...field}
+                                placeholder="Selecciona una opción"
+                                fontSize="sm"
+                                size={["sm", "md"]}
+                                rounded="md"
+                            >
+                              {["DNI", "CC", "CI"].map((option) => (
+                                <option key={option} value={option}>
+                                  {option}
+                                </option>
+                              ))}
+                            </Select>
+                            <FormErrorMessage fontSize="xs">{form.errors.identityType}</FormErrorMessage>
+                        </FormControl>
+                    )}
+                  </Field>
+                  <Field name='identityId' colSpan={1}>
+                    {({ field, form }) => (
+                        <FormControl isInvalid={form.errors.identityId && form.touched.identityId}>
+                            <FormLabel fontSize="sm" fontWeight="normal" color="#104DBA">Numero de documento</FormLabel>
                             <Input {...field} type="number" placeholder='99999999' fontSize="sm" size={["sm", "md"]} rounded="md" maxLength={12}/>
-                            <FormErrorMessage fontSize="xs">{form.errors.dni}</FormErrorMessage>
+                            <FormErrorMessage fontSize="xs">{form.errors.identityId}</FormErrorMessage>
                         </FormControl>
                     )}
                   </Field>

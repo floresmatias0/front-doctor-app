@@ -3,6 +3,7 @@ import { createContext, useCallback, useEffect, useState } from 'react';
 import { instance } from '../utils/axios';
 import { Box, Text, useToast } from '@chakra-ui/react';
 import { HiOutlineBadgeCheck } from 'react-icons/hi';
+import { MdErrorOutline } from 'react-icons/md';
 
 export const AppContext = createContext(null);
 
@@ -48,7 +49,7 @@ export default function DoctorContext({ children }) {
   
         if(response.success) {
           let patients = response.data;
-          let transformPatients = patients.map(patient => ({ value: patient.dni, label: patient.name, ...patient }))
+          let transformPatients = patients.map(patient => ({ value: patient?.identityId, label: `${patient?.firstName} ${patient?.lastName}`, ...patient }))
   
           return setPatients(transformPatients)
         }
@@ -93,13 +94,14 @@ export default function DoctorContext({ children }) {
       }catch(err) {
         console.log(err.message)
         toast({
-          title: "Error inesperado",
-          description: "Hubo un error al intentar agregar un nuevo paciente",
-          position: "top-right",
-          isClosable: true,
-          duration: 6000,
-          status: "error"
-        });
+          position: "top",
+          render: () => (
+              <Box py={4} px={8} bg='white' borderRadius="md" maxW={["auto","428px"]} boxShadow="2xl">
+                  <MdErrorOutline  style={{ width: "36px", height: "36px", color:"red" }}/>
+                  <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">El paciente no se pudo registrar.</Text>
+              </Box>
+          )
+        })
       }
     }
 
@@ -122,13 +124,14 @@ export default function DoctorContext({ children }) {
       }catch(err) {
         console.log(err.message)
         toast({
-          title: "Error inesperado",
-          description: "Hubo un error al intentar actualizar al paciente",
-          position: "top-right",
-          isClosable: true,
-          duration: 6000,
-          status: "error"
-        });
+          position: "top",
+          render: () => (
+              <Box py={4} px={8} bg='white' borderRadius="md" maxW={["auto","428px"]} boxShadow="2xl">
+                  <MdErrorOutline  style={{ width: "36px", height: "36px", color:"red" }}/>
+                  <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">El paciente no se pudo actualizar con exito.</Text>
+              </Box>
+          )
+        })
       }
     }
 

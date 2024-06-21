@@ -116,7 +116,7 @@ export default function Login({ handleLogin }) {
                     backgroundColor='white'
                     fontSize={["sm", "xl"]}
                     leftIcon={<FcGoogle fontSize={24} />}
-                    onClick={() => handleLogin("PATIENT")}
+                    onClick={() => handleLogin("PACIENTE")}
                     rounded='full'
                     w='full'
                     my={2}
