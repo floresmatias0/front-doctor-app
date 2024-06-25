@@ -209,16 +209,16 @@ const ListCalendar = ({ doctorSelected, onNext, isActive }) => {
                 </button>
 
               </div>
-              <Grid templateColumns="repeat(7, 1fr)" gap={2} my={2} overflowX="auto" w="full">
+              {/* <Grid templateColumns="repeat(7, 1fr)" gap={2} my={2} overflowX="auto" w="full">
                 {generateDays()}
               </Grid>
               {daySelected && (
                 <Grid templateColumns={["repeat(12, 1fr)", "repeat(8, 1fr)", "repeat(8, 1fr)", "repeat(8, 1fr)", "repeat(12, 1fr)", "repeat(15, 1fr)"]} gap={2} my={2} overflowX="auto" w="full">
                   {mapEvents && mapEvents.length > 0 && mapEvents?.map(event => event)}
                 </Grid>
-              )}
+              )} */}
             </Box>
-            <Flex justifyContent="center" alignItems="flex-end" my={[2, 4]}>
+            {/* <Flex justifyContent="center" alignItems="flex-end" my={[2, 4]}>
               {hsSelected && (
                 <Box>
                   <Box my={2}>
@@ -233,7 +233,7 @@ const ListCalendar = ({ doctorSelected, onNext, isActive }) => {
                   </Button>
                 </Box>
               )}
-            </Flex>
+            </Flex> */}
         </Flex>
       )}
     </Flex>

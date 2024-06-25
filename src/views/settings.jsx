@@ -186,6 +186,7 @@ export default function Settings() {
       fetchDataMP();
     }
   }, [code, connectMercadopago]);
+  
   return (
     <Flex
       w={["calc(100% - 60px)", "calc(100% - 155px)"]}
@@ -193,540 +194,543 @@ export default function Settings() {
       px={[0, 2]}
       flexDirection="column"
       justifyContent="flex-start"
+      alignItems="center"
       overflowY="auto"
     >
-      <Flex
-        flexDirection={["column", "row"]}
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Heading
-          fontSize="25px"
-          fontWeight={700}
-          lineHeight="29.3px"
-          color="#104DBA"
+      <Box maxW={["full", "1240px", "full"]}>
+        <Flex
+          flexDirection={["column", "row"]}
+          justifyContent="space-between"
+          alignItems="center"
         >
-          Ajustes
-        </Heading>
-        {user?.role === "PACIENTE" && (
-          <Button
-            bg="#104DBA"
-            rightIcon={<ChevronRightIcon style={{ fontSize: "24px" }} />}
-            onClick={onOpenFirst}
-            color="#FFFFFF"
-            w={["auto", "213px"]}
-            size="sm"
-            borderRadius="2xl"
-            mt={4}
-            fontWeight={500}
+          <Heading
+            fontSize="25px"
+            fontWeight={700}
+            lineHeight="29.3px"
+            color="#104DBA"
           >
-            AGREGAR PACIENTE
-          </Button>
-        )}
-      </Flex>
-      <Box my={4}>
-        <Formik
-          initialValues={{
-            firstName: user?.firstName,
-            lastName: user?.lastName,
-            email: user?.email,
-            dateOfBirth: user?.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : '',
-            identityType: user?.identityType,
-            identityId: user?.identityId,
-            genre: user?.genre,
-            phone: user?.phone,
-            reservePrice: user?.reservePrice,
-            reserveTime: user?.reserveTime,
-            especialization: user?.especialization,
-            socialWork: user?.socialWork,
-            socialWorkId: user?.socialWorkId,
-            enrollment: user?.enrollment
-          }}
-          onSubmit={handleSubmit}
-        >
-          {({ isSubmitting }) => (
-            <Form style={{ gap: 10, display: "flex", flexDirection: "column" }} >
-              <Text
-                fontSize="xl"
-                fontWeight={700}
-                lineHeight="23.44px"
-                color="#104DBA"
-              >
-                Datos personales
-              </Text>
-              <Flex
-                w="full"
-                justifyContent="space-between"
-                alignItems="center"
-                flexWrap="wrap"
-                gap={5}
-                py={4}
-              >
-                <Field name="firstName">
-                  {({ field }) => (
-                    <FormControl id="firstName" w={["100%", "220px"]}>
-                      <FormLabel
-                        fontSize="md"
-                        color="#104DBA"
-                        fontWeight={400}
-                        lineHeight="16.24px"
-                        w={["100%", "220px"]}
-                      >
-                        Nombre
-                      </FormLabel>
-                      <Input
-                        placeholder="John"
-                        _placeholder={{ color: "gray.500" }}
-                        w={["100%", "220px"]}
-                        {...field}
-                      />
-                    </FormControl>
-                  )}
-                </Field>
-                <Field name="lastName">
-                  {({ field }) => (
-                    <FormControl id="lastName" w={["100%", "220px"]}>
-                      <FormLabel
-                        fontSize="md"
-                        color="#104DBA"
-                        fontWeight={400}
-                        lineHeight="16.24px"
-                        w={["100%", "220px"]}
-                      >
-                        Apellido
-                      </FormLabel>
-                      <Input
-                        placeholder="Doe"
-                        _placeholder={{ color: "gray.500" }}
-                        w={["100%", "220px"]}
-                        {...field}
-                      />
-                    </FormControl>
-                  )}
-                </Field>
-                <Field name="dateOfBirth">
-                  {({ field }) => (
-                    <FormControl id="dateOfBirth" w={["100%", "220px"]}>
-                      <FormLabel
-                        fontSize="md"
-                        color="#104DBA"
-                        fontWeight={400}
-                        lineHeight="16.24px"
-                        w={["100%", "220px"]}
-                      >
-                        Fecha de nacimiento
-                      </FormLabel>
-                      <Input
-                        _placeholder={{ color: "gray.500" }}
-                        type="date"
-                        w={["100%", "220px"]}
-                        {...field}
-                      />
-                    </FormControl>
-                  )}
-                </Field>
-                <Field name="genre">
-                  {({ field }) => (
-                    <FormControl id="genre" w={["100%", "220px"]}>
-                      <FormLabel
-                        fontSize="md"
-                        color="#104DBA"
-                        fontWeight={400}
-                        lineHeight="16.24px"
-                        w={["100%", "220px"]}
-                      >
-                        Género
-                      </FormLabel>
-                      <Select
-                        {...field}
-                        placeholder="Selecciona una opción"
-                        w={["100%", "220px"]}
-                      >
-                        {["MASCULINO", "FEMENINO", "OTRO"].map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-                </Field>
-                <Field name="identityType">
-                  {({ field }) => (
-                    <FormControl id="identityType" w={["100%", "220px"]}>
-                      <FormLabel
-                        fontSize="md"
-                        color="#104DBA"
-                        fontWeight={400}
-                        lineHeight="16.24px"
-                        w={["100%", "220px"]}
-                      >
-                        Tipo documento
-                      </FormLabel>
-                      <Select
-                        {...field}
-                        placeholder="Selecciona una opción"
-                        w={["100%", "220px"]}
-                      >
-                        {["DNI", "CC", "CI"].map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-                </Field>
-                <Field name="identityId">
-                  {({ field }) => (
-                    <FormControl id="identityId" w={["100%", "220px"]}>
-                      <FormLabel
-                        fontSize="md"
-                        color="#104DBA"
-                        fontWeight={400}
-                        lineHeight="16.24px"
-                        w={["100%", "220px"]}
-                      >
-                        Numero documento
-                      </FormLabel>
-                      <Input
-                        placeholder="000000"
-                        _placeholder={{ color: "gray.500" }}
-                        w={["100%", "220px"]}
-                        {...field}
-                      />
-                    </FormControl>
-                  )}
-                </Field>
-                <Field name="phone">
-                  {({ field }) => (
-                    <FormControl id="lastName" w={["100%", "220px"]}>
-                      <FormLabel
-                        fontSize="md"
-                        color="#104DBA"
-                        fontWeight={400}
-                        lineHeight="16.24px"
-                        w={["100%", "220px"]}
-                      >
-                        Telefono de contacto
-                      </FormLabel>
-                      <Input
-                        placeholder="99999999"
-                        _placeholder={{ color: "gray.500" }}
-                        w={["100%", "220px"]}
-                        {...field}
-                      />
-                    </FormControl>
-                  )}
-                </Field>
-                <Field name="email">
-                  {({ field }) => (
-                    <FormControl id="email" w={["100%", "220px"]}>
-                      <FormLabel
-                        fontSize="md"
-                        color="#104DBA"
-                        fontWeight={400}
-                        lineHeight="16.24px"
-                        w={["100%", "220px"]}
-                      >
-                        Correo electronico
-                      </FormLabel>
-                      <Input
-                        _placeholder={{ color: "gray.500" }}
-                        w={["100%", "220px"]}
-                        disabled
-                        {...field}
-                      />
-                    </FormControl>
-                  )}
-                </Field>
-                <Field name="socialWork">
-                  {({ field }) => (
-                    <FormControl id="socialWork" w={["100%", "220px"]}>
-                      <FormLabel
-                        fontSize="md"
-                        color="#104DBA"
-                        fontWeight={400}
-                        lineHeight="16.24px"
-                        w={["100%", "220px"]}
-                      >
-                        Obra social
-                      </FormLabel>
-                      <Input
-                        _placeholder={{ color: "gray.500" }}
-                        w={["100%", "220px"]}
-                        {...field}
-                      />
-                    </FormControl>
-                  )}
-                </Field>
-                <Field name="socialWorkId">
-                  {({ field }) => (
-                    <FormControl id="socialWorkId" w={["100%", "220px"]}>
-                      <FormLabel
-                        fontSize="md"
-                        color="#104DBA"
-                        fontWeight={400}
-                        lineHeight="16.24px"
-                        w={["100%", "220px"]}
-                      >
-                        Numero socio obra social
-                      </FormLabel>
-                      <Input
-                        placeholder="99999999"
-                        _placeholder={{ color: "gray.500" }}
-                        w={["100%", "220px"]}
-                        {...field}
-                      />
-                    </FormControl>
-                  )}
-                </Field>
-              </Flex>
-              {user?.role === "DOCTOR" && (
-                <Fragment>
-                  <Text
-                    fontSize="xl"
-                    fontWeight={700}
-                    lineHeight="23.44px"
-                    color="#104DBA"
-                    mt={4}
-                  >
-                    Datos profesionales
-                  </Text>
-                  <Flex
-                    w="full"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    flexWrap="wrap"
-                    gap={5}
-                    py={4}
-                  >
-                    <Field name="enrollment">
-                      {({ field }) => (
-                        <FormControl id="enrollment" w={["100%", "220px"]}>
-                          <FormLabel
-                            fontSize="md"
-                            color="#104DBA"
-                            fontWeight={400}
-                            lineHeight="16.24px"
-                            w={["100%", "220px"]}
-                          >
-                            Matrícula
-                          </FormLabel>
-                          <Input
-                            placeholder="99"
-                            _placeholder={{ color: "gray.500" }}
-                            w={["100%", "220px"]}
-                            {...field}
-                          />
-                        </FormControl>
-                      )}
-                    </Field>
-                    <Field name="reservePrice">
-                      {({ field }) => (
-                        <FormControl id="reservePrice" w={["100%", "220px"]}>
-                          <FormLabel
-                            fontSize="md"
-                            color="#104DBA"
-                            fontWeight={400}
-                            lineHeight="16.24px"
-                            w={["100%", "220px"]}
-                          >
-                            Precio de consulta
-                          </FormLabel>
-                          <Input
-                            placeholder="99"
-                            _placeholder={{ color: "gray.500" }}
-                            w={["100%", "220px"]}
-                            {...field}
-                          />
-                        </FormControl>
-                      )}
-                    </Field>
-                    <Field name="reserveTime">
-                      {({ field }) => (
-                        <FormControl id="reserveTime" w={["100%", "220px"]}>
-                          <FormLabel
-                            fontSize="md"
-                            color="#104DBA"
-                            fontWeight={400}
-                            lineHeight="16.24px"
-                            w={["100%", "220px"]}
-                          >
-                            Tiempo de consulta
-                          </FormLabel>
-                          <Input
-                            placeholder="99"
-                            _placeholder={{ color: "gray.500" }}
-                            w={["100%", "220px"]}
-                            {...field}
-                          />
-                        </FormControl>
-                      )}
-                    </Field>
-                    <Field name="especialization">
-                      {({ field }) => (
-                        <FormControl id="especialization" w={["100%", "220px"]}>
-                          <FormLabel
-                            fontSize="md"
-                            color="#104DBA"
-                            fontWeight={400}
-                            lineHeight="16.24px"
-                            w={["100%", "220px"]}
-                          >
-                            Especialización
-                          </FormLabel>
-                          <Input
-                            placeholder="Pediatra"
-                            _placeholder={{ color: "gray.500" }}
-                            w={["100%", "220px"]}
-                            {...field}
-                          />
-                        </FormControl>
-                      )}
-                    </Field>
-                  </Flex>
-                </Fragment>
-              )}
-                <Box w="full" textAlign="center">
-                    <Button
-                        bg="#104DBA"
-                        color="#FFFFFF"
-                        w={["220px", "300px"]}
-                        size="sm"
-                        borderRadius="2xl"
-                        fontWeight={500}
-                        mx="auto"
-                        isLoading={isSubmitting}
-                        type="submit"
-                    >
-                        Actualizar
-                    </Button>
-                </Box>
-            </Form>
+            Ajustes
+          </Heading>
+          {user?.role === "PACIENTE" && (
+            <Button
+              bg="#104DBA"
+              rightIcon={<ChevronRightIcon style={{ fontSize: "24px" }} />}
+              onClick={onOpenFirst}
+              color="#FFFFFF"
+              w={["auto", "213px"]}
+              size="sm"
+              borderRadius="2xl"
+              mt={4}
+              fontWeight={500}
+            >
+              AGREGAR PACIENTE
+            </Button>
           )}
-        </Formik>
-        {user?.role === "PACIENTE" && (
-          <Text
-            fontSize="xl"
-            fontWeight={700}
-            lineHeight="23.44px"
-            color="#104DBA"
-            mt={4}
+        </Flex>
+        <Box my={4}>
+          <Formik
+            initialValues={{
+              firstName: user?.firstName,
+              lastName: user?.lastName,
+              email: user?.email,
+              dateOfBirth: user?.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : '',
+              identityType: user?.identityType,
+              identityId: user?.identityId,
+              genre: user?.genre,
+              phone: user?.phone,
+              reservePrice: user?.reservePrice,
+              reserveTime: user?.reserveTime,
+              especialization: user?.especialization,
+              socialWork: user?.socialWork,
+              socialWorkId: user?.socialWorkId,
+              enrollment: user?.enrollment
+            }}
+            onSubmit={handleSubmit}
           >
-            A cargo
-          </Text>
-        )}
-        {user?.role === "PACIENTE" && (
-            patients?.length > 0 ? (
-                <Accordion allowToggle mt={2}>
-                    <AccordionItem
-                        border="none"
-                        boxShadow="0px 4px 4px 0px #00000040"
-                        borderEndEndRadius="xl"
-                        borderEndStartRadius="xl"
-                    >
-                    <h2>
-                        <AccordionButton
-                        bg={patients?.length > 0 ? "#104DBA" : "#87A6DD"}
-                        _hover={{ backgroundColor: "#104DBA" }}
-                        borderRadius={["md", "xl"]}
-                        h={["auto", "46px"]}
-                        justifyContent="flex-end"
+            {({ isSubmitting }) => (
+              <Form style={{ gap: 10, display: "flex", flexDirection: "column" }} >
+                <Text
+                  fontSize="xl"
+                  fontWeight={700}
+                  lineHeight="23.44px"
+                  color="#104DBA"
+                >
+                  Datos personales
+                </Text>
+                <Flex
+                  w="full"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  flexWrap="wrap"
+                  gap={5}
+                  py={4}
+                >
+                  <Field name="firstName">
+                    {({ field }) => (
+                      <FormControl id="firstName" w={["100%", "220px"]}>
+                        <FormLabel
+                          fontSize="md"
+                          color="#104DBA"
+                          fontWeight={400}
+                          lineHeight="16.24px"
+                          w={["100%", "220px"]}
                         >
-                        <AccordionIcon
-                            color="white"
-                            w={["30px", "40px"]}
-                            h={["30px", "40px"]}
+                          Nombre
+                        </FormLabel>
+                        <Input
+                          placeholder="John"
+                          _placeholder={{ color: "gray.500" }}
+                          w={["100%", "220px"]}
+                          {...field}
                         />
-                        </AccordionButton>
-                    </h2>
-
-                    <AccordionPanel
-                        fontSize={["sm", "lg"]}
-                        fontWeight="400"
-                        color="#000000"
-                        textTransform="capitalize"
-                        lineHeight={["15px", "24px"]}
-                        overflowY="scroll"
-                        maxH="150px"
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="lastName">
+                    {({ field }) => (
+                      <FormControl id="lastName" w={["100%", "220px"]}>
+                        <FormLabel
+                          fontSize="md"
+                          color="#104DBA"
+                          fontWeight={400}
+                          lineHeight="16.24px"
+                          w={["100%", "220px"]}
+                        >
+                          Apellido
+                        </FormLabel>
+                        <Input
+                          placeholder="Doe"
+                          _placeholder={{ color: "gray.500" }}
+                          w={["100%", "220px"]}
+                          {...field}
+                        />
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="dateOfBirth">
+                    {({ field }) => (
+                      <FormControl id="dateOfBirth" w={["100%", "220px"]}>
+                        <FormLabel
+                          fontSize="md"
+                          color="#104DBA"
+                          fontWeight={400}
+                          lineHeight="16.24px"
+                          w={["100%", "220px"]}
+                        >
+                          Fecha de nacimiento
+                        </FormLabel>
+                        <Input
+                          _placeholder={{ color: "gray.500" }}
+                          type="date"
+                          w={["100%", "220px"]}
+                          {...field}
+                        />
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="genre">
+                    {({ field }) => (
+                      <FormControl id="genre" w={["100%", "220px"]}>
+                        <FormLabel
+                          fontSize="md"
+                          color="#104DBA"
+                          fontWeight={400}
+                          lineHeight="16.24px"
+                          w={["100%", "220px"]}
+                        >
+                          Género
+                        </FormLabel>
+                        <Select
+                          {...field}
+                          placeholder="Selecciona una opción"
+                          w={["100%", "220px"]}
+                        >
+                          {["MASCULINO", "FEMENINO", "OTRO"].map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="identityType">
+                    {({ field }) => (
+                      <FormControl id="identityType" w={["100%", "220px"]}>
+                        <FormLabel
+                          fontSize="md"
+                          color="#104DBA"
+                          fontWeight={400}
+                          lineHeight="16.24px"
+                          w={["100%", "220px"]}
+                        >
+                          Tipo documento
+                        </FormLabel>
+                        <Select
+                          {...field}
+                          placeholder="Selecciona una opción"
+                          w={["100%", "220px"]}
+                        >
+                          {["DNI", "CC", "CI"].map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="identityId">
+                    {({ field }) => (
+                      <FormControl id="identityId" w={["100%", "220px"]}>
+                        <FormLabel
+                          fontSize="md"
+                          color="#104DBA"
+                          fontWeight={400}
+                          lineHeight="16.24px"
+                          w={["100%", "220px"]}
+                        >
+                          Numero documento
+                        </FormLabel>
+                        <Input
+                          placeholder="000000"
+                          _placeholder={{ color: "gray.500" }}
+                          w={["100%", "220px"]}
+                          {...field}
+                        />
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="phone">
+                    {({ field }) => (
+                      <FormControl id="lastName" w={["100%", "220px"]}>
+                        <FormLabel
+                          fontSize="md"
+                          color="#104DBA"
+                          fontWeight={400}
+                          lineHeight="16.24px"
+                          w={["100%", "220px"]}
+                        >
+                          Telefono de contacto
+                        </FormLabel>
+                        <Input
+                          placeholder="99999999"
+                          _placeholder={{ color: "gray.500" }}
+                          w={["100%", "220px"]}
+                          {...field}
+                        />
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="email">
+                    {({ field }) => (
+                      <FormControl id="email" w={["100%", "220px"]}>
+                        <FormLabel
+                          fontSize="md"
+                          color="#104DBA"
+                          fontWeight={400}
+                          lineHeight="16.24px"
+                          w={["100%", "220px"]}
+                        >
+                          Correo electronico
+                        </FormLabel>
+                        <Input
+                          _placeholder={{ color: "gray.500" }}
+                          w={["100%", "220px"]}
+                          disabled
+                          {...field}
+                        />
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="socialWork">
+                    {({ field }) => (
+                      <FormControl id="socialWork" w={["100%", "220px"]}>
+                        <FormLabel
+                          fontSize="md"
+                          color="#104DBA"
+                          fontWeight={400}
+                          lineHeight="16.24px"
+                          w={["100%", "220px"]}
+                        >
+                          Obra social
+                        </FormLabel>
+                        <Input
+                          _placeholder={{ color: "gray.500" }}
+                          w={["100%", "220px"]}
+                          {...field}
+                        />
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="socialWorkId">
+                    {({ field }) => (
+                      <FormControl id="socialWorkId" w={["100%", "220px"]}>
+                        <FormLabel
+                          fontSize="md"
+                          color="#104DBA"
+                          fontWeight={400}
+                          lineHeight="16.24px"
+                          w={["100%", "220px"]}
+                        >
+                          Numero socio obra social
+                        </FormLabel>
+                        <Input
+                          placeholder="99999999"
+                          _placeholder={{ color: "gray.500" }}
+                          w={["100%", "220px"]}
+                          {...field}
+                        />
+                      </FormControl>
+                    )}
+                  </Field>
+                </Flex>
+                {user?.role === "DOCTOR" && (
+                  <Fragment>
+                    <Text
+                      fontSize="xl"
+                      fontWeight={700}
+                      lineHeight="23.44px"
+                      color="#104DBA"
+                      mt={4}
                     >
-                        {patients?.length > 0 &&
-                        patients.map((patient, idx) => (
-                            <Text
-                                key={idx}
-                                onClick={() => handleSelectPatient(patient)}
-                                _hover={{ textDecoration: "#104DBA", color: "#104DBA" }}
-                                cursor="pointer"
-                                my={1}
+                      Datos profesionales
+                    </Text>
+                    <Flex
+                      w="full"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      flexWrap="wrap"
+                      gap={5}
+                      py={4}
+                    >
+                      <Field name="enrollment">
+                        {({ field }) => (
+                          <FormControl id="enrollment" w={["100%", "220px"]}>
+                            <FormLabel
+                              fontSize="md"
+                              color="#104DBA"
+                              fontWeight={400}
+                              lineHeight="16.24px"
+                              w={["100%", "220px"]}
                             >
-                            {patient?.firstName} {patient?.lastName}
-                            </Text>
-                        ))}
-                    </AccordionPanel>
-                    </AccordionItem>
-                </Accordion>
+                              Matrícula
+                            </FormLabel>
+                            <Input
+                              placeholder="99"
+                              _placeholder={{ color: "gray.500" }}
+                              w={["100%", "220px"]}
+                              {...field}
+                            />
+                          </FormControl>
+                        )}
+                      </Field>
+                      <Field name="reservePrice">
+                        {({ field }) => (
+                          <FormControl id="reservePrice" w={["100%", "220px"]}>
+                            <FormLabel
+                              fontSize="md"
+                              color="#104DBA"
+                              fontWeight={400}
+                              lineHeight="16.24px"
+                              w={["100%", "220px"]}
+                            >
+                              Precio de consulta
+                            </FormLabel>
+                            <Input
+                              placeholder="99"
+                              _placeholder={{ color: "gray.500" }}
+                              w={["100%", "220px"]}
+                              {...field}
+                            />
+                          </FormControl>
+                        )}
+                      </Field>
+                      <Field name="reserveTime">
+                        {({ field }) => (
+                          <FormControl id="reserveTime" w={["100%", "220px"]}>
+                            <FormLabel
+                              fontSize="md"
+                              color="#104DBA"
+                              fontWeight={400}
+                              lineHeight="16.24px"
+                              w={["100%", "220px"]}
+                            >
+                              Tiempo de consulta
+                            </FormLabel>
+                            <Input
+                              placeholder="99"
+                              _placeholder={{ color: "gray.500" }}
+                              w={["100%", "220px"]}
+                              {...field}
+                            />
+                          </FormControl>
+                        )}
+                      </Field>
+                      <Field name="especialization">
+                        {({ field }) => (
+                          <FormControl id="especialization" w={["100%", "220px"]}>
+                            <FormLabel
+                              fontSize="md"
+                              color="#104DBA"
+                              fontWeight={400}
+                              lineHeight="16.24px"
+                              w={["100%", "220px"]}
+                            >
+                              Especialización
+                            </FormLabel>
+                            <Input
+                              placeholder="Pediatra"
+                              _placeholder={{ color: "gray.500" }}
+                              w={["100%", "220px"]}
+                              {...field}
+                            />
+                          </FormControl>
+                        )}
+                      </Field>
+                    </Flex>
+                  </Fragment>
+                )}
+                  <Box w="full" textAlign="center">
+                      <Button
+                          bg="#104DBA"
+                          color="#FFFFFF"
+                          w={["220px", "300px"]}
+                          size="sm"
+                          borderRadius="2xl"
+                          fontWeight={500}
+                          mx="auto"
+                          isLoading={isSubmitting}
+                          type="submit"
+                      >
+                          ACTUALIZAR
+                      </Button>
+                  </Box>
+              </Form>
+            )}
+          </Formik>
+          {user?.role === "PACIENTE" && (
+            <Text
+              fontSize="xl"
+              fontWeight={700}
+              lineHeight="23.44px"
+              color="#104DBA"
+              mt={4}
+            >
+              A cargo
+            </Text>
+          )}
+          {user?.role === "PACIENTE" && (
+              patients?.length > 0 ? (
+                  <Accordion allowToggle mt={2}>
+                      <AccordionItem
+                          border="none"
+                          boxShadow="0px 4px 4px 0px #00000040"
+                          borderEndEndRadius="xl"
+                          borderEndStartRadius="xl"
+                      >
+                      <h2>
+                          <AccordionButton
+                          bg={patients?.length > 0 ? "#104DBA" : "#87A6DD"}
+                          _hover={{ backgroundColor: "#104DBA" }}
+                          borderRadius={["md", "xl"]}
+                          h={["auto", "46px"]}
+                          justifyContent="flex-end"
+                          >
+                          <AccordionIcon
+                              color="white"
+                              w={["30px", "40px"]}
+                              h={["30px", "40px"]}
+                          />
+                          </AccordionButton>
+                      </h2>
 
-            ) : (
-                <Text mt={2} fontSize="lg">No tienes usuarios a cargo.</Text>  
-            )
-        )}
-        {user?.role === "DOCTOR" && (
-          <Text
-            fontSize="xl"
-            fontWeight={700}
-            lineHeight="23.44px"
-            color="#104DBA"
-            mt={4}
-          >
-            Pago
-          </Text>
-        )}
-        {user?.role === "DOCTOR" && user?.mercadopago_access?.access_token && (
-          <Flex gap={2} alignItems="center" mt={4}>
-            <FaCircleCheck color="#104DBA" />
-            <Text>Tu cuenta de MercadoPago ya está vinculada.</Text>
-          </Flex>
-        )}
-        {user?.role === "DOCTOR" && !user?.mercadopago_access?.access_token && (
-          <Button
-            bg="#104DBA"
-            leftIcon={<SiMercadopago style={{ fontSize: "24px" }} />}
-            onClick={handleLoginMp}
-            color="#FFFFFF"
-            w={["220px", "300px"]}
-            size="sm"
-            borderRadius="2xl"
-            mt={4}
-            fontWeight={500}
-          >
-            VINCULAR CUENTA MERCADOPAGO
-          </Button>
-        )}
+                      <AccordionPanel
+                          fontSize={["sm", "lg"]}
+                          fontWeight="400"
+                          color="#000000"
+                          textTransform="capitalize"
+                          lineHeight={["15px", "24px"]}
+                          overflowY="scroll"
+                          maxH="150px"
+                      >
+                          {patients?.length > 0 &&
+                          patients.map((patient, idx) => (
+                              <Text
+                                  key={idx}
+                                  onClick={() => handleSelectPatient(patient)}
+                                  _hover={{ textDecoration: "#104DBA", color: "#104DBA" }}
+                                  cursor="pointer"
+                                  my={1}
+                              >
+                              {patient?.firstName} {patient?.lastName}
+                              </Text>
+                          ))}
+                      </AccordionPanel>
+                      </AccordionItem>
+                  </Accordion>
+
+              ) : (
+                  <Text mt={2} fontSize="lg">No tienes usuarios a cargo.</Text>  
+              )
+          )}
+          {user?.role === "DOCTOR" && (
+            <Text
+              fontSize="xl"
+              fontWeight={700}
+              lineHeight="23.44px"
+              color="#104DBA"
+              mt={4}
+            >
+              Pago
+            </Text>
+          )}
+          {user?.role === "DOCTOR" && user?.mercadopago_access?.access_token && (
+            <Flex gap={2} alignItems="center" mt={4}>
+              <FaCircleCheck color="#104DBA" />
+              <Text>Tu cuenta de MercadoPago ya está vinculada.</Text>
+            </Flex>
+          )}
+          {user?.role === "DOCTOR" && !user?.mercadopago_access?.access_token && (
+            <Button
+              bg="#104DBA"
+              leftIcon={<SiMercadopago style={{ fontSize: "24px" }} />}
+              onClick={handleLoginMp}
+              color="#FFFFFF"
+              w={["220px", "300px"]}
+              size="sm"
+              borderRadius="2xl"
+              mt={4}
+              fontWeight={500}
+            >
+              VINCULAR CUENTA MERCADOPAGO
+            </Button>
+          )}
+        </Box>
+        <AlertModal
+          onClose={() => onCloseFirst()}
+          isOpen={isOpenFirst}
+          alertHeader="Nuevo paciente"
+          alertBody={
+            <FormPatient
+              handleSubmit={(values) => createPatient(values, onCloseFirst)}
+            />
+          }
+          isLoading={false}
+        />
+        <AlertModal
+          onClose={() => onCloseSecond()}
+          isOpen={isOpenSecond}
+          alertHeader="Editar paciente"
+          alertBody={
+            <FormPatient
+              initialValues={patientSelected}
+              handleSubmit={(values) => updatePatient(values, onCloseSecond)}
+            />
+          }
+          isLoading={false}
+        />
       </Box>
-      <AlertModal
-        onClose={() => onCloseFirst()}
-        isOpen={isOpenFirst}
-        alertHeader="Nuevo paciente"
-        alertBody={
-          <FormPatient
-            handleSubmit={(values) => createPatient(values, onCloseFirst)}
-          />
-        }
-        isLoading={false}
-      />
-      <AlertModal
-        onClose={() => onCloseSecond()}
-        isOpen={isOpenSecond}
-        alertHeader="Editar paciente"
-        alertBody={
-          <FormPatient
-            initialValues={patientSelected}
-            handleSubmit={(values) => updatePatient(values, onCloseSecond)}
-          />
-        }
-        isLoading={false}
-      />
     </Flex>
   );
 }

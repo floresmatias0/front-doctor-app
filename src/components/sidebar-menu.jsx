@@ -95,7 +95,7 @@ const receiveMenu = (isOpen, admin) => {
 
 const SidebarMenu = ({ children }) => {
   const { user } = useContext(AppContext);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const handleOpen = () => setIsOpen(!isOpen);
 
@@ -200,6 +200,7 @@ const SidebarMenu = ({ children }) => {
                   color="#474747"
                   fontWeight={400}
                   lineHeight="23.44px"
+                  cursor="pointer"
                 >
                   Cerrar sesión
                 </Text>
@@ -211,7 +212,7 @@ const SidebarMenu = ({ children }) => {
       <Flex 
         h="calc(100% - 80px)"
         w="full"
-        justifyContent={['flex-end', 'center']}
+        justifyContent={['flex-end', isOpen ? 'flex-end' : 'center']}
         alignItems="center"
         px={4}
         bgColor="#FFFFFF"

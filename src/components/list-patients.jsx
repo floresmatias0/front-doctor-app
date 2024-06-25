@@ -9,10 +9,11 @@ const ListPatient = ({ onNext, isActive, patients, patientSelected, setPatientSe
     }
 
     return (
-        <Flex h="100%" flexDirection="column" p={4} gap={5}>
+        <Flex h="100%" flex={1} flexDirection="column" py={4} px={10} gap={5}>
+          <Flex flex={1} flexDirection="column" gap={4}>
             <Text
               fontWeight={400}
-              fontSize="lg"
+              fontSize="md"
               lineHeight="18.75px"
             >
               ¿Para quién es el turno?
@@ -28,6 +29,7 @@ const ListPatient = ({ onNext, isActive, patients, patientSelected, setPatientSe
                     setPatientSelected(selected);
                 }}
                 fontSize={["sm", "md"]}
+                textTransform="capitalize"
             >
                 {patients.map((patient, idx) => (
                     <option key={idx} value={patient?.value}>{patient?.label}</option>
@@ -39,10 +41,10 @@ const ListPatient = ({ onNext, isActive, patients, patientSelected, setPatientSe
               size="xs"
               leftIcon={<AiOutlinePlus width={14} height={14} />}
               onClick={onOpenSecond}
-              w={["auto", "140px"]}
+              w={["auto", "180px"]}
             >
               <Text
-                fontSize="9px"
+                fontSize="xs"
                 lineHeight="10.55px"
                 fontWeight={500}
                 textTransform="uppercase"
@@ -50,28 +52,29 @@ const ListPatient = ({ onNext, isActive, patients, patientSelected, setPatientSe
                 Crear nuevo paciente
               </Text>
             </Button>
+          </Flex>
 
-            <Flex flex={1} justifyContent="flex-end" alignItems="flex-end" my={[2, 4]}>
-              {patientSelected && patientSelected?.value && (
-                <Button
-                  bg="#104DBA"
-                  color="#FFFFFF"
-                  w="120px"
-                  size="xs"
-                  rightIcon={<MdOutlineNavigateNext style={{ width: '20px', height: '20px' }} />}
-                  onClick={onNext}
+          <Flex justifyContent="flex-end" alignItems="flex-end" my={1}>
+            {patientSelected && patientSelected?.value && (
+              <Button
+                bg="#104DBA"
+                color="#FFFFFF"
+                w="120px"
+                size="xs"
+                rightIcon={<MdOutlineNavigateNext style={{ width: '20px', height: '20px' }} />}
+                onClick={onNext}
+              >
+                <Text
+                  fontSize="xs"
+                  lineHeight="16px"
+                  fontWeight={500}
+                  textTransform="uppercase"
                 >
-                  <Text
-                    fontSize="xs"
-                    lineHeight="16px"
-                    fontWeight={500}
-                    textTransform="uppercase"
-                  >
-                    Continuar
-                  </Text>
-                </Button>
-              )}
-            </Flex>
+                  Continuar
+                </Text>
+              </Button>
+            )}
+          </Flex>
         </Flex>
     )
 }
