@@ -33,9 +33,6 @@ export default function Appointment() {
     patient: false,
     filter: true,
     symptoms: true,
-    // doctors: true,
-    // days: true,
-    // payment: true,
     reserve: true
   }
 
@@ -136,10 +133,10 @@ export default function Appointment() {
   ];
 
   return (
-    <Flex w={["calc(100% - 60px)", "calc(100% - 155px)"]} h="100%" flexDirection="column" justifyContent="center" alignItems="flex-start">
+    <Flex w={["calc(100% - 60px)", "calc(100% - 155px)"]} h="100%" flexDirection="column" justifyContent="center" alignItems="center">
       <Box maxW={["full", "1240px", "full"]}>
         {/* CONTENT */}
-        <Box ml={[0, 0, 0,  20]}>
+        <Box alignContent="center">
           <Heading
             fontSize="2xl"
             color="#104DBA"

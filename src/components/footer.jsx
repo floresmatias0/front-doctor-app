@@ -112,6 +112,18 @@ export const Footer = ({styles = {}}) => {
           h='full'
         >
           <Box h='full' alignContent='center'>
+            <Link href="/condiciones-del-servicio" _hover={{ textDecoration: "none" }}>
+              <Text
+                fontSize={["xs", "sm"]}
+                align="left"
+                color="white"
+                fontWeight="400"
+                lineHeight={["12px", "16px"]}
+                alignContent='center'
+              >
+                Términos y Condiciones
+              </Text>
+            </Link>
             <Text
               fontSize={["xs", "sm"]}
               align={["left", "right"]}

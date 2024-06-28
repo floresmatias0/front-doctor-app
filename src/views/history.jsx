@@ -15,8 +15,16 @@ import {
   Select,
   SimpleGrid,
   Spinner,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
   Text,
   Textarea,
+  Tfoot,
+  Th,
+  Thead,
+  Tr,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -24,6 +32,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { AppContext } from "../components/context";
 import { instance, instanceUpload } from "../utils/axios";
 import { AlertModal } from "../components/alerts";
+import { useNavigate } from "react-router-dom";
 
 const getFormattedDateTime = (dateTimeStr, options) => {
   const dateTime = new Date(dateTimeStr);
@@ -134,11 +143,11 @@ const FormHistory = ({
         </Text>
         <Divider my={2} />
         <Box mb={4}>
-            {values?.certificate?.length > 0 &&
+          {values?.certificate?.length > 0 &&
             values.certificate.map((c, idx) => (
-                <Link key={idx} href={c.url}>
+              <Link key={idx} href={c.url}>
                 Ver certificado {idx + 1}
-                </Link>
+              </Link>
             ))}
         </Box>
         {role === "DOCTOR" && (
@@ -170,7 +179,7 @@ const FormHistory = ({
         <Button
           onClick={() => handleDeleteEvent(values._id, values.organizer.email)}
           isDisabled={isBookingPassed}
-          colorScheme='red'
+          colorScheme="red"
           alignContent="center"
           size="sm"
           w="full"
@@ -188,6 +197,8 @@ const FormHistory = ({
 
 const History = () => {
   const toast = useToast();
+  const navigate = useNavigate();
+
   const [dataBookings, setDataBookings] = useState([]);
   const [originalDataBookings, setOriginalDataBookings] = useState([]);
   const [patientSelected, setPatientSelected] = useState({});
@@ -415,190 +426,155 @@ const History = () => {
     onOpenHistory();
   };
 
+  const headingTable = [
+    {
+      name: "medico",
+      detail: ""
+    },
+    {
+      name: "fecha",
+      detail: ""
+    },
+    {
+      name: "hora",
+      detail: ""
+    },
+    {
+      name: "tipo",
+      detail: ""
+    },
+    {
+      name: "link",
+      detail: ""
+    },
+    {
+      name: "estado de turno",
+      detail: ""
+    },
+    {
+      name: "paciente",
+      detail: ""
+    },
+    {
+      name: "acciones",
+      detail: ""
+    }
+  ]
+
   return (
-    <Flex w={["calc(100% - 60px)", "calc(100% - 155px)"]} h="100%" justifyContent={["center", "top"]} flexDirection="column">
-      {/* {user.role !== "DOCTOR" ? (
-        <Flex
-          w="100%"
-          justifyContent="space-between"
-          alignItems="center"
-          flexDirection={["column", "row"]}
-          my={1}
-          flex="0 0 auto"
-        >
-          <Text color="#205583" fontSize={["md", "lg"]} fontWeight="bold">
+    <Flex
+      w={["calc(100% - 60px)", "calc(100% - 155px)"]}
+      h="100%"
+      justifyContent={["center", "top"]}
+      flexDirection="column"
+    >
+      <Box maxW={["full", "1240px", "full"]}>
+        {/* CONTENT */}
+        <Box>
+          <Heading fontSize="2xl" color="#104DBA" lineHeight="29.3px" mb={6}>
             Historial de turnos
-          </Text>
-          <Select
-            w={["auto", "250px"]}
-            h={["28px", "36px"]}
-            bg="#FFFFFF"
-            placeholder="Selecciona un paciente"
-            value={patientSelected?.value}
-            onChange={handleChange}
-            fontSize={["sm", "md"]}
-          >
-            {patients.map((patient, idx) => (
-              <option key={idx} value={patient.value}>
-                {patient.label}
-              </option>
-            ))}
-          </Select>
-        </Flex>
-      ) : (
-        <Text color="#205583" fontSize={["md", "lg"]} fontWeight="bold">
-          Historial de turnos
-        </Text>
-      )} */}
+          </Heading>
+          {loading ? (
+            <Flex
+              w="100%"
+              flex={1}
+              bg="#FCFEFF"
+              borderRadius="xl"
+              boxShadow="md"
+              px={[2, 2, 4]}
+              py={4}
+              flexDirection="column"
+              overflow="auto"
+            >
+              <Center>
+                <Spinner color="#104DBA" />
+              </Center>
+            </Flex>
+            ) : (
+            <TableContainer
+              borderTopStartRadius="15px"
+              borderTopEndRadius="15px"
+              borderBottomStartRadius="15px"
+              borderBottomEndRadius="15px"
+              boxShadow="0px 4px 4px 0px #00000040"
+              overflow="hidden"
+            >
+              <Table
+                size='sm'
+                variant="unstyled"
+              >
+                <Thead
+                  bgColor="#104DBA"
+                  boxShadow="xl"
+                  height={50}
+                >
+                  <Tr>
+                    {headingTable?.map((h, idx) => (
+                      <Th key={idx} color="#FFF" fontWeight={500} fontSize="16px" lineHeight="18.75px" px={8} textAlign="center">{h?.name}</Th>
+                    ))}
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {dataBookings?.length > 0 && dataBookings?.map((x, idx) => {
+                    let now = new Date();
+                    let bookingStart = new Date(x.start.dateTime);
+                    let isBookingPassed = now > bookingStart || x.status === "deleted";
 
-      {loading ? (
-        <Flex
-          w="100%"
-          flex={1}
-          bg="#FCFEFF"
-          borderRadius="xl"
-          boxShadow="md"
-          px={[2, 2, 4]}
-          py={4}
-          flexDirection="column"
-          overflow="auto"
-        >
-          <Center>
-            <Spinner color="#205583" />
-          </Center>
-        </Flex>
-      ) : (
-        <Flex
-          w={["100%", "920px"]}
-          h={['100%', '468px']}
-          bg="#FCFEFF"
-          borderRadius="xl"
-          boxShadow="md"
-          px={[0, 2, 4]}
-          py={4}
-          overflow="auto"
-        >
-          <SimpleGrid
-            flex={1}
-            columns={[1, 2, 3, 4]}
-            spacingX="40px"
-            spacingY="10px"
-            templateRows={[
-              Array(Math.round(dataBookings?.length)).fill("180px").join(" "),
-              Array(Math.round(dataBookings?.length / 4))
-                .fill("180px")
-                .join(" "),
-            ]}
-          >
-            {dataBookings &&
-              dataBookings?.length > 0 &&
-              dataBookings?.map((x, idx) => {
-                let now = new Date();
-                let bookingStart = new Date(x.start.dateTime);
-                let isBookingPassed =
-                  now > bookingStart || x.status === "deleted";
+                    let extraDate = `${getFormattedDateTime(x.start.dateTime, { day: "numeric", month: "numeric", year: "numeric"})}`;
 
-                let extraDate = `${getFormattedDateTime(x.start.dateTime, {
-                  day: "numeric",
-                  month: "numeric",
-                  year: "numeric",
-                })}`;
+                    let hour = `${getFormattedDateTime(x.start.dateTime, { hour: "numeric", minute: "numeric" })}`;
+                    // let endHour = `${getFormattedDateTime(x.end.dateTime, { hour: "numeric", minute: "numeric" })}`;
 
-                let hour = `${getFormattedDateTime(x.start.dateTime, {
-                  hour: "numeric",
-                  minute: "numeric",
-                })}`;
-
-                let endHour = `${getFormattedDateTime(x.end.dateTime, {
-                  hour: "numeric",
-                  minute: "numeric",
-                })}`;
-
-                return (
-                  <Flex
-                    key={idx}
-                    flexDirection="column"
-                    alignItems="center"
-                    onClick={() => handleSelectHistory(x)}
-                    cursor="pointer"
-                    _hover={{ bg: "#ebedf0" }}
-                    _active={{
-                      bg: "#dddfe2",
-                      transform: "scale(0.98)",
-                      borderColor: "#bec3c9",
-                    }}
-                  >
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      fontWeight="normal"
-                    >
-                      <Text color="#205583">Doctor: {x.organizer.name}</Text>
-                    </Box>
-                    <Box display="flex" justifyContent="center">
-                      <Text color="#205583">
-                        Paciente: {x?.patient?.name} {x?.patient?.lastName}
-                      </Text>
-                    </Box>
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      fontWeight="normal"
-                    >
-                      <Text fontSize={["sm", "md"]} color="#205583">
-                        Fecha: {extraDate}
-                      </Text>
-                    </Box>
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      fontWeight="normal"
-                    >
-                      <Text fontSize={["sm", "md"]} color="#205583">
-                        Hora: {hour}hs a {endHour}hs
-                      </Text>
-                    </Box>
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      fontWeight="normal"
-                    >
-                      {x.status === "deleted" ? (
-                        <Text color="gray">Consulta no disponible</Text>
-                      ) : now > bookingStart ? (
-                        <Text color="gray">Consulta no disponible</Text>
-                      ) : (
-                        <a href={x.hangoutLink}>
-                          <Text
-                            color="#205583"
-                            textDecoration="underline"
-                            _hover={{ textDecoration: "none" }}
-                          >
-                            Ir a la consulta
-                          </Text>
-                        </a>
-                      )}
-                    </Box>
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      fontWeight="normal"
-                    >
-                      <Text color="#205583">
-                        Estado:{" "}
-                        {x.status === "deleted"
-                          ? "Cancelado"
-                          : now > bookingStart
-                          ? "Expiró"
-                          : "Confirmado"}
-                      </Text>
-                    </Box>
-                  </Flex>
-                );
-              })}
-          </SimpleGrid>
-        </Flex>
-      )}
+                    return (
+                      <Tr key={idx} fontSize="12px" fontWeight={400} lineHeight="14.06px" textTransform="uppercase" px={8} textAlign="center">
+                        <Td textAlign="center">DR. {x.organizer.name}</Td>
+                        <Td textAlign="center">{extraDate}</Td>
+                        <Td textAlign="center">{hour}</Td>
+                        <Td textAlign="center">Consulta</Td>
+                        <Td textAlign="center">
+                        {x.status === "deleted" ? (
+                            <Text color="gray">No disponible</Text>
+                          ) : now > bookingStart ? (
+                            <Text color="gray">No disponible</Text>
+                          ) : (
+                            <a href={x.hangoutLink} target="_blank">
+                              <Text
+                                color="#104DBA"
+                                textDecoration="underline"
+                                _hover={{ textDecoration: "none" }}
+                              >
+                                Ir a la consulta
+                              </Text>
+                            </a>
+                          )}
+                        </Td>
+                        <Td textAlign="center">
+                          {x.status === "deleted" ? "Cancelado" : now > bookingStart ? "Expiró" : "Confirmado"}
+                        </Td>
+                        <Td textAlign="center">
+                          {x?.patient?.firstName} {x?.patient?.lastName}
+                        </Td>
+                        <Td textAlign="center">
+                          <Button isDisabled={user?.role !== "DOCTOR" ? isBookingPassed : false} size="sm" bgColor="#FF0000" _hover={{ bgColor: "#FF000099" }} rounded="full" onClick={user?.role === "DOCTOR" ? () => handleSelectHistory(x) : () => handleDeleteEvent(x?.booking_id, x?.organizer?.email)}>
+                            <Text color="#FFF">{user?.role === "DOCTOR" ? "ACCIONES" : "CANCELAR TURNO"}</Text>
+                          </Button>
+                        </Td>
+                      </Tr>
+                    )
+                  })}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          )}
+          {user.role !== "DOCTOR" && (
+            <Flex justifyContent="flex-end" alignItems="center" my={8}>
+              <Button bg="#104DBA" color="#FFFFFF" w="222px" size="sm" onClick={() => navigate('/turnos')} fontSize='16px' fontWeight={500}>
+                SOLICITAR NUEVO TURNO
+              </Button>
+            </Flex>
+          )}
+        </Box>
+      </Box>
       <AlertModal
         onClose={onCloseHistory}
         isOpen={isOpenHistory}

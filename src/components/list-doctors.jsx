@@ -124,20 +124,22 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   };
 
   const fetchDataCalendar = useCallback(async () => {
-    setLoadingCalendar(true);
-    setHsSelected(false);
-
     try {
-      const { data } = await instance.get(
-        `/calendars?email=${doctorSelected?.value}`
-      );
-
-      setCalendarEvents(data?.data?.items);
-      let filters = `{ "email": "${doctorSelected?.value}" }`;
-      const doctor = await instance.get(`/users?filters=${filters}`);
-
-      setDataDoctor(doctor?.data?.data[0]);
-      setLoadingCalendar(false);
+      if(doctorSelected?.value) {
+        setLoadingCalendar(true);
+        setHsSelected(false);
+  
+        const { data } = await instance.get(
+          `/calendars?email=${doctorSelected?.value}`
+        );
+  
+        setCalendarEvents(data?.data?.items);
+        let filters = `{ "email": "${doctorSelected?.value}" }`;
+        const doctor = await instance.get(`/users?filters=${filters}`);
+  
+        setDataDoctor(doctor?.data?.data[0]);
+        setLoadingCalendar(false);
+      }
     } catch (err) {
       setLoadingCalendar(false);
       throw new Error("Something went wrong to search calendar doctor");

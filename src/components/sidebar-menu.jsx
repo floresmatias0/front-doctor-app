@@ -38,6 +38,18 @@ const receiveMenu = (isOpen, admin) => {
     },
     {
       icon: (
+        <AiOutlineCalendar
+          color="#104DBA"
+          title="Mis turnos"
+          className={isOpen ? "fade-in-text" : ""}
+          style={{ width: "24px", height: "24px" }}
+        />
+      ),
+      title: "Nuevo turno",
+      href: "/turnos",
+    },
+    {
+      icon: (
         <AiOutlineHistory
           color="#104DBA"
           title="Historial"
@@ -47,18 +59,6 @@ const receiveMenu = (isOpen, admin) => {
       ),
       title: "Historial",
       href: "/historial-clinico",
-    },
-    {
-      icon: (
-        <AiOutlineCalendar
-          color="#104DBA"
-          title="Mis turnos"
-          className={isOpen ? "fade-in-text" : ""}
-          style={{ width: "24px", height: "24px" }}
-        />
-      ),
-      title: "Mis turnos",
-      href: "/mis-turnos",
     },
     {
       icon: (
@@ -107,6 +107,8 @@ const SidebarMenu = ({ children }) => {
       import.meta.env.VITE_BACKEND_URL
     }/auth/google/logout`;
   };
+
+  const path = window.location.pathname
 
   return (
     <Box w="100%" h="100vh" position="relative">
@@ -166,7 +168,7 @@ const SidebarMenu = ({ children }) => {
             </Flex>
             <Center flexDirection="column" gap={5}>
               {menuItems?.map((item, idx) => (
-                <Link key={idx} href={item.href}>
+                <Link key={idx} href={item.href} _hover={{ textDecoration: "none" }}>
                   <Flex gap={2} alignItems="center" justifyContent="center">
                     {item.icon}
                     <Text
@@ -174,9 +176,10 @@ const SidebarMenu = ({ children }) => {
                       display={isOpen ? "block" : "none"}
                       w="80px"
                       fontSize="sm"
-                      color="#474747"
+                      color={path === item.href ? "#104DBA" : "#474747"}
                       fontWeight={400}
                       lineHeight="23.44px"
+                      _hover={{ color: "#104DBA" }}
                     >
                       {item.title}
                     </Text>
