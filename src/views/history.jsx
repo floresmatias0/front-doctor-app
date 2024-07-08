@@ -5,15 +5,9 @@ import {
   Divider,
   Flex,
   Heading,
-  IconButton,
+  Image,
   Input,
   Link,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Select,
-  SimpleGrid,
   Spinner,
   Table,
   TableContainer,
@@ -21,7 +15,6 @@ import {
   Td,
   Text,
   Textarea,
-  Tfoot,
   Th,
   Thead,
   Tr,
@@ -33,13 +26,20 @@ import { AppContext } from "../components/context";
 import { instance, instanceUpload } from "../utils/axios";
 import { AlertModal } from "../components/alerts";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+import { IoMdCalendar } from "react-icons/io";
+
+import { es } from 'date-fns/locale';
+import { HiOutlineBadgeCheck } from "react-icons/hi";
+import { MdErrorOutline } from "react-icons/md";
+
 
 const getFormattedDateTime = (dateTimeStr, options) => {
   const dateTime = new Date(dateTimeStr);
   return dateTime.toLocaleString("es", options);
 };
 
-const FormHistory = ({
+export const FormHistory = ({
   values,
   role,
   handleUpdateBooking,
@@ -85,7 +85,7 @@ const FormHistory = ({
       ) : (
         <Link href={values.hangoutLink}>
           <Text
-            color="#205583"
+            color="#104DBA"
             textDecoration="underline"
             _hover={{ textDecoration: "none" }}
             textAlign="right"
@@ -94,19 +94,19 @@ const FormHistory = ({
           </Text>
         </Link>
       )}
-      <Text color="#205583" textAlign="left">
+      <Text color="#104DBA" textAlign="left">
         Doctor: {values.organizer.name}
       </Text>
-      <Text color="#205583" textAlign="left">
+      <Text color="#104DBA" textAlign="left">
         Paciente: {values?.patient?.name} {values?.patient?.lastName}
       </Text>
-      <Text fontSize={["sm", "md"]} color="#205583" textAlign="left">
+      <Text fontSize={["sm", "md"]} color="#104DBA" textAlign="left">
         Fecha: {extraDate}
       </Text>
-      <Text fontSize={["sm", "md"]} color="#205583" textAlign="left">
+      <Text fontSize={["sm", "md"]} color="#104DBA" textAlign="left">
         Hora: {hour}hs a {endHour}hs
       </Text>
-      <Text color="#205583">
+      <Text color="#104DBA">
         Estado:{" "}
         {values.status === "deleted"
           ? "Cancelado"
@@ -116,7 +116,7 @@ const FormHistory = ({
       </Text>
 
       <Box my={4}>
-        <Text color="#205583" fontSize={18} fontWeight={600}>
+        <Text color="#104DBA" fontSize={18} fontWeight={600}>
           Detalle de la consulta
         </Text>
         <Divider my={2} />
@@ -138,16 +138,19 @@ const FormHistory = ({
         )}
       </Box>
       <Box my={4}>
-        <Text color="#205583" fontSize={18} fontWeight={600}>
-          Certificados
+        <Text color="#104DBA" fontSize={18} fontWeight={600}>
+          Certificados y resultados
         </Text>
         <Divider my={2} />
         <Box mb={4}>
           {values?.certificate?.length > 0 &&
             values.certificate.map((c, idx) => (
-              <Link key={idx} href={c.url}>
-                Ver certificado {idx + 1}
-              </Link>
+              <Flex gap={2}>
+                <Text>Documento {idx + 1}</Text>
+                  <Link key={idx} href={c.url} target="_blank" bg="#EDF2F7" px={2} rounded="md" fontSize="xs" alignContent="center" fontWeight={700} _hover={{ bg: "#EDF2F7" }} rel="noopener noreferrer" download={c.name.trim()}>
+                    Ver
+                  </Link>
+              </Flex>
             ))}
         </Box>
         {role === "DOCTOR" && (
@@ -200,18 +203,24 @@ const History = () => {
   const navigate = useNavigate();
 
   const [dataBookings, setDataBookings] = useState([]);
-  const [originalDataBookings, setOriginalDataBookings] = useState([]);
-  const [patientSelected, setPatientSelected] = useState({});
   const [loading, setLoading] = useState(false);
-  const [bookingSelected, setBookingSelected] = useState({});
+  const [documentsSelected, setDocumentsSelected] = useState([])
+  const [turnSelected, setTurnSelected] = useState("")
 
-  const { user, patients } = useContext(AppContext);
+  const { user } = useContext(AppContext);
+
+  // Estado para el primer AlertModal
+  const {
+    isOpen: isOpenDocs,
+    onOpen: onOpenDocs,
+    onClose: onCloseDocs,
+  } = useDisclosure();
 
   // Estado para el segundo AlertModal
   const {
-    isOpen: isOpenHistory,
-    onOpen: onOpenHistory,
-    onClose: onCloseHistory,
+    isOpen: isOpenCancelTurn,
+    onOpen: onOpenCancelTurn,
+    onClose: onCloseCancelTurn,
   } = useDisclosure();
 
   const fetchBookings = useCallback(async () => {
@@ -223,13 +232,11 @@ const History = () => {
           `/calendars/all-events?doctor=${user.email}`
         );
 
-        setOriginalDataBookings(bookings.data.data);
         return setDataBookings(bookings.data.data);
       }
 
       bookings = await instance.get(`/calendars/all-events/${user._id}`);
 
-      setOriginalDataBookings(bookings.data.data);
       setDataBookings(bookings.data.data);
     } catch (err) {
       throw new Error(err.message);
@@ -255,69 +262,50 @@ const History = () => {
       const response = await instance.delete(
         `/calendars/${bookingId}?email=${userEmail}`
       );
-      if (response.success) {
+      if (response?.success) {
         toast({
-          title: "Consulta cancelada con exito",
-          description: "",
-          position: "top-right",
-          isClosable: true,
-          duration: 3000,
-          status: "success",
-        });
+          position: "top",
+          render: () => (
+              <Box py={4} px={8} bg='white' borderRadius="md" maxW={["auto","428px"]} boxShadow="2xl">
+                  <HiOutlineBadgeCheck  style={{ width: "36px", height: "36px", color:"#104DBA" }}/>
+                  <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">Su turno ha sido cancelado exitosamente.</Text>
+              </Box>
+          )
+        })
         return await fetchBookings();
       }
 
       toast({
-        title: "Error al intentar cancelar",
-        description: "Vuelva a intentar porfavor",
-        position: "top-right",
-        isClosable: true,
-        duration: 3000,
-        status: "error",
-      });
+        position: "top",
+        render: () => (
+            <Box py={4} px={8} bg='white' borderRadius="md" maxW={["auto","428px"]} boxShadow="2xl">
+                <MdErrorOutline  style={{ width: "36px", height: "36px", color:"red" }}/>
+                <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">Ocurrio un error inesperado, intenta de nuevo mas tarde.</Text>
+            </Box>
+        )
+      })
     } catch (err) {
-      console.log(err.message);
       toast({
-        title: "Error inesperado",
-        description: err.message,
-        position: "top-right",
-        isClosable: true,
-        duration: 3000,
-        status: "error",
-      });
+        position: "top",
+        render: () => (
+            <Box py={4} px={8} bg='white' borderRadius="md" maxW={["auto","428px"]} boxShadow="2xl">
+                <MdErrorOutline  style={{ width: "36px", height: "36px", color:"red" }}/>
+                <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">Ocurrio un error inesperado, intenta de nuevo mas tarde.</Text>
+            </Box>
+        )
+      })
     }
   };
 
-  const handleChange = (e) => {
-    const { value } = e.target;
+  const handleShowDocuments = (documents) => {
+    setDocumentsSelected(documents)
+    onOpenDocs()
+  }
 
-    const selected = patients.find((patient) => patient.value === value);
-    setPatientSelected(selected);
-
-    const isPatientInBookings = dataBookings.some(
-      (booking) => booking?.patient?.dni === value
-    );
-
-    if (isPatientInBookings) {
-      let bookingsFiltered = dataBookings.filter(
-        (booking) => booking?.patient?.dni === value
-      );
-      return setDataBookings(bookingsFiltered);
-    }
-
-    if (value) {
-      toast({
-        title: "Error en filtrado",
-        description: "No se encontro ningun paciente con ese nombre",
-        position: "top-right",
-        isClosable: true,
-        duration: 3000,
-        status: "error",
-      });
-    }
-
-    setDataBookings(originalDataBookings);
-  };
+  const handleShowCancelTurn = (turn) => {
+    setTurnSelected(turn)
+    onOpenCancelTurn()
+  }
 
   const handleFileInputChange = async (e, doctorId, patientId, bookingId) => {
     const formData = new FormData();
@@ -421,11 +409,6 @@ const History = () => {
     }
   };
 
-  const handleSelectHistory = (booking) => {
-    setBookingSelected(booking);
-    onOpenHistory();
-  };
-
   const headingTable = [
     {
       name: "medico",
@@ -463,15 +446,26 @@ const History = () => {
 
   return (
     <Flex
-      w={["calc(100% - 60px)", "calc(100% - 155px)"]}
+      w={["full", "calc(100% - 155px)"]}
       h="100%"
-      justifyContent={["center", "top"]}
+      justifyContent={["top", "top"]}
       flexDirection="column"
     >
       <Box maxW={["full", "1240px", "full"]}>
         {/* CONTENT */}
         <Box>
-          <Heading fontSize="2xl" color="#104DBA" lineHeight="29.3px" mb={6}>
+          <Heading
+            fontSize={["15px", "25px"]}
+            fontWeight={700}
+            lineHeight={["17.58px", "29.3px"]}
+            color="#104DBA"
+            border={["1px solid #104DBA", "none"]}
+            px={[4, 0]}
+            py={[0.5, 0]}
+            rounded={["xl", "none"]}
+            mb={6}
+            width="160px"
+          >
             Historial de turnos
           </Heading>
           {loading ? (
@@ -497,20 +491,34 @@ const History = () => {
               borderBottomStartRadius="15px"
               borderBottomEndRadius="15px"
               boxShadow="0px 4px 4px 0px #00000040"
-              overflow="hidden"
+              maxH="450px"
+              overflowY="auto"
             >
               <Table
-                size='sm'
+                size="md"
                 variant="unstyled"
               >
                 <Thead
                   bgColor="#104DBA"
                   boxShadow="xl"
                   height={50}
+                  position="sticky"
+                  top={0}
+                  zIndex={3}
                 >
                   <Tr>
                     {headingTable?.map((h, idx) => (
-                      <Th key={idx} color="#FFF" fontWeight={500} fontSize="16px" lineHeight="18.75px" px={8} textAlign="center">{h?.name}</Th>
+                      <Th
+                        key={idx}
+                        color="#FFF"
+                        fontWeight={500}
+                        fontSize="16px"
+                        lineHeight="18.75px"
+                        px={8}
+                        textAlign="center"
+                      >
+                        {h?.name}
+                      </Th>
                     ))}
                   </Tr>
                 </Thead>
@@ -519,25 +527,31 @@ const History = () => {
                     let now = new Date();
                     let bookingStart = new Date(x.start.dateTime);
                     let isBookingPassed = now > bookingStart || x.status === "deleted";
-
+            
                     let extraDate = `${getFormattedDateTime(x.start.dateTime, { day: "numeric", month: "numeric", year: "numeric"})}`;
-
                     let hour = `${getFormattedDateTime(x.start.dateTime, { hour: "numeric", minute: "numeric" })}`;
-                    // let endHour = `${getFormattedDateTime(x.end.dateTime, { hour: "numeric", minute: "numeric" })}`;
-
+            
                     return (
-                      <Tr key={idx} fontSize="12px" fontWeight={400} lineHeight="14.06px" textTransform="uppercase" px={8} textAlign="center">
+                      <Tr
+                        key={idx}
+                        fontSize="12px"
+                        fontWeight={400}
+                        lineHeight="14.06px"
+                        textTransform="uppercase"
+                        px={[0, 8]}
+                        textAlign="center"
+                      >
                         <Td textAlign="center">DR. {x.organizer.name}</Td>
                         <Td textAlign="center">{extraDate}</Td>
                         <Td textAlign="center">{hour}</Td>
                         <Td textAlign="center">Consulta</Td>
                         <Td textAlign="center">
-                        {x.status === "deleted" ? (
+                          {x.status === "deleted" ? (
                             <Text color="gray">No disponible</Text>
                           ) : now > bookingStart ? (
                             <Text color="gray">No disponible</Text>
                           ) : (
-                            <a href={x.hangoutLink} target="_blank">
+                            <Link href={x.hangoutLink} target="_blank">
                               <Text
                                 color="#104DBA"
                                 textDecoration="underline"
@@ -545,7 +559,7 @@ const History = () => {
                               >
                                 Ir a la consulta
                               </Text>
-                            </a>
+                            </Link>
                           )}
                         </Td>
                         <Td textAlign="center">
@@ -555,9 +569,75 @@ const History = () => {
                           {x?.patient?.firstName} {x?.patient?.lastName}
                         </Td>
                         <Td textAlign="center">
-                          <Button isDisabled={user?.role !== "DOCTOR" ? isBookingPassed : false} size="sm" bgColor="#FF0000" _hover={{ bgColor: "#FF000099" }} rounded="full" onClick={user?.role === "DOCTOR" ? () => handleSelectHistory(x) : () => handleDeleteEvent(x?.booking_id, x?.organizer?.email)}>
-                            <Text color="#FFF">{user?.role === "DOCTOR" ? "ACCIONES" : "CANCELAR TURNO"}</Text>
-                          </Button>
+                          <Box w="full" h="full" position="relative">
+                            {x?.certificate?.length > 0 && (
+                              <Button
+                                padding={0}
+                                position="absolute"
+                                top="-12px"
+                                left="0"
+                                w="calc(100% - 20px)"
+                                bg="#38C521"
+                                color="#FFF"
+                                size="xs"
+                                rounded="xl"
+                                transform="translateX(0px)"
+                                transition="transform 0.8s, z-index 0.3s"
+                                zIndex={1}
+                                _hover={{
+                                  transform: "translateX(20px)",
+                                  zIndex: 3
+                                }}
+                                onClick={() => handleShowDocuments(x.certificate)}
+                              >
+                                <Text
+                                  fontSize={["8px", "8px", "8px", "8px", "10px"]}
+                                  fontWeight={400}
+                                  textTransform="uppercase"
+                                  lineHeight="11.72px"
+                                >
+                                  DOCUMENTOS
+                                </Text>
+                              </Button>
+                            )}
+                            <Button
+                              padding={0}
+                              px={4}
+                              position="absolute"
+                              top="-12px"
+                              left="0"
+                              w="calc(100% - 20px)"
+                              bg="#FF0000"
+                              color="#FFF"
+                              size="xs"
+                              rounded="xl"
+                              transform="translateX(20px)"
+                              transition="transform 0.5s, z-index 0.5s"
+                              zIndex={2}
+                              onClick={() => handleShowCancelTurn(x)}
+                              isDisabled={isBookingPassed}
+                              _disabled={{
+                                opacity: 1,
+                                bg: "#DCDCDC"
+                              }}
+                              _hover={{
+                                bg: isBookingPassed ? "" : "inherit"
+                              }}
+                            >
+                              <Text
+                                fontSize={["8px", "8px", "8px", "8px", "10px"]}
+                                fontWeight={400}
+                                textTransform="uppercase"
+                                lineHeight="11.72px"
+                              >
+                                {x.status === "deleted"
+                                  ? "Cancelado"
+                                  : now > bookingStart
+                                  ? "Cancelar turno"
+                                  : "Cancelar turno"}
+                              </Text>
+                            </Button>
+                          </Box>
                         </Td>
                       </Tr>
                     )
@@ -566,30 +646,114 @@ const History = () => {
               </Table>
             </TableContainer>
           )}
-          {user.role !== "DOCTOR" && (
-            <Flex justifyContent="flex-end" alignItems="center" my={8}>
-              <Button bg="#104DBA" color="#FFFFFF" w="222px" size="sm" onClick={() => navigate('/turnos')} fontSize='16px' fontWeight={500}>
-                SOLICITAR NUEVO TURNO
-              </Button>
-            </Flex>
-          )}
+          <Flex justifyContent="flex-end" alignItems="center" my={8}>
+            <Button bg="#104DBA" color="#FFFFFF" w="222px" size="sm" onClick={() => navigate('/turnos')} fontSize='16px' fontWeight={500}>
+              SOLICITAR NUEVO TURNO
+            </Button>
+          </Flex>
         </Box>
       </Box>
       <AlertModal
-        onClose={onCloseHistory}
-        isOpen={isOpenHistory}
-        alertHeader="Consulta"
+        customWidth={300}
+        onClose={onCloseDocs}
+        isOpen={isOpenDocs}
+        alertHeader="Documentos"
         alertBody={
-          <FormHistory
-            values={bookingSelected}
-            role={user.role}
-            handleFileInputChange={handleFileInputChange}
-            handleDeleteEvent={handleDeleteEvent}
-            handleUpdateBooking={updateDetails}
-          />
+          <Box>
+            {documentsSelected?.map((doc, idx) => (
+              <Flex key={idx} justifyContent="space-between">
+                <Text>{doc?.name}</Text>
+                <Link href={doc?.url} target="_blank" color="#104DBA" fontWeight={700}>Ver</Link>
+              </Flex>
+            ))}
+          </Box>
         }
         isLoading={false}
-      />
+      >
+      </AlertModal>
+      {/* Modal cancelar turno */}
+      <AlertModal
+        customWidth={300}
+        onClose={onCloseCancelTurn}
+        isOpen={isOpenCancelTurn}
+        alertHeader=""
+        alertBody={
+          <Box w="full">
+            <Text lineHeight="18.55px" fontSize="md" color="#000" mb={4} fontWeight={400}>
+              ¿Desea confirmar la cancelación del siguiente turno?
+            </Text>
+            {turnSelected && (
+              <Box boxShadow="0px 3px 3px 0px #00000040" pb={2} rounded="lg">
+                <Flex
+                  w="full"
+                  h="auto"
+                  justifyContent="space-around"
+                  px={2}
+                  py={4}
+                  mx="auto"
+                  gap={2}
+                >
+                  <Image
+                    rounded="full"
+                    src={turnSelected?.organizer?.picture}
+                    w="48px"
+                    h="48px"
+                  />
+                  <Flex flex={1} flexDirection="column" justifyContent="space-between" alignItems="start">
+                    <Box>
+                      <Text
+                        fontSize="15px"
+                        textTransform="capitalize"
+                        fontWeight={700}
+                        lineHeight="12.3px"
+                        textAlign="left"
+                      >
+                        Dr. {turnSelected?.organizer?.name}
+                      </Text>
+                      <Text fontSize="sm" fontWeight={400} lineHeight="10.55px">
+                        {turnSelected?.organizer?.especialization}
+                      </Text>
+                    </Box>
+                    <Box>
+                      <Flex alignItems="center" gap={1}>
+                        <IoMdCalendar style={{ color: "#AAAAAA" }} />
+                        <Text fontSize={["xs", "sm"]} fontWeight={300} lineHeight="10.55px">{format(new Date(turnSelected?.start?.dateTime), "d  MMMM yyyy, HH:mm 'Hs.'", { locale: es })}</Text>
+                      </Flex>
+                    </Box>
+                  </Flex>
+                </Flex>
+                <Divider />
+                <Text fontSize="sm" fontWeight={300} lineHeight="10.55px" textAlign="center" mt={4} mb={1}>
+                  Valor de la consulta: ${turnSelected?.organizer?.price}
+                </Text>
+              </Box>
+            )}
+
+            <Button
+              padding={0}
+              px={4}
+              bg="#FF0000"
+              color="#FFF"
+              size="xs"
+              rounded="md"
+              onClick={() => handleDeleteEvent(turnSelected?._id, turnSelected?.organizer?.email)}
+              float="right"
+              mt={4}
+            >
+              <Text
+                fontSize="xs"
+                fontWeight={400}
+                textTransform="uppercase"
+                lineHeight="11.72px"
+              >
+                Cancelar turno
+              </Text>
+            </Button>
+          </Box>
+        }
+        isLoading={false}
+      >
+      </AlertModal>
     </Flex>
   );
 };

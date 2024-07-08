@@ -28,6 +28,7 @@ import LandingHome from "./views/landing";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './styles/main.css';
+import Patients from "./views/patients";
 
 const colors = {
   brand: {
@@ -89,6 +90,11 @@ const router = createBrowserRouter([
   {
     path: "mis-turnos",
     element: <LayoutWithSidebarAndFooter><ProtectedRoutes><Turns /></ProtectedRoutes></LayoutWithSidebarAndFooter>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "mis-pacientes",
+    element: <LayoutWithSidebarAndFooter><ProtectedRoutes><Patients /></ProtectedRoutes></LayoutWithSidebarAndFooter>,
     errorElement: <ErrorPage />,
   },
   {

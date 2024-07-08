@@ -1,0 +1,31 @@
+.button-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .cancel-button,
+  .dowload-button {
+    position: absolute;
+    top: -10px;
+    width: 100%;
+    background-color: #FF0000;
+    color: #FFF;
+    border: none;
+    padding: 2px 4px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: transform 0.5s, z-index 0.5s;
+  }
+
+  .cancel-button {
+    left: 0;
+    transform: translateX(-10px); /* Movimiento hacia la izquierda para sobresalir */
+  }
+  
+  .cancel-button:hover {
+    z-index: 2; /* Aumenta el z-index para que se muestre encima */
+    transform: translateX(0); /* Regresa a la posición normal al hacer hover */
+  }
+
+  

@@ -96,7 +96,7 @@ export const FooterLanding = ({styles = {}}) => {
   );
 };
 
-export const Footer = ({styles = {}}) => {
+export const Footer = ({styles = {}, display}) => {
   return (
     <Flex
       w="full"
@@ -104,6 +104,7 @@ export const Footer = ({styles = {}}) => {
       py={3}
       bgGradient="linear-gradient(60.5deg, #104DBA -12.14%, #88A6DD 55.27%, #FFFFFF 134.94%)"
       style={styles}
+      display={display}
     >
       <Container maxW="container.2xl" h='full'>
         <Flex

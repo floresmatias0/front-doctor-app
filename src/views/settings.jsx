@@ -189,9 +189,9 @@ export default function Settings() {
   
   return (
     <Flex
-      w={["calc(100% - 60px)", "calc(100% - 155px)"]}
-      h={["calc(100% - 40px)", "calc(100% - 80px)"]}
-      px={[0, 2]}
+      w={["full", "calc(100% - 155px)"]}
+      h={["full", "calc(100% - 80px)"]}
+      px={[4, 2]}
       flexDirection="column"
       justifyContent="flex-start"
       alignItems="center"
@@ -201,13 +201,17 @@ export default function Settings() {
         <Flex
           flexDirection={["column", "row"]}
           justifyContent="space-between"
-          alignItems="center"
+          alignItems={["start", "center"]}
         >
           <Heading
-            fontSize="25px"
+            fontSize={["15px", "25px"]}
             fontWeight={700}
-            lineHeight="29.3px"
+            lineHeight={["17.58px", "29.3px"]}
             color="#104DBA"
+            border={["1px solid #104DBA", "none"]}
+            px={[4, 0]}
+            py={[0.5, 0]}
+            rounded={["xl", "none"]}
           >
             Ajustes
           </Heading>
@@ -250,9 +254,9 @@ export default function Settings() {
             {({ isSubmitting }) => (
               <Form style={{ gap: 10, display: "flex", flexDirection: "column" }} >
                 <Text
-                  fontSize="xl"
+                  fontSize={["md", "xl"]}
                   fontWeight={700}
-                  lineHeight="23.44px"
+                  lineHeight={["16.41px", "23.44px"]}
                   color="#104DBA"
                 >
                   Datos personales
@@ -269,16 +273,17 @@ export default function Settings() {
                     {({ field }) => (
                       <FormControl id="firstName" w={["100%", "220px"]}>
                         <FormLabel
-                          fontSize="md"
+                          fontSize={["xs", "md"]}
                           color="#104DBA"
                           fontWeight={400}
-                          lineHeight="16.24px"
+                          lineHeight={["12.3px", "16.24px"]}
                           w={["100%", "220px"]}
                         >
                           Nombre
                         </FormLabel>
                         <Input
                           placeholder="John"
+                          fontSize={["xs", "md"]}
                           _placeholder={{ color: "gray.500" }}
                           w={["100%", "220px"]}
                           {...field}
@@ -290,16 +295,17 @@ export default function Settings() {
                     {({ field }) => (
                       <FormControl id="lastName" w={["100%", "220px"]}>
                         <FormLabel
-                          fontSize="md"
+                          fontSize={["xs", "md"]}
                           color="#104DBA"
                           fontWeight={400}
-                          lineHeight="16.24px"
+                          lineHeight={["12.3px", "16.24px"]}
                           w={["100%", "220px"]}
                         >
                           Apellido
                         </FormLabel>
                         <Input
                           placeholder="Doe"
+                          fontSize={["xs", "md"]}
                           _placeholder={{ color: "gray.500" }}
                           w={["100%", "220px"]}
                           {...field}
@@ -311,16 +317,17 @@ export default function Settings() {
                     {({ field }) => (
                       <FormControl id="dateOfBirth" w={["100%", "220px"]}>
                         <FormLabel
-                          fontSize="md"
+                          fontSize={["xs", "md"]}
                           color="#104DBA"
                           fontWeight={400}
-                          lineHeight="16.24px"
+                          lineHeight={["12.3px", "16.24px"]}
                           w={["100%", "220px"]}
                         >
                           Fecha de nacimiento
                         </FormLabel>
                         <Input
                           _placeholder={{ color: "gray.500" }}
+                          fontSize={["xs", "md"]}
                           type="date"
                           w={["100%", "220px"]}
                           {...field}
@@ -332,10 +339,10 @@ export default function Settings() {
                     {({ field }) => (
                       <FormControl id="genre" w={["100%", "220px"]}>
                         <FormLabel
-                          fontSize="md"
+                          fontSize={["xs", "md"]}
                           color="#104DBA"
                           fontWeight={400}
-                          lineHeight="16.24px"
+                          lineHeight={["12.3px", "16.24px"]}
                           w={["100%", "220px"]}
                         >
                           Género
@@ -343,6 +350,7 @@ export default function Settings() {
                         <Select
                           {...field}
                           placeholder="Selecciona una opción"
+                          fontSize={["xs", "md"]}
                           w={["100%", "220px"]}
                         >
                           {["MASCULINO", "FEMENINO", "OTRO"].map((option) => (
@@ -358,10 +366,10 @@ export default function Settings() {
                     {({ field }) => (
                       <FormControl id="identityType" w={["100%", "220px"]}>
                         <FormLabel
-                          fontSize="md"
+                          fontSize={["xs", "md"]}
                           color="#104DBA"
                           fontWeight={400}
-                          lineHeight="16.24px"
+                          lineHeight={["12.3px", "16.24px"]}
                           w={["100%", "220px"]}
                         >
                           Tipo documento
@@ -369,6 +377,7 @@ export default function Settings() {
                         <Select
                           {...field}
                           placeholder="Selecciona una opción"
+                          fontSize={["xs", "md"]}
                           w={["100%", "220px"]}
                         >
                           {["DNI", "CC", "CI"].map((option) => (
@@ -384,16 +393,17 @@ export default function Settings() {
                     {({ field }) => (
                       <FormControl id="identityId" w={["100%", "220px"]}>
                         <FormLabel
-                          fontSize="md"
+                          fontSize={["xs", "md"]}
                           color="#104DBA"
                           fontWeight={400}
-                          lineHeight="16.24px"
+                          lineHeight={["12.3px", "16.24px"]}
                           w={["100%", "220px"]}
                         >
                           Numero documento
                         </FormLabel>
                         <Input
                           placeholder="000000"
+                          fontSize={["xs", "md"]}
                           _placeholder={{ color: "gray.500" }}
                           w={["100%", "220px"]}
                           {...field}
@@ -405,16 +415,17 @@ export default function Settings() {
                     {({ field }) => (
                       <FormControl id="lastName" w={["100%", "220px"]}>
                         <FormLabel
-                          fontSize="md"
+                          fontSize={["xs", "md"]}
                           color="#104DBA"
                           fontWeight={400}
-                          lineHeight="16.24px"
+                          lineHeight={["12.3px", "16.24px"]}
                           w={["100%", "220px"]}
                         >
                           Telefono de contacto
                         </FormLabel>
                         <Input
                           placeholder="99999999"
+                          fontSize={["xs", "md"]}
                           _placeholder={{ color: "gray.500" }}
                           w={["100%", "220px"]}
                           {...field}
@@ -426,16 +437,17 @@ export default function Settings() {
                     {({ field }) => (
                       <FormControl id="email" w={["100%", "220px"]}>
                         <FormLabel
-                          fontSize="md"
+                          fontSize={["xs", "md"]}
                           color="#104DBA"
                           fontWeight={400}
-                          lineHeight="16.24px"
+                          lineHeight={["12.3px", "16.24px"]}
                           w={["100%", "220px"]}
                         >
                           Correo electronico
                         </FormLabel>
                         <Input
                           _placeholder={{ color: "gray.500" }}
+                          fontSize={["xs", "md"]}
                           w={["100%", "220px"]}
                           disabled
                           {...field}
@@ -447,16 +459,17 @@ export default function Settings() {
                     {({ field }) => (
                       <FormControl id="socialWork" w={["100%", "220px"]}>
                         <FormLabel
-                          fontSize="md"
+                          fontSize={["xs", "md"]}
                           color="#104DBA"
                           fontWeight={400}
-                          lineHeight="16.24px"
+                          lineHeight={["12.3px", "16.24px"]}
                           w={["100%", "220px"]}
                         >
                           Obra social
                         </FormLabel>
                         <Input
                           _placeholder={{ color: "gray.500" }}
+                          fontSize={["xs", "md"]}
                           w={["100%", "220px"]}
                           {...field}
                         />
@@ -467,16 +480,17 @@ export default function Settings() {
                     {({ field }) => (
                       <FormControl id="socialWorkId" w={["100%", "220px"]}>
                         <FormLabel
-                          fontSize="md"
+                          fontSize={["xs", "md"]}
                           color="#104DBA"
                           fontWeight={400}
-                          lineHeight="16.24px"
+                          lineHeight={["12.3px", "16.24px"]}
                           w={["100%", "220px"]}
                         >
                           Numero socio obra social
                         </FormLabel>
                         <Input
                           placeholder="99999999"
+                          fontSize={["xs", "md"]}
                           _placeholder={{ color: "gray.500" }}
                           w={["100%", "220px"]}
                           {...field}
@@ -488,9 +502,9 @@ export default function Settings() {
                 {user?.role === "DOCTOR" && (
                   <Fragment>
                     <Text
-                      fontSize="xl"
+                      fontSize={["md", "xl"]}
                       fontWeight={700}
-                      lineHeight="23.44px"
+                      lineHeight={["16.41px", "23.44px"]}
                       color="#104DBA"
                       mt={4}
                     >
@@ -508,16 +522,17 @@ export default function Settings() {
                         {({ field }) => (
                           <FormControl id="enrollment" w={["100%", "220px"]}>
                             <FormLabel
-                              fontSize="md"
+                              fontSize={["xs", "md"]}
                               color="#104DBA"
                               fontWeight={400}
-                              lineHeight="16.24px"
+                              lineHeight={["12.3px", "16.24px"]}
                               w={["100%", "220px"]}
                             >
                               Matrícula
                             </FormLabel>
                             <Input
                               placeholder="99"
+                              fontSize={["xs", "md"]}
                               _placeholder={{ color: "gray.500" }}
                               w={["100%", "220px"]}
                               {...field}
@@ -529,16 +544,17 @@ export default function Settings() {
                         {({ field }) => (
                           <FormControl id="reservePrice" w={["100%", "220px"]}>
                             <FormLabel
-                              fontSize="md"
+                              fontSize={["xs", "md"]}
                               color="#104DBA"
                               fontWeight={400}
-                              lineHeight="16.24px"
+                              lineHeight={["12.3px", "16.24px"]}
                               w={["100%", "220px"]}
                             >
                               Precio de consulta
                             </FormLabel>
                             <Input
                               placeholder="99"
+                              fontSize={["xs", "md"]}
                               _placeholder={{ color: "gray.500" }}
                               w={["100%", "220px"]}
                               {...field}
@@ -550,16 +566,17 @@ export default function Settings() {
                         {({ field }) => (
                           <FormControl id="reserveTime" w={["100%", "220px"]}>
                             <FormLabel
-                              fontSize="md"
+                              fontSize={["xs", "md"]}
                               color="#104DBA"
                               fontWeight={400}
-                              lineHeight="16.24px"
+                              lineHeight={["12.3px", "16.24px"]}
                               w={["100%", "220px"]}
                             >
                               Tiempo de consulta
                             </FormLabel>
                             <Input
                               placeholder="99"
+                              fontSize={["xs", "md"]}
                               _placeholder={{ color: "gray.500" }}
                               w={["100%", "220px"]}
                               {...field}
@@ -571,16 +588,17 @@ export default function Settings() {
                         {({ field }) => (
                           <FormControl id="especialization" w={["100%", "220px"]}>
                             <FormLabel
-                              fontSize="md"
+                              fontSize={["xs", "md"]}
                               color="#104DBA"
                               fontWeight={400}
-                              lineHeight="16.24px"
+                              lineHeight={["12.3px", "16.24px"]}
                               w={["100%", "220px"]}
                             >
                               Especialización
                             </FormLabel>
                             <Input
                               placeholder="Pediatra"
+                              fontSize={["xs", "md"]}
                               _placeholder={{ color: "gray.500" }}
                               w={["100%", "220px"]}
                               {...field}
@@ -611,9 +629,9 @@ export default function Settings() {
           </Formik>
           {user?.role === "PACIENTE" && (
             <Text
-              fontSize="xl"
+              fontSize={["md", "xl"]}
               fontWeight={700}
-              lineHeight="23.44px"
+              lineHeight={["16.41px", "23.44px"]}
               color="#104DBA"
               mt={4}
             >
@@ -676,9 +694,9 @@ export default function Settings() {
           )}
           {user?.role === "DOCTOR" && (
             <Text
-              fontSize="xl"
+              fontSize={["md", "xl"]}
               fontWeight={700}
-              lineHeight="23.44px"
+              lineHeight={["16.41px", "23.44px"]}
               color="#104DBA"
               mt={4}
             >

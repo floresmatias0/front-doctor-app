@@ -138,10 +138,16 @@ export default function Appointment() {
         {/* CONTENT */}
         <Box alignContent="center">
           <Heading
-            fontSize="2xl"
+            fontSize={["15px", "25px"]}
+            fontWeight={700}
+            lineHeight={["17.58px", "29.3px"]}
             color="#104DBA"
-            lineHeight="29.3px"
+            border={["1px solid #104DBA", "none"]}
+            px={[4, 0]}
+            py={[0.5, 0]}
+            rounded={["xl", "none"]}
             mb={6}
+            w="120px"
           >
             Nuevo turno
           </Heading>

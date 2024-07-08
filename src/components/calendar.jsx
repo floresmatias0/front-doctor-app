@@ -6,10 +6,11 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import esLocale from "@fullcalendar/core/locales/es";
 import { instance } from "../utils/axios";
 
-import '../styles/calendar.css';
 import { Box, useDisclosure, useToast } from "@chakra-ui/react";
 import { AlertModal } from "./alerts";
 import { initMercadoPago } from "@mercadopago/sdk-react";
+
+import '../styles/calendar.css';
 
 export const getFormattedDateTime = (dateTimeStr, options) => {
     const dateTime = new Date(dateTimeStr);

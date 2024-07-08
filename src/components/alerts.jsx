@@ -29,7 +29,8 @@ export const AlertModal = ({
     withCancelButton,
     withConfirmButton,
     customButtonCancel,
-    customButtonConfirm
+    customButtonConfirm,
+    customWidth = "auto"
 }) => {
     const cancelRef = useRef()
 
@@ -44,7 +45,7 @@ export const AlertModal = ({
         >
           <AlertDialogOverlay />
   
-          <AlertDialogContent  mx={["20px", 0]}>
+          <AlertDialogContent  mx={["20px", 0]} w={customWidth}>
             <AlertDialogHeader color="#104DBA">{alertHeader}</AlertDialogHeader>
             {onClose && <AlertDialogCloseButton />}
             <AlertDialogBody>

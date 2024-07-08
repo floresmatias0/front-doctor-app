@@ -22,7 +22,7 @@ const ListPatient = ({ onNext, isActive, patients, patientSelected, setPatientSe
                 w={["auto", "250px"]}
                 h={["28px", "36px"]}
                 bg="#FFFFFF"
-                placeholder='Eligir paciente'
+                placeholder='Elegir paciente'
                 value={patientSelected?.value}
                 onChange={(e) => {
                     const selected = patients.find((patient) => parseInt(patient?.value) === parseInt(e.target.value));
