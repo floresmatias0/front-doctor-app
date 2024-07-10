@@ -26,6 +26,7 @@ import { FaXmark } from "react-icons/fa6";
 import { LinkCustom } from "../components/buttons";
 import { LogoCustom, TitleCustom } from "../components/extras";
 import { FooterLanding } from "../components/footer";
+import photoDefaultDoctor from "../assets/photo-default-doctor.jpeg"
 
 const principalServices = [
   {
@@ -79,19 +80,19 @@ const steps = [
 const docs = new Array(
   {
     title: 'Dr. Rodríguez',
-    image: 'https://s3-alpha-sig.figma.com/img/5613/453c/f02fe5a9edf5f865b3249c8c07f8a1e5?Expires=1719792000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Q2uBm0aJnz8DcCRAg6D1zmiONnlxASiW8qoEPwMk4lRM3RUJ-jdcPvs6ScpN08lqDlXgfC2wIWoI-9mOl~6WllVSUqvC6C~RGHXiVLBV-PYTxf6qAUSRH2atWRj649mSpn0wM~HIi9DTJl9OHPiZGNlXNa~AYcEYtfjPtHDEdNLvkkvhm1Sup0fIGX4utlxwJhVVhNJliDTeCeYzAyh9f8e7SYXp-22ycMN32i2T47rg1vv1rsRIbyxQs~56hvdw~gvXXpaI4AacyuyAItjy1a8mWVDyyZeI2uPAqIT~tmGML0aGa20bkUuxw3SWjiDBjrUONjGfBmqXeDcfKkCTCw__',
+    image: photoDefaultDoctor,
     description: 'Pediatra especialista en desarrollo',
     enrollment: 'Lorem ipsum dolor sit amet consectetur. Platea non mi sagittis dignissim. Habitant malesuada quis auctor varius lorem ut. Id id tellus sed id sit eleifend a pretium. Luctus velit varius viverra cursus integer arcu. Turpis turpis pretium congue sit. Ut mi morbi mauris a massa pretium eget semper. Massa etiam nisi sit commodo. Velit orci odio lectus eget ultricies luctus ac morbi nec. Quam ornare senectus gravida sit nibh sed quam etiam. Semper pretium eu scelerisque sit diam sit non malesuada. Neque sit viverra tincidunt porttitor facilisi nullam. In.'
   },
   {
     title: 'Dr. Rodríguez',
-    image: 'https://s3-alpha-sig.figma.com/img/5613/453c/f02fe5a9edf5f865b3249c8c07f8a1e5?Expires=1719792000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Q2uBm0aJnz8DcCRAg6D1zmiONnlxASiW8qoEPwMk4lRM3RUJ-jdcPvs6ScpN08lqDlXgfC2wIWoI-9mOl~6WllVSUqvC6C~RGHXiVLBV-PYTxf6qAUSRH2atWRj649mSpn0wM~HIi9DTJl9OHPiZGNlXNa~AYcEYtfjPtHDEdNLvkkvhm1Sup0fIGX4utlxwJhVVhNJliDTeCeYzAyh9f8e7SYXp-22ycMN32i2T47rg1vv1rsRIbyxQs~56hvdw~gvXXpaI4AacyuyAItjy1a8mWVDyyZeI2uPAqIT~tmGML0aGa20bkUuxw3SWjiDBjrUONjGfBmqXeDcfKkCTCw__',
+    image: photoDefaultDoctor,
     description: 'Pediatra especialista en desarrollo',
     enrollment: 'Lorem ipsum dolor sit amet consectetur. Platea non mi sagittis dignissim. Habitant malesuada quis auctor varius lorem ut. Id id tellus sed id sit eleifend a pretium. Luctus velit varius viverra cursus integer arcu. Turpis turpis pretium congue sit. Ut mi morbi mauris a massa pretium eget semper. Massa etiam nisi sit commodo. Velit orci odio lectus eget ultricies luctus ac morbi nec. Quam ornare senectus gravida sit nibh sed quam etiam. Semper pretium eu scelerisque sit diam sit non malesuada. Neque sit viverra tincidunt porttitor facilisi nullam. In.'
   },
   {
     title: 'Dr. Rodríguez',
-    image: 'https://s3-alpha-sig.figma.com/img/5613/453c/f02fe5a9edf5f865b3249c8c07f8a1e5?Expires=1719792000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Q2uBm0aJnz8DcCRAg6D1zmiONnlxASiW8qoEPwMk4lRM3RUJ-jdcPvs6ScpN08lqDlXgfC2wIWoI-9mOl~6WllVSUqvC6C~RGHXiVLBV-PYTxf6qAUSRH2atWRj649mSpn0wM~HIi9DTJl9OHPiZGNlXNa~AYcEYtfjPtHDEdNLvkkvhm1Sup0fIGX4utlxwJhVVhNJliDTeCeYzAyh9f8e7SYXp-22ycMN32i2T47rg1vv1rsRIbyxQs~56hvdw~gvXXpaI4AacyuyAItjy1a8mWVDyyZeI2uPAqIT~tmGML0aGa20bkUuxw3SWjiDBjrUONjGfBmqXeDcfKkCTCw__',
+    image: photoDefaultDoctor,
     description: 'Pediatra especialista en desarrollo',
     enrollment: 'Lorem ipsum dolor sit amet consectetur. Platea non mi sagittis dignissim. Habitant malesuada quis auctor varius lorem ut. Id id tellus sed id sit eleifend a pretium. Luctus velit varius viverra cursus integer arcu. Turpis turpis pretium congue sit. Ut mi morbi mauris a massa pretium eget semper. Massa etiam nisi sit commodo. Velit orci odio lectus eget ultricies luctus ac morbi nec. Quam ornare senectus gravida sit nibh sed quam etiam. Semper pretium eu scelerisque sit diam sit non malesuada. Neque sit viverra tincidunt porttitor facilisi nullam. In.'
   }
