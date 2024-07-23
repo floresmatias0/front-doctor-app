@@ -62,6 +62,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
 
         if (doctors && doctors?.length > 0) {
           for (let i = 0; i < doctors.length; i++) {
+            console.log({doctor: doctors[i]})
             auxDoctors.push({
               label: doctors[i].name,
               value: doctors[i].email,
@@ -69,6 +70,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
               reservePrice: doctors[i].reservePrice,
               reserveTime: doctors[i].reserveTime,
               especialization: doctors[i].especialization,
+              public_key: doctors[i].mercadopago_access?.public_key
             });
           }
           setDoctors(auxDoctors);
@@ -177,7 +179,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   }
 
   return (
-    <Flex h="100%" flexDirection="column" py={4} px={[4, 10]} gap={5}>
+    <Flex h="100%" maxH="100%" overflowY="auto" flexDirection="column" py={[0, 4]} px={[0, 10]} gap={5} mt={[5, 0]}>
       <Flex justifyContent="space-between">
         <Text
           color="#FFF"
@@ -291,7 +293,9 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
             justifyContent="space-between"
             flexDirection="row"
             gap={4}
-            minH={["380px", "182px"]}
+            minH={["215px", "182px"]}
+            maxH={["215px", "auto"]}
+            overflowY={["scroll", "auto"]}
           >
             {currentDoctors.length > 0 &&
               currentDoctors.map((doctor, idx) => (
@@ -474,7 +478,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                       >
                         {doctorSelected?.label}
                       </Text>
-                      <Text fontSize="md" fontWeight={400} lineHeight="16.88px">
+                      <Text fontSize={["sm", "md"]} fontWeight={400} lineHeight="16.88px">
                         {doctorSelected?.especialization}
                       </Text>
                     </Box>

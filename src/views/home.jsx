@@ -565,8 +565,8 @@ const Home = () => {
                 <Button
                   bg="#104DBA"
                   color="#FFFFFF"
-                  w="222px"
-                  size="sm"
+                  w={["auto", "222px"]}
+                  size={["xs", "sm"]}
                   onClick={() => navigate("/historial")}
                   fontSize="16px"
                   fontWeight={500}
@@ -584,7 +584,7 @@ const Home = () => {
             alertBody={
               <Box>
                 {documentsSelected?.map((doc, idx) => (
-                  <Flex key={idx} justifyContent="space-between">
+                  <Flex key={idx} justifyContent="space-between" px={2}>
                     <Text>{doc?.name}</Text>
                     <Link
                       href={doc?.url}
@@ -607,7 +607,7 @@ const Home = () => {
             isOpen={isOpenCancelTurn}
             alertHeader=""
             alertBody={
-              <Box w="full">
+              <Box w="full" px={2}>
                 <Text
                   lineHeight="18.55px"
                   fontSize="md"

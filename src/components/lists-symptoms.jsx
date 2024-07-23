@@ -7,7 +7,8 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { IoMdCalendar } from "react-icons/io";
 import { FaInfoCircle } from "react-icons/fa";
-import { useSearchParams } from "react-router-dom";
+
+// import { initMercadoPago } from '@mercadopago/sdk-react'
 
 const ListSymptoms = ({
   isActive,
@@ -27,6 +28,7 @@ const ListSymptoms = ({
   const [checkTerms, setCheckTerms] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [urlMercadopago, setUrlMercadopago] = useState(null)
+  const [preferenceId, setPreferenceId] = useState(null)
 
   const fetchSymptoms = async () => {
     try {
@@ -65,28 +67,31 @@ const ListSymptoms = ({
 
   const confirmReserve = useCallback(async () => {
     try {
+        // initMercadoPago(doctorSelected?.public_key);
+
         setIsLoading(true)
-        const endDateTime = new Date(daySelected);
+        const endDateTime = daySelected ? new Date(daySelected) : new Date();
         endDateTime.setMinutes(endDateTime.getMinutes() + doctorSelected?.reserveTime);
         
         const payment = await instance.post('/payments/create', {
             user_email: doctorSelected?.value,
             tutor_email: user?.email,
             patient: patientSelected?._id,
-            startDateTime: `${format(daySelected, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`,
+            startDateTime: daySelected ? `${format(daySelected, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}` : '',
             endDateTime: `${format(endDateTime, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")}`,
             unit_price: doctorSelected?.reservePrice,
             symptoms: selectedSymptoms
         })
         
-        const { init_point, sandbox_init_point } = payment.data.data;
+        const { init_point, sandbox_init_point, id } = payment.data.data;
 
         if(import.meta.env.VITE_ENVIRONMENT === "localhost") {
             setUrlMercadopago(sandbox_init_point)
             return setIsLoading(false)
         }
-        console.log({payment})
+
         setUrlMercadopago(init_point)
+        setPreferenceId(id)
         setIsLoading(false)
     }catch(err) {
         throw new Error(err.message)
@@ -117,13 +122,17 @@ const ListSymptoms = ({
     if (isActive) fetchDataSymptoms();
   }, [isActive]);
 
+  const fechaFormateada = daySelected ? format(daySelected, "d  MMMM yyyy, HH:mm 'Hs.'", { locale: es }) : null;
+
+  const handleClickPayment = () => window.location.replace(urlMercadopago)
+
   if (!isActive) {
     return null;
   }
 
-  const fechaFormateada = format(daySelected, "d  MMMM yyyy, HH:mm 'Hs.'", { locale: es });
-
-  const handleClickPayment = () => window.location.replace(urlMercadopago)
+  if (!daySelected || !doctorSelected || !patientSelected) {
+    return null;
+  }
 
   return (
     <Flex h="100%" flexDirection="column" p={4} gap={5}>
@@ -142,10 +151,10 @@ const ListSymptoms = ({
       </Text>
       {!disableTabs.symptoms && (
         <Fragment>
-          <Text fontWeight={400} fontSize="lg" lineHeight="18.75px">
-            ¿Que sintomas presenta?
+          <Text fontWeight={400} fontSize={["sm", "lg"]} lineHeight="18.75px">
+            ¿El paciente presenta alguno o más de estos síntomas?
           </Text>
-          <Flex gap={5} flexWrap="wrap">
+          <Flex gap={4} flexWrap="wrap">
             {symptoms?.length > 0 &&
               symptoms.map((symptom, idx) => (
                 <Button
@@ -158,7 +167,7 @@ const ListSymptoms = ({
                   }
                   px={3}
                   borderRadius="xl"
-                  fontSize="md"
+                  fontSize={["xs", "md"]}
                   textTransform="uppercase"
                   cursor="pointer"
                   bgColor={
@@ -300,6 +309,9 @@ const ListSymptoms = ({
                           </Button>
                         )
                     )}
+                    
+                    {/* <Wallet initialization={{ preferenceId }} customization={{ texts:{ valueProp: 'smart_option'}}} /> */}
+
                   </Flex>
                 </Flex>
             </Flex>

@@ -86,8 +86,7 @@ const CustomCalendar = ({ currentDateState, setDaySelected, calendarEvents, sele
             fontWeight={400}
             isDisabled={!emptyEvent}
           >
-            <Text lineHeight="normal" textAlign="center" fontSize="sm">{format(eventStartTime, 'HH:mm')}</Text>
-            {/* Puedes agregar más detalles del evento aquí si es necesario */}
+            <Text lineHeight="normal" textAlign="center" fontSize={["9px", "sm"]}>{format(eventStartTime, 'HH:mm')}</Text>
           </Button>
         );
       }
@@ -138,10 +137,10 @@ const CustomCalendar = ({ currentDateState, setDaySelected, calendarEvents, sele
 
             return (
               <Box key={day.toISOString()} textAlign="center">
-                <Text fontSize="lg" fontWeight={500} lineHeight="20px" color="#000" textTransform="uppercase" textAlign="center">{dayName?.slice(0, 3)}</Text>
+                <Text fontSize={["xs", "lg"]} fontWeight={500} lineHeight="20px" color="#000" textTransform="uppercase" textAlign="center">{dayName?.slice(0, 3)}</Text>
                 <Flex justifyContent="center" gap={1}>
-                  <Text>{dayDate}</Text>
-                  <Text textTransform="uppercase">{monthName}</Text>
+                  <Text fontSize={["9px", "xs"]}>{dayDate}</Text>
+                  <Text fontSize={["9px", "xs"]} textTransform="uppercase">{monthName}</Text>
                 </Flex>
                 {mapEvents[day.toISOString()]}
               </Box>

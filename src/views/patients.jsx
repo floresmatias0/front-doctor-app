@@ -298,7 +298,7 @@ import {
                       px={[4, 0]}
                       py={[0.5, 0]}
                       rounded={["xl", "none"]}
-                      w="130px"
+                      w={["130px", "auto"]}
                       mb={4}
                   >
                       Mis pacientes

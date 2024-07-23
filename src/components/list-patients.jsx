@@ -3,14 +3,14 @@ import { Button, Flex, Select, Text } from "@chakra-ui/react"
 import { AiOutlinePlus } from 'react-icons/ai'
 import { MdOutlineNavigateNext } from "react-icons/md";
 
-const ListPatient = ({ onNext, isActive, patients, patientSelected, setPatientSelected, onOpenSecond }) => {
+const ListPatient = ({ onNext, isActive, patients, patientSelected, setPatientSelected, onOpenForm }) => {
     if(!isActive) {
       return null
     }
 
     return (
-        <Flex h="100%" flex={1} flexDirection="column" py={4} px={10} gap={5}>
-          <Flex flex={1} flexDirection="column" gap={4}>
+        <Flex h="100%" flex={1} flexDirection="column" py={[0, 4]} pt={[10, 0]} px={[0, 10]} gap={5}>
+          <Flex flex={1} flexDirection="column" gap={4} mt={[0, 4]}>
             <Text
               fontWeight={400}
               fontSize="md"
@@ -40,8 +40,8 @@ const ListPatient = ({ onNext, isActive, patients, patientSelected, setPatientSe
               color="#FFFFFF"
               size="xs"
               leftIcon={<AiOutlinePlus width={14} height={14} />}
-              onClick={onOpenSecond}
-              w={["auto", "180px"]}
+              onClick={onOpenForm}
+              w="180px"
             >
               <Text
                 fontSize="xs"

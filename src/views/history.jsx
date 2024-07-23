@@ -73,7 +73,7 @@ export const FormHistory = ({
   };
 
   return (
-    <Box>
+    <Box px={2}>
       {values.status === "deleted" ? (
         <Text color="gray" textAlign="right">
           Consulta no disponible
@@ -647,7 +647,7 @@ const History = () => {
             </TableContainer>
           )}
           <Flex justifyContent="flex-end" alignItems="center" my={8}>
-            <Button bg="#104DBA" color="#FFFFFF" w="222px" size="sm" onClick={() => navigate('/turnos')} fontSize='16px' fontWeight={500}>
+            <Button bg="#104DBA" color="#FFFFFF" w={["auto", "222px"]} size={["xs", "sm"]} onClick={() => navigate('/turnos')} fontSize='16px' fontWeight={500}>
               SOLICITAR NUEVO TURNO
             </Button>
           </Flex>
@@ -661,7 +661,7 @@ const History = () => {
         alertBody={
           <Box>
             {documentsSelected?.map((doc, idx) => (
-              <Flex key={idx} justifyContent="space-between">
+              <Flex key={idx} justifyContent="space-between" px={2}>
                 <Text>{doc?.name}</Text>
                 <Link href={doc?.url} target="_blank" color="#104DBA" fontWeight={700}>Ver</Link>
               </Flex>
@@ -678,7 +678,7 @@ const History = () => {
         isOpen={isOpenCancelTurn}
         alertHeader=""
         alertBody={
-          <Box w="full">
+          <Box w="full" px={2}>
             <Text lineHeight="18.55px" fontSize="md" color="#000" mb={4} fontWeight={400}>
               ¿Desea confirmar la cancelación del siguiente turno?
             </Text>

@@ -122,7 +122,7 @@ export default function Settings() {
 
     let transformPatient = {
       ...patient,
-      birthdate: formattedDate,
+      birthdate: formattedDate
     };
 
     setPatientSelected(transformPatient);
@@ -186,7 +186,7 @@ export default function Settings() {
       fetchDataMP();
     }
   }, [code, connectMercadopago]);
-  
+
   return (
     <Flex
       w={["full", "calc(100% - 155px)"]}
