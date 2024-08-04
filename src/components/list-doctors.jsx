@@ -297,99 +297,114 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
             maxH={["215px", "auto"]}
             overflowY={["scroll", "auto"]}
           >
-            {currentDoctors.length > 0 &&
-              currentDoctors.map((doctor, idx) => (
-                <Flex
-                  key={idx}
-                  w={["full", "265px"]}
-                  h="83px"
-                  justifyContent="space-around"
-                  boxShadow="0px 4px 4px 0px #00000040"
-                  borderRadius="xl"
-                  p={2}
-                  cursor="pointer"
-                  onClick={() => handleDoctorsSelect(doctor)}
-                  border="2px"
-                  borderColor={
-                    doctorSelected?.label === doctor?.label
-                      ? "#104DBA"
-                      : "transparent"
-                  }
-                >
-                  <Image
-                    rounded="full"
-                    src={doctor?.picture}
-                    w="40px"
-                    h="40px"
-                  />
-                  <Flex flexDirection="column" justifyContent="space-between">
-                    <Box>
-                      <Text
-                        fontSize="sm"
-                        textTransform="capitalize"
-                        fontWeight={700}
-                        lineHeight="16.41px"
-                      >
-                        {doctor?.label}
-                      </Text>
-                      <Text fontSize="xs" fontWeight={400} lineHeight="14.06px">
-                        {doctor?.especialization}
-                      </Text>
-                    </Box>
-
-                    <Flex gap={2}>
-                      <Box
-                        display={[
-                          "none",
-                          "block",
-                          "block",
-                          "block",
-                          "block",
-                          "block",
-                        ]}
-                      >
-                        <FaMoneyBill
-                          style={{
-                            width: "16px",
-                            height: "16px",
-                            color: "gray",
-                          }}
-                        />
+            {currentDoctors.length > 0 ? (
+                currentDoctors.map((doctor, idx) => (
+                  <Flex
+                    key={idx}
+                    w={["full", "265px"]}
+                    h="83px"
+                    justifyContent="space-around"
+                    boxShadow="0px 4px 4px 0px #00000040"
+                    borderRadius="xl"
+                    p={2}
+                    cursor="pointer"
+                    onClick={() => handleDoctorsSelect(doctor)}
+                    border="2px"
+                    borderColor={
+                      doctorSelected?.label === doctor?.label
+                        ? "#104DBA"
+                        : "transparent"
+                    }
+                  >
+                    <Image
+                      rounded="full"
+                      src={doctor?.picture}
+                      w="40px"
+                      h="40px"
+                    />
+                    <Flex flexDirection="column" justifyContent="space-between">
+                      <Box>
+                        <Text
+                          fontSize="sm"
+                          textTransform="capitalize"
+                          fontWeight={700}
+                          lineHeight="16.41px"
+                        >
+                          {doctor?.label}
+                        </Text>
+                        <Text fontSize="xs" fontWeight={400} lineHeight="14.06px">
+                          {doctor?.especialization}
+                        </Text>
                       </Box>
-                      <Text fontSize="xs" fontWeight={300} lineHeight="14.06px">
-                        Valor de la consulta: ${doctor?.reservePrice}
-                      </Text>
+
+                      <Flex gap={2}>
+                        <Box
+                          display={[
+                            "none",
+                            "block",
+                            "block",
+                            "block",
+                            "block",
+                            "block",
+                          ]}
+                        >
+                          <FaMoneyBill
+                            style={{
+                              width: "16px",
+                              height: "16px",
+                              color: "gray",
+                            }}
+                          />
+                        </Box>
+                        <Text fontSize="xs" fontWeight={300} lineHeight="14.06px">
+                          Valor de la consulta: ${doctor?.reservePrice}
+                        </Text>
+                      </Flex>
                     </Flex>
                   </Flex>
-                </Flex>
-              ))}
+                ))
+              ) : (
+                <Text fontWeight={300}>Lo sentimos, no hay doctores disponibles</Text>
+              )
+            }
           </Flex>
           <Flex justifyContent="flex-end" mt={4} gap={2}>
-            <Button
-              bg="transparent"
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-              size="xs"
-            >
-              <MdOutlineNavigateBefore
-                style={{ width: "16px", height: "16px" }}
-              />
-            </Button>
+            {doctors?.length > 0 && (
+              <Button
+                bg="transparent"
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                size="xs"
+              >
+                <MdOutlineNavigateBefore
+                  style={{ width: "16px", height: "16px" }}
+                />
+              </Button>
+            )}
             <Text alignSelf="center" fontSize="xs">
-              {Math.min((currentPage - 1) * itemsPerPage + 1, doctors.length)} -{" "}
-              {Math.min(currentPage * itemsPerPage, doctors.length)} de{" "}
-              {doctors.length} resultados
+              {doctors?.length > 0 ? (
+                  `
+                  ${Math.min((currentPage - 1) * itemsPerPage + 1, doctors.length)} - 
+                  ${Math.min(currentPage * itemsPerPage, doctors.length)} de
+                  ${doctors.length} resultados
+                  `
+              ) : (
+                `${doctors.length} resultados`
+              )}
+              
             </Text>
-            <Button
-              bg="transparent"
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              size="xs"
-            >
-              <MdOutlineNavigateNext
-                style={{ width: "16px", height: "16px" }}
-              />
-            </Button>
+            {doctors?.length > 0 && (
+              <Button
+                bg="transparent"
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                size="xs"
+              >
+                <MdOutlineNavigateNext
+                  style={{ width: "16px", height: "16px" }}
+                />
+              </Button>
+            )}
           </Flex>
           <Flex justifyContent="flex-end" gap={[2, 4]}>
             <Button

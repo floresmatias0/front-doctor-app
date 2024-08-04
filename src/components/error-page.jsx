@@ -5,7 +5,7 @@ import { Box, Button, Text, VStack } from '@chakra-ui/react';
 export default function ErrorPage() {
   const error = useRouteError();
   const navigate = useNavigate();
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(10);
 
   useEffect(() => {
     const timer = setInterval(() => {

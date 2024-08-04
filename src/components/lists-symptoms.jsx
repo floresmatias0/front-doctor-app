@@ -8,7 +8,7 @@ import { es } from "date-fns/locale";
 import { IoMdCalendar } from "react-icons/io";
 import { FaInfoCircle } from "react-icons/fa";
 
-// import { initMercadoPago } from '@mercadopago/sdk-react'
+// import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
 
 const ListSymptoms = ({
   isActive,
@@ -28,7 +28,7 @@ const ListSymptoms = ({
   const [checkTerms, setCheckTerms] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [urlMercadopago, setUrlMercadopago] = useState(null)
-  const [preferenceId, setPreferenceId] = useState(null)
+  // const [preferenceId, setPreferenceId] = useState(null)
 
   const fetchSymptoms = async () => {
     try {
@@ -85,13 +85,14 @@ const ListSymptoms = ({
         
         const { init_point, sandbox_init_point, id } = payment.data.data;
 
-        if(import.meta.env.VITE_ENVIRONMENT === "localhost") {
-            setUrlMercadopago(sandbox_init_point)
-            return setIsLoading(false)
-        }
+        // if(import.meta.env.VITE_ENVIRONMENT === "localhost") {
+        //     setUrlMercadopago(sandbox_init_point)
+        //     // setPreferenceId(id)
+        //     return setIsLoading(false)
+        // }
 
         setUrlMercadopago(init_point)
-        setPreferenceId(id)
+        // setPreferenceId(id)
         setIsLoading(false)
     }catch(err) {
         throw new Error(err.message)
@@ -308,10 +309,10 @@ const ListSymptoms = ({
                               abonar con mercadopago
                           </Button>
                         )
+                        // preferenceId && (
+                        //   <Wallet initialization={{ preferenceId }} customization={{ texts:{ valueProp: 'smart_option'}}} />
+                        // )
                     )}
-                    
-                    {/* <Wallet initialization={{ preferenceId }} customization={{ texts:{ valueProp: 'smart_option'}}} /> */}
-
                   </Flex>
                 </Flex>
             </Flex>

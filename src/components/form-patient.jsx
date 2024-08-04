@@ -53,15 +53,11 @@ const FormPatient = ({ handleSubmit, initialValues }) => {
       errors.genre = "Por favor, elija una opcion";
     }
     if (!values.dateOfBirth) {
-      errors.birthdate = "Por favor, coloque su fecha de nacimiento";
+      errors.dateOfBirth = "Por favor, coloque su fecha de nacimiento";
     }
 
     if (!values.identityId) {
       errors.identityId = "Por favor, coloque su numero de documento";
-    }
-
-    if (!values.socialWorkId) {
-      errors.socialWorkId = "Por favor, es necesario completar este dato";
     }
 
     return errors;
@@ -137,9 +133,9 @@ const FormPatient = ({ handleSubmit, initialValues }) => {
       }}
       validate={validate}
     >
-      {({values}) => (
+      {() => (
         <Form>
-          <Box maxH={["400px", "700px"]} overflowY="auto" px={2}>
+          <Box maxH={["400px", "auto"]} overflowY="auto" px={2}>
             <Grid
               templateColumns={["repeat(1, 1fr)", "repeat(2, 1fr)"]}
               gap={4}
@@ -482,6 +478,7 @@ const FormPatient = ({ handleSubmit, initialValues }) => {
                       fontWeight={300}
                       rightIcon={<FaUpload/>}
                       mt={2}
+                      onClick={() => {}}
                     >
                       <Input
                         type="file"
