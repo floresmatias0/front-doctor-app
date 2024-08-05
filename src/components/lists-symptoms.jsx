@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import { Box, Button, Center, Checkbox, Divider, Flex, Image, Input, Link, Spinner, Text } from "@chakra-ui/react";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Box, Button, Center, Checkbox, Divider, Flex, Image, Link, Spinner, Text } from "@chakra-ui/react";
+import { Fragment, useEffect, useState } from "react";
 import { instance } from "../utils/axios";
 import { MdOutlineNavigateNext } from "react-icons/md";
 import { format } from "date-fns";
@@ -65,8 +65,26 @@ const ListSymptoms = ({
     });
   };
 
-  const confirmReserve = useCallback(async () => {
-    try {
+  useEffect(() => {
+    const fetchDataSymptoms = async () => {
+      try {
+        await fetchSymptoms();
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    if (isActive) fetchDataSymptoms();
+  }, [isActive]);
+
+  const fechaFormateada = daySelected ? format(daySelected, "d  MMMM yyyy, HH:mm 'Hs.'", { locale: es }) : null;
+
+  const handleClickPayment = () => window.location.replace(urlMercadopago)
+
+  const handleCheckTerms = async () => {
+    setCheckTerms(!checkTerms);
+    if(!urlMercadopago) {
+      try {
         // initMercadoPago(doctorSelected?.public_key);
 
         setIsLoading(true)
@@ -85,47 +103,20 @@ const ListSymptoms = ({
         
         const { init_point, sandbox_init_point, id } = payment.data.data;
 
-        // if(import.meta.env.VITE_ENVIRONMENT === "localhost") {
-        //     setUrlMercadopago(sandbox_init_point)
-        //     // setPreferenceId(id)
-        //     return setIsLoading(false)
-        // }
+        if(import.meta.env.VITE_ENVIRONMENT === "localhost") {
+            setUrlMercadopago(sandbox_init_point)
+            // setPreferenceId(id)
+            return setIsLoading(false)
+        }
 
         setUrlMercadopago(init_point)
         // setPreferenceId(id)
         setIsLoading(false)
-    }catch(err) {
-        throw new Error(err.message)
+      }catch(err) {
+          throw new Error(err.message)
+      }
     }
-  }, [doctorSelected, user, selectedSymptoms, daySelected, patientSelected])
-
-  useEffect(() => {
-    const fetchPaymentData = async () => {
-        try {
-          await confirmReserve();
-        }catch(err){
-            throw new Error(err.message)
-        }
-      }
-  
-      if(isActive) fetchPaymentData();
-}, [confirmReserve, isActive])
-
-  useEffect(() => {
-    const fetchDataSymptoms = async () => {
-      try {
-        await fetchSymptoms();
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    if (isActive) fetchDataSymptoms();
-  }, [isActive]);
-
-  const fechaFormateada = daySelected ? format(daySelected, "d  MMMM yyyy, HH:mm 'Hs.'", { locale: es }) : null;
-
-  const handleClickPayment = () => window.location.replace(urlMercadopago)
+  }
 
   if (!isActive) {
     return null;
@@ -270,7 +261,7 @@ const ListSymptoms = ({
               </Box>
               <Flex flexDirection="column" gap={2} flex={1}>
                   <Flex mx={4} alignItems="center">
-                    <Checkbox value={checkTerms} onChange={() => setCheckTerms(!checkTerms)}>
+                    <Checkbox value={checkTerms} onChange={handleCheckTerms}>
                       <Text fontSize="9px">
                           Al sacar turno, aceptas los <Link color="#104DBA" href="/condiciones-del-servicio">terminos y condiciones</Link>, 
                           y confirmas haber entendido nuestra <Link color="#104DBA" href="/politica-de-privacidad">politica de privacidad</Link>
@@ -296,19 +287,17 @@ const ListSymptoms = ({
                           />
                       </Center>
                     ) : (
-                        urlMercadopago && (
-                          <Button
-                              bg="#104DBA" color="#FFFFFF" w="auto" size="xs"
-                              fontWeight={400}
-                              onClick={handleClickPayment}
-                              textTransform="uppercase"
-                              fontSize="xs"
-                              mx="auto"
-                              isDisabled={!checkTerms}
-                          >
-                              abonar con mercadopago
-                          </Button>
-                        )
+                        <Button
+                            bg="#104DBA" color="#FFFFFF" w="auto" size="xs"
+                            fontWeight={400}
+                            onClick={handleClickPayment}
+                            textTransform="uppercase"
+                            fontSize="xs"
+                            mx="auto"
+                            isDisabled={!checkTerms}
+                        >
+                            abonar con mercadopago
+                        </Button>
                         // preferenceId && (
                         //   <Wallet initialization={{ preferenceId }} customization={{ texts:{ valueProp: 'smart_option'}}} />
                         // )

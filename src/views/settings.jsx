@@ -706,7 +706,7 @@ export default function Settings() {
           {user?.role === "DOCTOR" && user?.mercadopago_access?.access_token && (
             <Flex gap={2} alignItems="center" mt={4}>
               <FaCircleCheck color="#104DBA" />
-              <Text fontSize={["xs", "md"]}>Tu cuenta de MercadoPago ya está vinculada.</Text>
+              <Text>Tu cuenta de MercadoPago ya está vinculada.</Text>
             </Flex>
           )}
           {user?.role === "DOCTOR" && !user?.mercadopago_access?.access_token && (
@@ -720,7 +720,6 @@ export default function Settings() {
               borderRadius="2xl"
               mt={4}
               fontWeight={500}
-              fontSize={["xs", "md"]}
             >
               VINCULAR CUENTA MERCADOPAGO
             </Button>
