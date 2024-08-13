@@ -34,10 +34,10 @@ const Payment = ({
             
             const { init_point, sandbox_init_point } = payment.data.data;
 
-            if(import.meta.env.VITE_ENVIRONMENT === "localhost") {
-                setUrlMercadopago(sandbox_init_point)
-                return setIsLoading(false)
-            }
+            // if(import.meta.env.VITE_ENVIRONMENT === "localhost") {
+            //     setUrlMercadopago(sandbox_init_point)
+            //     return setIsLoading(false)
+            // }
 
             setUrlMercadopago(init_point)
             setIsLoading(false)

@@ -103,11 +103,11 @@ const ListSymptoms = ({
         
         const { init_point, sandbox_init_point, id } = payment.data.data;
 
-        if(import.meta.env.VITE_ENVIRONMENT === "localhost") {
-            setUrlMercadopago(sandbox_init_point)
-            // setPreferenceId(id)
-            return setIsLoading(false)
-        }
+        // if(import.meta.env.VITE_ENVIRONMENT === "localhost") {
+        //     setUrlMercadopago(sandbox_init_point)
+        //     // setPreferenceId(id)
+        //     return setIsLoading(false)
+        // }
 
         setUrlMercadopago(init_point)
         // setPreferenceId(id)
