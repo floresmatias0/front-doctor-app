@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
-import { Box, useColorModeValue, Flex, Center, Spinner } from "@chakra-ui/react";
+import { Box, Center, Spinner } from "@chakra-ui/react";
 import { Navigate } from "react-router-dom";
-import Navbar from "./navbar";
 import { AppContext } from "./context";
 import SidebarWithHeader from "./sidebar";
 import SidebarMenu from "./sidebar-menu";
@@ -61,17 +60,6 @@ export const ProtectedRoutesAdmin = ({children}) => {
     return children
 }
 
-export const LayoutWithNavbar = ({children}) => {
-    return (
-        <Flex bg={useColorModeValue('gray.50', 'gray.900')} w='100%' direction='column' minH="100vh">
-            <Navbar/>
-            <Box w='100%' flex='1' p={4}>
-                {children}
-            </Box>
-        </Flex>
-    )
-}
-
 export const LayoutWithSidebarAndHeader = ({children}) => {
     return (
         <SidebarWithHeader>
@@ -93,10 +81,6 @@ LayoutWithSidebarAndFooter.propTypes = {
 }
 
 LayoutWithSidebarAndHeader.propTypes = {
-    children: PropTypes.node,
-}
-
-LayoutWithNavbar.propTypes = {
     children: PropTypes.node,
 }
 

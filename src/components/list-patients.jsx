@@ -9,8 +9,8 @@ const ListPatient = ({ onNext, isActive, patients, patientSelected, setPatientSe
     }
 
     return (
-        <Flex h="100%" flex={1} flexDirection="column" py={[0, 4]} pt={[10, 0]} px={[0, 10]} gap={5}>
-          <Flex flex={1} flexDirection="column" gap={4} mt={[0, 4]}>
+        <Flex h="full" flexDirection="column" justifyContent="space-between" py={[0, 4]} pt={[10, 0]} px={[0, 10]} gap={5} position={["relative","absolute"]} top="0" left="0" right="0" bottom="0">
+          <Flex flexDirection="column" gap={4} mt={[0, 4]}>
             <Text
               fontWeight={400}
               fontSize="md"

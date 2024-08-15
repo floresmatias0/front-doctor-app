@@ -12,7 +12,6 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
-import { useState } from 'react';
 import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
 
 const settings = {
@@ -53,7 +52,7 @@ const TabsConsult = ({
       isFitted
       w={["full", "full", "full", "662px"]}
       h={["full", "auto"]}
-      minH={["full", "468px"]}
+      minH={["full", "full", "full", "full", "368px", "468px"]}
       overflowY="auto"
       overflowX="auto"
       bg="#FFF"
@@ -171,7 +170,7 @@ const TabsConsult = ({
           ))}
         </Slider>
       </Box>
-      <TabPanels flex={1} display="flex">
+      <TabPanels flex={1} display="flex" position="relative">
         {tabContents?.map((content, index) => (
           <TabPanel
             overflowY="auto"

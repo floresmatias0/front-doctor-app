@@ -179,7 +179,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   }
 
   return (
-    <Flex h="100%" maxH="100%" overflowY="auto" flexDirection="column" py={[0, 4]} px={[0, 10]} gap={5} mt={[5, 0]}>
+    <Flex h="100%" maxH="100%" overflowY="auto" flexDirection="column" py={[0, 4]} px={[0, 10]} gap={[2, 5]} mt={[5, 0]}>
       <Flex justifyContent="space-between">
         <Text
           color="#FFF"
@@ -293,8 +293,8 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
             justifyContent="space-between"
             flexDirection="row"
             gap={4}
-            minH={["215px", "182px"]}
-            maxH={["215px", "auto"]}
+            minH={["85px", "85px", "85px", "85px", "85px", "182px"]}
+            maxH={["90px", "85px", "85px", "85px", "90px", "auto"]}
             overflowY={["scroll", "auto"]}
           >
             {currentDoctors.length > 0 ? (
@@ -368,7 +368,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
               )
             }
           </Flex>
-          <Flex justifyContent="flex-end" mt={4} gap={2}>
+          <Flex justifyContent="flex-end" mt={[0, 4]} gap={2}>
             {doctors?.length > 0 && (
               <Button
                 bg="transparent"
@@ -464,7 +464,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
             <Flex
               boxShadow="0px 4px 4px 0px #00000040"
               w="full"
-              minH="321px"
+              minH={["auto", "auto", "auto", "auto", "auto", "321px"]}
               borderRadius="xl"
               justifyContent="center"
             >

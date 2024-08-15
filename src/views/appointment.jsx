@@ -237,8 +237,8 @@ export default function Appointment() {
           alignContent="center"
           flex={1}
           flexDirection="column"
-          gap={5}
-          mt={[5, 0]}
+          gap={[2, 5]}
+          mt={0}
         >
           <Heading
             fontSize={["15px", "25px"]}

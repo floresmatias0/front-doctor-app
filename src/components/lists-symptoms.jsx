@@ -8,8 +8,6 @@ import { es } from "date-fns/locale";
 import { IoMdCalendar } from "react-icons/io";
 import { FaInfoCircle } from "react-icons/fa";
 
-// import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
-
 const ListSymptoms = ({
   isActive,
   user,
@@ -27,8 +25,7 @@ const ListSymptoms = ({
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [checkTerms, setCheckTerms] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [urlMercadopago, setUrlMercadopago] = useState(null)
-  // const [preferenceId, setPreferenceId] = useState(null)
+  const [urlMercadopago, setUrlMercadopago] = useState(null);
 
   const fetchSymptoms = async () => {
     try {
@@ -85,8 +82,6 @@ const ListSymptoms = ({
     setCheckTerms(!checkTerms);
     if(!urlMercadopago) {
       try {
-        // initMercadoPago(doctorSelected?.public_key);
-
         setIsLoading(true)
         const endDateTime = daySelected ? new Date(daySelected) : new Date();
         endDateTime.setMinutes(endDateTime.getMinutes() + doctorSelected?.reserveTime);
@@ -101,16 +96,9 @@ const ListSymptoms = ({
             symptoms: selectedSymptoms
         })
         
-        const { init_point, sandbox_init_point, id } = payment.data.data;
-
-        // if(import.meta.env.VITE_ENVIRONMENT === "localhost") {
-        //     setUrlMercadopago(sandbox_init_point)
-        //     // setPreferenceId(id)
-        //     return setIsLoading(false)
-        // }
+        const { init_point, id } = payment.data.data;
 
         setUrlMercadopago(init_point)
-        // setPreferenceId(id)
         setIsLoading(false)
       }catch(err) {
           throw new Error(err.message)
@@ -126,21 +114,30 @@ const ListSymptoms = ({
     return null;
   }
 
+  const flexDirection = !disableTabs.payment ? ["column", "column", "column", "column", "row", "column"] : "column";
+
   return (
-    <Flex h="100%" flexDirection="column" p={4} gap={5}>
-      <Text
-        color="#FFF"
-        bg="#104DBA"
-        borderRadius="xl"
-        w="120px"
-        fontSize="xs"
-        lineHeight="14.06px"
-        textAlign="center"
-        textTransform="capitalize"
-        py={1}
-      >
-        Paciente: {patientSelected && patientSelected?.label}
-      </Text>
+    <Flex h="100%" flexDirection={flexDirection} p={4} gap={5} justifyContent="space-between" position="absolute" top="0" left="0" right="0" bottom="0">
+      <Flex gap={2} flexDirection="column">
+        <Text
+          color="#FFF"
+          bg="#104DBA"
+          borderRadius="xl"
+          w="120px"
+          fontSize="xs"
+          lineHeight="14.06px"
+          textAlign="center"
+          textTransform="capitalize"
+          py={1}
+        >
+          Paciente: {patientSelected && patientSelected?.label}
+        </Text>
+        {!disableTabs.payment && (
+          <Text fontWeight={400} fontSize="lg" lineHeight="18.75px">
+            Por favor confirme su turno
+          </Text>
+        )}
+      </Flex>
       {!disableTabs.symptoms && (
         <Fragment>
           <Text fontWeight={400} fontSize={["sm", "lg"]} lineHeight="18.75px">
@@ -206,107 +203,102 @@ const ListSymptoms = ({
         </Fragment>
       )}
       {!disableTabs.payment && (
-        <Fragment>
-          <Text fontWeight={400} fontSize="lg" lineHeight="18.75px">
-            Por favor confirme su turno
-          </Text>
-          <Flex flex={1} flexDirection="column">
-            <Flex
-              boxShadow="0px 4px 4px 0px #00000040"
-              w={["full", "285px"]}
-              minH="268px"
-              borderRadius="xl"
-              justifyContent="center"
-              flexDirection="column"
-            >
-              <Box w="full">
-                <Flex
-                  w="full"
-                  h="auto"
-                  justifyContent="space-around"
-                  p={2}
-                  mx="auto"
-                  gap={2}
-                >
-                  <Image
-                    rounded="full"
-                    src={doctorSelected?.picture}
-                    w="64px"
-                    h="64px"
-                  />
-                  <Flex flexDirection="column" justifyContent="space-between">
-                    <Box>
-                      <Text
-                        fontSize="sm"
-                        textTransform="capitalize"
-                        fontWeight={700}
-                        lineHeight="19.69px"
-                      >
-                        Dr. {doctorSelected?.label}
-                      </Text>
-                      <Text fontSize="xs" fontWeight={400} lineHeight="16.88px">
-                        {doctorSelected?.especialization}
-                      </Text>
-                      <Flex alignItems="center" gap={1}>
-                        <IoMdCalendar style={{ color: "#AAAAAA" }} />
-                        <Text fontSize="xs" lineHeight="14.06px">{fechaFormateada}</Text>
-                      </Flex>
-                    </Box>
-                  </Flex>
-                </Flex>
-                <Divider />
-                <Text fontSize="xs" fontWeight={300} lineHeight="14.06px" textAlign="center" my={3}>
-                  Valor de la consulta: ${doctorSelected?.reservePrice}
-                </Text>
-              </Box>
-              <Flex flexDirection="column" gap={2} flex={1}>
-                  <Flex mx={4} alignItems="center">
-                    <Checkbox value={checkTerms} onChange={handleCheckTerms}>
-                      <Text fontSize="9px">
-                          Al sacar turno, aceptas los <Link color="#104DBA" href="/condiciones-del-servicio">terminos y condiciones</Link>, 
-                          y confirmas haber entendido nuestra <Link color="#104DBA" href="/politica-de-privacidad">politica de privacidad</Link>
-                        </Text>
-                    </Checkbox>
-                  </Flex>
-                  <Flex gap={2} mx={4}>
-                    <FaInfoCircle style={{ width: "24px", height: "24px" }} />
-
-                    <Text fontSize="9px">
-                      Si cancelas hasta 24 hs previas del turno,  se realizará el reintegro correspondiente al medio de pago utilizado. 
+        <Flex flex={1} flexDirection="column" justifyContent="center" alignItems={["start","start","start","start", "end", "start"]}>
+          <Flex
+            boxShadow="0px 4px 4px 0px #00000040"
+            w={["full", "285px"]}
+            minH="268px"
+            borderRadius="xl"
+            justifyContent="center"
+            flexDirection="column"
+          >
+            <Box w="full">
+              <Flex
+                w="full"
+                h="auto"
+                justifyContent="space-around"
+                p={2}
+                mx="auto"
+                gap={2}
+              >
+                <Image
+                  rounded="full"
+                  src={doctorSelected?.picture}
+                  w="64px"
+                  h="64px"
+                />
+                <Flex flexDirection="column" justifyContent="space-between">
+                  <Box>
+                    <Text
+                      fontSize="sm"
+                      textTransform="capitalize"
+                      fontWeight={700}
+                      lineHeight="19.69px"
+                    >
+                      Dr. {doctorSelected?.label}
                     </Text>
-                  </Flex>
-                  <Flex justifyContent="center" alignItems="center" flexDirection="column" flex={1}>
-                    {isLoading ? (
-                      <Center>
-                          <Spinner
-                              thickness='4px'
-                              speed='0.65s'
-                              emptyColor='gray.200'
-                              color='blue.500'
-                              size='sm'
-                          />
-                      </Center>
-                    ) : (
-                        <Button
-                            bg="#104DBA" color="#FFFFFF" w="auto" size="xs"
-                            fontWeight={400}
-                            onClick={handleClickPayment}
-                            textTransform="uppercase"
-                            fontSize="xs"
-                            mx="auto"
-                            isDisabled={!checkTerms}
-                        >
-                            abonar con mercadopago
-                        </Button>
-                        // preferenceId && (
-                        //   <Wallet initialization={{ preferenceId }} customization={{ texts:{ valueProp: 'smart_option'}}} />
-                        // )
-                    )}
-                  </Flex>
+                    <Text fontSize="xs" fontWeight={400} lineHeight="16.88px">
+                      {doctorSelected?.especialization}
+                    </Text>
+                    <Flex alignItems="center" gap={1}>
+                      <IoMdCalendar style={{ color: "#AAAAAA" }} />
+                      <Text fontSize="xs" lineHeight="14.06px">{fechaFormateada}</Text>
+                    </Flex>
+                  </Box>
                 </Flex>
-            </Flex>
+              </Flex>
+              <Divider />
+              <Text fontSize="xs" fontWeight={300} lineHeight="14.06px" textAlign="center" my={3}>
+                Valor de la consulta: ${doctorSelected?.reservePrice}
+              </Text>
+            </Box>
+            <Flex flexDirection="column" gap={2} flex={1}>
+                <Flex mx={4} alignItems="center">
+                  <Checkbox value={checkTerms} onChange={handleCheckTerms}>
+                    <Text fontSize="9px">
+                        Al sacar turno, aceptas los <Link color="#104DBA" href="/condiciones-del-servicio">terminos y condiciones</Link>, 
+                        y confirmas haber entendido nuestra <Link color="#104DBA" href="/politica-de-privacidad">politica de privacidad</Link>
+                      </Text>
+                  </Checkbox>
+                </Flex>
+                <Flex gap={2} mx={4}>
+                  <FaInfoCircle style={{ width: "24px", height: "24px" }} />
+
+                  <Text fontSize="9px">
+                    Si cancelas hasta 24 hs previas del turno,  se realizará el reintegro correspondiente al medio de pago utilizado. 
+                  </Text>
+                </Flex>
+                <Flex justifyContent="center" alignItems="center" flexDirection="column" flex={1}>
+                  {isLoading ? (
+                    <Center>
+                        <Spinner
+                            thickness='4px'
+                            speed='0.65s'
+                            emptyColor='gray.200'
+                            color='blue.500'
+                            size='sm'
+                        />
+                    </Center>
+                  ) : (
+                      <Button
+                          bg="#104DBA" color="#FFFFFF" w="auto" size="xs"
+                          fontWeight={400}
+                          onClick={handleClickPayment}
+                          textTransform="uppercase"
+                          fontSize="xs"
+                          mx="auto"
+                          isDisabled={!checkTerms}
+                      >
+                          abonar con mercadopago
+                      </Button>
+                      // preferenceId && (
+                      //   <Wallet initialization={{ preferenceId }} customization={{ texts:{ valueProp: 'smart_option'}}} />
+                      // )
+                  )}
+                </Flex>
+              </Flex>
           </Flex>
-        </Fragment>
+        </Flex>
       )}
     </Flex>
   );

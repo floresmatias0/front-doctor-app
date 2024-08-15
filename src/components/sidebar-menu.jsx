@@ -245,7 +245,7 @@ const SidebarMenu = ({ children }) => {
         display={["flex", "none"]}
         py={2}
         px={4}
-        position="absolute"
+        position="sticky"
         top="0"
         left="0"
         w="full"
@@ -276,7 +276,7 @@ const SidebarMenu = ({ children }) => {
         alignItems="center"
         px={4}
         bgColor="#FFFFFF"
-        transform="translateY(60px)"
+        transform={["translateY(0)", "translateY(0)","translateY(0)", "translateY(0)", "translateY(0)","translateY(60px)"]}
         py={4}
       >
         {children}
@@ -292,7 +292,7 @@ const SidebarMenu = ({ children }) => {
         bg="#FFFFFF"
         boxShadow="0px -1px 4px 0px #00000040"
         display={["flex", "none"]}
-        position="absolute"
+        position="sticky"
         bottom="0"
         left="0"
         w="full"
