@@ -343,9 +343,6 @@ const Home = () => {
                 <Flex
                   w="100%"
                   flex={1}
-                  bg="#FCFEFF"
-                  borderRadius="xl"
-                  boxShadow="md"
                   px={[2, 2, 4]}
                   py={4}
                   flexDirection="column"

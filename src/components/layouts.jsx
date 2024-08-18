@@ -54,7 +54,7 @@ export const ProtectedRoutesAdmin = ({children}) => {
     if(!user) 
         return <Navigate to="/iniciar-sesion" replace/>
 
-    if(user && !user?.super) 
+    if(user && user?.role !== 'ADMIN') 
         return <Navigate to="/inicio" replace/>
 
     return children

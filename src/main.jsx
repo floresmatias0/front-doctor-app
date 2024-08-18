@@ -21,7 +21,6 @@ import History from "./views/history";
 import PrivacyPolicies from "./views/privacy-policies";
 import TermsOfServices from "./views/terms-of-services";
 import Turns from "./views/turns";
-import Upgrade from "./views/upgrade";
 import Graphs from "./views/charts";
 import LandingHome from "./views/landing";
 
@@ -98,12 +97,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "mejora-de-usuario",
-    element: <LayoutWithSidebarAndFooter><ProtectedRoutesAdmin><Upgrade /></ProtectedRoutesAdmin></LayoutWithSidebarAndFooter>,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "graficos",
+    path: "administracion",
     element: <LayoutWithSidebarAndFooter><ProtectedRoutesAdmin><Graphs /></ProtectedRoutesAdmin></LayoutWithSidebarAndFooter>,
     errorElement: <ErrorPage />,
   },
@@ -118,11 +112,9 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <ChakraProvider theme={theme}>
-      <DoctorContext>
-        <RouterProvider router={router} />
-      </DoctorContext>
-    </ChakraProvider>
-  </React.StrictMode>
+  <ChakraProvider theme={theme}>
+    <DoctorContext>
+      <RouterProvider router={router} />
+    </DoctorContext>
+  </ChakraProvider>
 );

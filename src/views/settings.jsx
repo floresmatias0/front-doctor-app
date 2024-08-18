@@ -703,13 +703,13 @@ export default function Settings() {
               Pago
             </Text>
           )}
-          {user?.role === "DOCTOR" && user?.mercadopago_access?.access_token && (
+          {(user?.role === "DOCTOR" || user?.role === "ADMIN") && user?.mercadopago_access?.access_token && (
             <Flex gap={2} alignItems="center" mt={4}>
               <FaCircleCheck color="#104DBA" />
               <Text>Tu cuenta de MercadoPago ya está vinculada.</Text>
             </Flex>
           )}
-          {user?.role === "DOCTOR" && !user?.mercadopago_access?.access_token && (
+          {(user?.role === "DOCTOR" || user?.role === "ADMIN") && !user?.mercadopago_access?.access_token && (
             <Button
               bg="#104DBA"
               leftIcon={<SiMercadopago style={{ fontSize: "24px" }} />}

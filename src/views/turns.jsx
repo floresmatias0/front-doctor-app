@@ -296,9 +296,6 @@ const Turns = () => {
         <Flex
           w="100%"
           flex={1}
-          bg="#FCFEFF"
-          borderRadius="xl"
-          boxShadow="md"
           px={[2, 2, 4]}
           py={4}
           flexDirection="column"
@@ -319,7 +316,7 @@ const Turns = () => {
                 px={[4, 0]}
                 py={[0.5, 0]}
                 rounded={["xl", "none"]}
-                w="110px"
+                w={["110px", "auto"]}
                 mb={4}
             >
                 Mis turnos

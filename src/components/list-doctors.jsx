@@ -62,7 +62,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
 
         if (doctors && doctors?.length > 0) {
           for (let i = 0; i < doctors.length; i++) {
-            console.log({doctor: doctors[i]})
             auxDoctors.push({
               label: doctors[i].name,
               value: doctors[i].email,

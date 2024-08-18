@@ -291,9 +291,6 @@ const ListSymptoms = ({
                       >
                           abonar con mercadopago
                       </Button>
-                      // preferenceId && (
-                      //   <Wallet initialization={{ preferenceId }} customization={{ texts:{ valueProp: 'smart_option'}}} />
-                      // )
                   )}
                 </Flex>
               </Flex>

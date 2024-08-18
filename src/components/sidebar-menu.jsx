@@ -11,20 +11,18 @@ import {
   AiOutlineCalendar,
   AiOutlineHistory,
   AiOutlineSetting,
-  AiOutlinePieChart,
   AiOutlineUser,
   AiOutlineHome
 } from "react-icons/ai";
-import { BiHomeAlt } from "react-icons/bi";
-import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import { MdOutlineAdminPanelSettings, MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import { IoIosArrowForward } from "react-icons/io";
 import { AppContext } from "./context";
-
-import "../styles/sidebarmenu.css";
 import { Footer } from "./footer";
 import { LogoCustom } from "./extras";
 import { FaXmark } from "react-icons/fa6";
+
+import "../styles/sidebarmenu.css";
 
 const receiveMenu = (isOpen, color="#104DBA", width="20px", height="20px", role="PACIENTE", isMobile=false) => {
     const path = window.location.pathname
@@ -57,7 +55,7 @@ const receiveMenu = (isOpen, color="#104DBA", width="20px", height="20px", role=
         icon: (
           <AiOutlineHistory
             color={path === "/historial-clinico" && isMobile ? "#FFF" : color}
-            title="Mis turnos"
+            title="Historial clinico"
             className={isOpen ? "fade-in-text" : ""}
             style={{ width, height }}
           />
@@ -81,7 +79,7 @@ const receiveMenu = (isOpen, color="#104DBA", width="20px", height="20px", role=
         icon: (
           <AiOutlineUser
             color={path === "/mis-pacientes" && isMobile ? "#FFF" : color}
-            title="Pacientes"
+            title="Mis pacientes"
             className={isOpen ? "fade-in-text" : ""}
             style={{ width, height }}
           />
@@ -100,14 +98,32 @@ const receiveMenu = (isOpen, color="#104DBA", width="20px", height="20px", role=
         ),
         title: "Ajustes",
         href: "/configuracion",
+      },
+      {
+        icon: (
+          <MdOutlineAdminPanelSettings
+            color={path === "/administracion" && isMobile ? "#FFF" : color}
+            title="Administración"
+            className={isOpen ? "fade-in-text" : ""}
+            style={{ width, height }}
+          />
+        ),
+        title: "Admin",
+        href: "/administracion",
       }
     ];
 
     if(role === "PACIENTE") {
       iconsMobile.splice(3, 2)
+      iconsMobile.splice(4, 1)
     }
 
     if(role === "DOCTOR") {
+      iconsMobile.splice(2, 1)
+      iconsMobile.splice(5, 1)
+    }
+
+    if(role === "ADMIN") {
       iconsMobile.splice(2, 1)
     }
 
@@ -269,6 +285,7 @@ const SidebarMenu = ({ children }) => {
           maxSvgWidth="66px"
         />
       </Box>
+      {/* CONTENIDO */}
       <Flex 
         h={["calc(100% - 120px)", "calc(100% - 80px)"]}
         w="full"
@@ -276,7 +293,7 @@ const SidebarMenu = ({ children }) => {
         alignItems="center"
         px={4}
         bgColor="#FFFFFF"
-        transform={["translateY(0)", "translateY(0)","translateY(0)", "translateY(0)", "translateY(0)","translateY(60px)"]}
+        // transform={["translateY(60px)", "inherit"]}
         py={4}
       >
         {children}
