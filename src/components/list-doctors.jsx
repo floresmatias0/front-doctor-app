@@ -52,7 +52,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
 
   const fetchDoctors = async () => {
     try {
-      let filters = '{ "role": "DOCTOR" }';
+      let filters = '{ "role":["DOCTOR", "ADMIN"]}';
       const { data } = await instance.get(`/users?filters=${filters}`);
       const response = data;
 
@@ -463,7 +463,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
             <Flex
               boxShadow="0px 4px 4px 0px #00000040"
               w="full"
-              minH={["auto", "auto", "auto", "auto", "auto", "321px"]}
+              minH={["auto", "auto", "auto", "auto", "321px", "321px"]}
               borderRadius="xl"
               justifyContent="center"
             >

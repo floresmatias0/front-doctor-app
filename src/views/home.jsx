@@ -395,12 +395,14 @@ const Home = () => {
                                 day: "numeric",
                                 month: "numeric",
                                 year: "numeric",
+                                timeZone: "America/Argentina/Buenos_Aires"
                               }
                             )}`;
 
                             let hour = `${getFormattedDateTime(x.start.dateTime, {
                               hour: "numeric",
                               minute: "numeric",
+                              timeZone: "America/Argentina/Buenos_Aires"
                             })}`;
                             // let endHour = `${getFormattedDateTime(x.end.dateTime, { hour: "numeric", minute: "numeric" })}`;
 
@@ -564,7 +566,7 @@ const Home = () => {
                   color="#FFFFFF"
                   w={["auto", "222px"]}
                   size={["xs", "sm"]}
-                  onClick={() => navigate("/historial")}
+                  onClick={() => navigate("/mis-turnos")}
                   fontSize="16px"
                   fontWeight={500}
                 >

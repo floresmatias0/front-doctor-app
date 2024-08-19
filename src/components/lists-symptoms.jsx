@@ -80,6 +80,7 @@ const ListSymptoms = ({
 
   const handleCheckTerms = async () => {
     setCheckTerms(!checkTerms);
+    console.log({selectedSymptoms})
     if(!urlMercadopago) {
       try {
         setIsLoading(true)
@@ -96,7 +97,7 @@ const ListSymptoms = ({
             symptoms: selectedSymptoms
         })
         
-        const { init_point, id } = payment.data.data;
+        const { init_point } = payment.data.data;
 
         setUrlMercadopago(init_point)
         setIsLoading(false)

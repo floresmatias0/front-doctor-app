@@ -293,7 +293,7 @@ const SidebarMenu = ({ children }) => {
         alignItems="center"
         px={4}
         bgColor="#FFFFFF"
-        // transform={["translateY(60px)", "inherit"]}
+        transform={["translateY(60px)", "inherit"]}
         py={4}
       >
         {children}

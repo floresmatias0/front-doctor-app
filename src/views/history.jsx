@@ -524,10 +524,14 @@ const History = () => {
                     let now = new Date();
                     let bookingStart = new Date(x.start.dateTime);
                     let isBookingPassed = now > bookingStart || x.status === "deleted";
-            
-                    let extraDate = `${getFormattedDateTime(x.start.dateTime, { day: "numeric", month: "numeric", year: "numeric"})}`;
-                    let hour = `${getFormattedDateTime(x.start.dateTime, { hour: "numeric", minute: "numeric" })}`;
-            
+
+                    let startDate = new Date(x.start.dateTime).toLocaleDateString('es-AR', { timeZone: "America/Argentina/Buenos_Aires" });
+                    let hourDate = new Date(x.start.dateTime).toLocaleTimeString('es-AR', {
+                        hour: "numeric",
+                        minute: "numeric",
+                        timeZone: "America/Argentina/Buenos_Aires"
+                    });
+
                     return (
                       <Tr
                         key={idx}
@@ -539,8 +543,8 @@ const History = () => {
                         textAlign="center"
                       >
                         <Td textAlign="center">DR. {x.organizer.name}</Td>
-                        <Td textAlign="center">{extraDate}</Td>
-                        <Td textAlign="center">{hour}</Td>
+                        <Td textAlign="center">{startDate}</Td>
+                        <Td textAlign="center">{hourDate}</Td>
                         <Td textAlign="center">Consulta</Td>
                         <Td textAlign="center">
                           {x.status === "deleted" ? (
