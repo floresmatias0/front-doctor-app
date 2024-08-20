@@ -204,6 +204,7 @@ const History = () => {
 
   const [dataBookings, setDataBookings] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(false);
   const [documentsSelected, setDocumentsSelected] = useState([])
   const [turnSelected, setTurnSelected] = useState("")
 
@@ -259,6 +260,7 @@ const History = () => {
 
   const handleDeleteEvent = async (bookingId, userEmail) => {
     try {
+      setCancelLoading(true)
       const response = await instance.delete(
         `/calendars/${bookingId}?email=${userEmail}`
       );
@@ -294,6 +296,9 @@ const History = () => {
             </Box>
         )
       })
+    }finally {
+      setCancelLoading(false)
+      onCloseCancelTurn()
     }
   };
 
@@ -730,26 +735,26 @@ const History = () => {
               </Box>
             )}
 
-            <Button
-              padding={0}
-              px={4}
-              bg="#FF0000"
-              color="#FFF"
-              size="xs"
-              rounded="md"
-              onClick={() => handleDeleteEvent(turnSelected?._id, turnSelected?.organizer?.email)}
-              float="right"
-              mt={4}
-            >
-              <Text
-                fontSize="xs"
-                fontWeight={400}
-                textTransform="uppercase"
-                lineHeight="11.72px"
+              <Button
+                padding={0}
+                px={4}
+                bg="#FF0000"
+                color="#FFF"
+                size="xs"
+                rounded="md"
+                onClick={() => handleDeleteEvent(turnSelected?._id, turnSelected?.organizer?.email)}
+                float="right"
+                mt={4}
               >
-                Cancelar turno
-              </Text>
-            </Button>
+                <Text
+                  fontSize="xs"
+                  fontWeight={400}
+                  textTransform="uppercase"
+                  lineHeight="11.72px"
+                >
+                  {cancelLoading ? <Spinner color="#205583" size="sm"/> : 'Cancelar turno'}
+                </Text>
+              </Button>
           </Box>
         }
         isLoading={false}

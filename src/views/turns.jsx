@@ -108,11 +108,11 @@ const Turns = () => {
         if (response.data.success) {
             toast({
             title: "Cancelado con exito",
-            description: "Vuelva a intentar porfavor",
-            position: "top-right",
-            isClosable: true,
-            duration: 3000,
-            status: "success",
+                description: "",
+                position: "top-right",
+                isClosable: true,
+                duration: 3000,
+                status: "success",
             });
             return await fetchBookings();
         }
@@ -479,7 +479,7 @@ const Turns = () => {
                                             transform="translateX(20px)"
                                             transition="transform 0.5s, z-index 0.5s"
                                             zIndex={2}
-                                            onClick={() => handleShowCancelTurn(x)}
+                                            onClick={() => handleDeleteEvent(x?.booking_id, x?.organizer?.email)}
                                             isDisabled={isBookingPassed}
                                             _disabled={{
                                             opacity: 1,

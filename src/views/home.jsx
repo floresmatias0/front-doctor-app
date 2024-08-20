@@ -545,7 +545,8 @@ const Home = () => {
               justifyContent="flex-start"
               alignItems="start"
               gap={4}
-              flexDirection="column"
+              flexDirection="row"
+              flexWrap="wrap"
               my={2}
               order={4}
             >
@@ -564,9 +565,9 @@ const Home = () => {
                 <Button
                   bg="#104DBA"
                   color="#FFFFFF"
-                  w={["auto", "222px"]}
-                  size={["xs", "sm"]}
-                  onClick={() => navigate("/mis-turnos")}
+                  w="222px"
+                  size="sm"
+                  onClick={() => navigate("/historial-clinico")}
                   fontSize="16px"
                   fontWeight={500}
                 >
