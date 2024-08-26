@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Button, Text, Box, Center, Flex, Container, Heading, GridItem, Grid } from "@chakra-ui/react";
+import { Button, Text, Box, Center, Flex, Container, Heading, GridItem, Grid, Link } from "@chakra-ui/react";
 import { FcGoogle } from "react-icons/fc";
 import { LogoCustom } from "../components/extras";
 
@@ -135,6 +135,7 @@ export default function Login({ handleLogin }) {
                     <Text color='#104DBA' fontWeight={400}>Soy Doctor</Text>
                   </Button>
                 </Box>
+                <Link href="/politica-de-privacidad" fontFamily="Roboto" fontSize={['lg', 'xl']} color="white" my={4}>Politica de privacidad</Link>
               </Flex>
             </GridItem>
           </Grid>
