@@ -306,7 +306,7 @@ const Turns = () => {
           </Center>
         </Flex>
       ) : (
-        <Fragment>
+        <Box overflowY="auto">
             <Heading
                 fontSize={["15px", "25px"]}
                 fontWeight={700}
@@ -633,7 +633,7 @@ const Turns = () => {
                     </Table>
                 </TableContainer>
             </Box>
-        </Fragment>
+        </Box>
       )}
         <AlertModal
             onClose={onCloseHistory}

@@ -119,12 +119,14 @@ const receiveMenu = (isOpen, color="#104DBA", width="20px", height="20px", role=
     }
 
     if(role === "DOCTOR") {
-      iconsMobile.splice(2, 1)
-      iconsMobile.splice(5, 1)
+      iconsMobile.splice(1, 1)
+      iconsMobile.splice(1, 1)
+      iconsMobile.splice(4, 1)
     }
 
     if(role === "ADMIN") {
-      iconsMobile.splice(2, 1)
+      iconsMobile.splice(1, 1)
+      iconsMobile.splice(1, 1)
     }
 
     return iconsMobile;
@@ -293,7 +295,7 @@ const SidebarMenu = ({ children }) => {
         alignItems="center"
         px={4}
         bgColor="#FFFFFF"
-        transform={["translateY(60px)", "inherit"]}
+        transform={["inherit", "inherit"]}
         py={4}
       >
         {children}

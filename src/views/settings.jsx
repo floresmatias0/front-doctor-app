@@ -499,7 +499,7 @@ export default function Settings() {
                     )}
                   </Field>
                 </Flex>
-                {user?.role === "DOCTOR" && (
+                {(user?.role === "DOCTOR" || user?.role === "ADMIN") && (
                   <Fragment>
                     <Text
                       fontSize={["md", "xl"]}
@@ -692,7 +692,7 @@ export default function Settings() {
                   <Text mt={2} fontSize="lg">No tienes usuarios a cargo.</Text>  
               )
           )}
-          {user?.role === "DOCTOR" && (
+          {(user?.role === "DOCTOR" || user?.role === "ADMIN") && (
             <Text
               fontSize={["md", "xl"]}
               fontWeight={700}

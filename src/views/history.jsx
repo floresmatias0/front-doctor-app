@@ -122,12 +122,12 @@ export const FormHistory = ({
         <Divider my={2} />
         <Textarea
           placeholder="Detalles de la consulta"
-          disabled={role !== "DOCTOR"}
+          disabled={(role !== "DOCTOR" || role !== "ADMIN")}
           value={details}
           onChange={handleDetails}
         />
 
-        {role === "DOCTOR" && (
+        {(role === "DOCTOR" || role === "ADMIN") && (
           <Button
             onClick={() => handleUpdateBooking(values._id, details)}
             my={2}
@@ -153,7 +153,7 @@ export const FormHistory = ({
               </Flex>
             ))}
         </Box>
-        {role === "DOCTOR" && (
+        {(role === "DOCTOR" || role === "ADMIN")&& (
           <Button position="relative" size="sm">
             <Input
               id="file-input"
@@ -228,7 +228,7 @@ const History = () => {
     try {
       let bookings = [];
 
-      if (user.role === "DOCTOR") {
+      if ((user.role === "DOCTOR" || user.role === "ADMIN")) {
         bookings = await instance.get(
           `/calendars/all-events?doctor=${user.email}`
         );
@@ -469,7 +469,7 @@ const History = () => {
             py={[0.5, 0]}
             rounded={["xl", "none"]}
             mb={6}
-            width="160px"
+            width={["160px","auto"]}
           >
             Historial de turnos
           </Heading>
@@ -526,9 +526,14 @@ const History = () => {
                 </Thead>
                 <Tbody>
                   {dataBookings?.length > 0 && dataBookings?.map((x, idx) => {
+                    console.log(x)
                     let now = new Date();
                     let bookingStart = new Date(x.start.dateTime);
-                    let isBookingPassed = now > bookingStart || x.status === "deleted";
+
+                    let hoursDifference = (bookingStart - now) / (1000 * 60 * 60);
+                    let canCancel = hoursDifference < 24 && hoursDifference > 0;
+
+                    let isBookingPassed = now > bookingStart || x.status === "deleted" || !canCancel;
 
                     let startDate = new Date(x.start.dateTime).toLocaleDateString('es-AR', { timeZone: "America/Argentina/Buenos_Aires" });
                     let hourDate = new Date(x.start.dateTime).toLocaleTimeString('es-AR', {
@@ -622,12 +627,13 @@ const History = () => {
                               zIndex={2}
                               onClick={() => handleShowCancelTurn(x)}
                               isDisabled={isBookingPassed}
+                              title={x.status === "deleted" ? "ya se cancelo" : isBookingPassed ? "Ya no se puede cancelar" : ""}
                               _disabled={{
                                 opacity: 1,
                                 bg: "#DCDCDC"
                               }}
                               _hover={{
-                                bg: isBookingPassed ? "" : "inherit"
+                                bg: isBookingPassed ? "" : "#FF000088"
                               }}
                             >
                               <Text

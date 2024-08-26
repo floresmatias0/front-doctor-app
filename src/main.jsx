@@ -10,7 +10,7 @@ import {
 
 import DoctorContext from "./components/context";
 import ErrorPage from "./components/error-page";
-import { LayoutWithSidebarAndFooter, ProtectedRoutes, ProtectedRoutesAdmin } from "./components/layouts";
+import { LayoutWithSidebarAndFooter, ProtectedRoutes, ProtectedRoutesAdmin, ProtectedRoutesPatient } from "./components/layouts";
 
 import Login from "./views/login";
 import Verify from "./views/verify";
@@ -64,7 +64,7 @@ const router = createBrowserRouter([
   },
   {
     path: "turnos",
-    element: <LayoutWithSidebarAndFooter><ProtectedRoutes><Appointment /></ProtectedRoutes></LayoutWithSidebarAndFooter>,
+    element: <LayoutWithSidebarAndFooter><ProtectedRoutesPatient><Appointment /></ProtectedRoutesPatient></LayoutWithSidebarAndFooter>,
     errorElement: <ErrorPage />,
   },
   {
