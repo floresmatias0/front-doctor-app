@@ -504,8 +504,8 @@ const Turns = () => {
                                             {x.status === "deleted"
                                                 ? "Cancelado"
                                                 : now > bookingStart
-                                                ? "Cancelar turno"
-                                                : "Cancelar turno"}
+                                                ? "Cancelar"
+                                                : "Cancelar"}
                                             </Text>
                                         </Button>
                                         </Box>

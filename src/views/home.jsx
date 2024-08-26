@@ -236,7 +236,7 @@ const Home = () => {
       : "Sin turnos próximos.";
   const welcomeText =
       user.role === "DOCTOR" && dataBookings?.length === 0 ? "<p>Por el momento no tiene turnos agendados.</p>"
-      : "Encuentra al médico que necesitas y programa tu cita en solo unos pasos. <b>¡Tu atención pediátrica está a solo cuatro pasos de distancia!</b>";
+      : user.role === "PACIENTE" ? "Encuentra al médico que necesitas y programa tu cita en solo unos pasos. <b>¡Tu atención pediátrica está a solo cuatro pasos de distancia!</b>" : "";
 
   const headingTable = [
     {
@@ -286,7 +286,7 @@ const Home = () => {
         <Flex flexDirection="column">
           {user.role === "DOCTOR" && dataBookings?.length > 0 ? (
             <Text fontSize={["26px", "30px"]} lineHeight={["30.47px", "35.16px"]} color="#104DBA" order={2}>
-              Estos son sus turnos para esta semana
+              Estos son tus próximos turnos.
             </Text>
           ) : (
             <Flex order={user.role === "DOCTOR" ? 2 : 1} gap={4}>
@@ -517,7 +517,7 @@ const Home = () => {
                                           "8px",
                                           "8px",
                                           "8px",
-                                          "10px",
+                                          "9px",
                                         ]}
                                         fontWeight={400}
                                         textTransform="uppercase"
@@ -526,8 +526,8 @@ const Home = () => {
                                         {x.status === "deleted"
                                           ? "Cancelado"
                                           : now > bookingStart
-                                          ? "Cancelar turno"
-                                          : "Cancelar turno"}
+                                          ? "Cancelar"
+                                          : "Cancelar"}
                                       </Text>
                                     </Button>
                                   </Box>

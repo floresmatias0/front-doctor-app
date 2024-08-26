@@ -190,8 +190,8 @@ export const FormHistory = ({
           {values.status === "deleted"
             ? "Cancelado"
             : now > bookingStart
-            ? "Cancelar turno"
-            : "Cancelar turno"}
+            ? "Cancelar"
+            : "Cancelar"}
         </Button>
       </Box>
     </Box>
@@ -639,8 +639,8 @@ const History = () => {
                                 {x.status === "deleted"
                                   ? "Cancelado"
                                   : now > bookingStart
-                                  ? "Cancelar turno"
-                                  : "Cancelar turno"}
+                                  ? "Cancelar"
+                                  : "Cancelar"}
                               </Text>
                             </Button>
                           </Box>
