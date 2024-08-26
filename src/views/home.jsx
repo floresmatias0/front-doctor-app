@@ -386,8 +386,10 @@ const Home = () => {
                           ?.map((x, idx) => {
                             let now = new Date();
                             let bookingStart = new Date(x.start.dateTime);
-                            let isBookingPassed =
-                              now > bookingStart || x.status === "deleted";
+                            let hoursDifference = (bookingStart - now) / (1000 * 60 * 60);
+                            let canCancel = hoursDifference < 24 && hoursDifference > 0;
+
+                            let isBookingPassed = now > bookingStart || x.status === "deleted" || !canCancel;
 
                             let extraDate = `${getFormattedDateTime(
                               x.start.dateTime,
@@ -507,6 +509,7 @@ const Home = () => {
                                         opacity: 1,
                                         bg: "#DCDCDC",
                                       }}
+                                      title={x.status === "deleted" ? "ya se cancelo" : isBookingPassed ? "Ya no se puede cancelar" : ""}
                                       _hover={{
                                         bg: isBookingPassed ? "" : "inherit",
                                       }}
@@ -540,7 +543,7 @@ const Home = () => {
                   </Table>
                 </TableContainer>
               ))}
-          {user.role !== "DOCTOR" && (
+          {(user.role !== "DOCTOR" || user.role !== "ADMIN") && (
             <Flex
               justifyContent="flex-start"
               alignItems="start"
