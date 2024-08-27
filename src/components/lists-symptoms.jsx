@@ -118,13 +118,13 @@ const ListSymptoms = ({
   const flexDirection = !disableTabs.payment ? ["column", "column", "column", "column", "row", "column"] : "column";
 
   return (
-    <Flex h="100%" flexDirection={flexDirection} p={4} gap={5} justifyContent="space-between" position="absolute" top="0" left="0" right="0" bottom="0">
+    <Flex h="100%" flexDirection={flexDirection} p={4} gap={5} justifyContent="space-between" position={["", "absolute"]} top="0" left="0" right="0" bottom="0">
       <Flex gap={2} flexDirection="column">
         <Text
           color="#FFF"
           bg="#104DBA"
           borderRadius="xl"
-          w="120px"
+          w={["180px", "120px"]}
           fontSize="xs"
           lineHeight="14.06px"
           textAlign="center"

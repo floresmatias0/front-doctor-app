@@ -292,8 +292,9 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
             justifyContent="space-between"
             flexDirection="row"
             gap={4}
-            minH={["85px", "85px", "85px", "85px", "85px", "182px"]}
-            maxH={["90px", "85px", "85px", "85px", "90px", "auto"]}
+            p={2}
+            minH={["205px", "85px", "85px", "85px", "85px", "182px"]}
+            maxH={["290px", "85px", "85px", "85px", "90px", "auto"]}
             overflowY={["scroll", "auto"]}
           >
             {currentDoctors.length > 0 ? (
@@ -463,7 +464,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
             <Flex
               boxShadow="0px 4px 4px 0px #00000040"
               w="full"
-              minH={["auto", "auto", "auto", "auto", "321px", "321px"]}
+              minH={["290px", "auto", "auto", "auto", "321px", "321px"]}
               borderRadius="xl"
               justifyContent="center"
             >
