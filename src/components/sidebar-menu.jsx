@@ -318,6 +318,11 @@ const SidebarMenu = ({ children }) => {
         h="60px"
         justifyContent="center"
         alignItems="center"
+        sx={{
+          display: '-webkit-flex',
+          justifyContent: '-webkit-center',
+          alignItems: '-webkit-center'
+        }}
       >
         {menuMobileItems?.map((item, idx) => (
           <Link key={idx} href={item.href} _hover={{ textDecoration: "none" }} w="25%" h="full" alignContent="center" bg={path === item.href ? "#104DBA" : "#FFF"}>

@@ -543,7 +543,7 @@ const Home = () => {
                   </Table>
                 </TableContainer>
               ))}
-          {(user.role !== "DOCTOR" || user.role !== "ADMIN") && (
+          {(user.role !== "DOCTOR" && user.role !== "ADMIN") && (
             <Flex
               justifyContent="flex-start"
               alignItems="start"
@@ -564,7 +564,7 @@ const Home = () => {
               >
                 SOLICITAR NUEVO TURNO
               </Button>
-              {dataBookings?.length > 0 && verifyTurnsAvailable(dataBookings) && (
+              {/* {dataBookings?.length > 0 && verifyTurnsAvailable(dataBookings) && (
                 <Button
                   bg="#104DBA"
                   color="#FFFFFF"
@@ -576,7 +576,7 @@ const Home = () => {
                 >
                   MIS TURNOS
                 </Button>
-              )}
+              )} */}
             </Flex>
           )}
           <AlertModal
