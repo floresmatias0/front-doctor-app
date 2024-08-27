@@ -319,7 +319,6 @@ const SidebarMenu = ({ children }) => {
         justifyContent="center"
         alignItems="center"
         sx={{
-          display: '-webkit-flex',
           justifyContent: '-webkit-center',
           alignItems: '-webkit-center'
         }}
