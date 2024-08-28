@@ -52,7 +52,7 @@ const Turns = () => {
         try {
         let bookings = [];
         setLoading(true);
-        if (user.role === "DOCTOR") {
+        if (user.role === "DOCTOR" || user.role === "ADMIN") {
             bookings = await instance.get(
             `/calendars/all-events?doctor=${user.email}`
             );
