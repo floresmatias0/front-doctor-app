@@ -173,8 +173,8 @@ export default function CalendarComponent({ calendarData, selectedDoctor, doctor
                     validRange={{
                         start: new Date()
                     }}
-                    slotMinTime="10:00:00"
-                    slotMaxTime="19:00:00"
+                    slotMinTime={`${doctorData?.reserveTimeFrom}:00:00` || "10:00:00"}
+                    slotMaxTime={`${doctorData?.reserveTimeUntil}:00:00` || "19:00:00"}
                     slotDuration={`00:${doctorData?.reserveTime || '30'}:00`}
                     slotLabelInterval={{ hours: 1 }}
                     views={{

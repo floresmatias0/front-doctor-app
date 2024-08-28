@@ -81,7 +81,9 @@ export default function Settings() {
         reservePrice: values?.reservePrice,
         reserveTime: values?.reserveTime,
         especialization: values?.especialization,
-        enrollment: values?.enrollment
+        enrollment: values?.enrollment,
+        reserveTimeFrom: values?.reserveTimeFrom,
+        reserveTimeUntil: values?.reserveTimeUntil
       });
       setUser(updatedUser.data.data);
       setIsEditable(initialState);
@@ -247,7 +249,9 @@ export default function Settings() {
               especialization: user?.especialization,
               socialWork: user?.socialWork,
               socialWorkId: user?.socialWorkId,
-              enrollment: user?.enrollment
+              enrollment: user?.enrollment,
+              reserveTimeFrom: user?.reserveTimeFrom,
+              reserveTimeUntil: user?.reserveTimeUntil
             }}
             onSubmit={handleSubmit}
           >
@@ -576,6 +580,52 @@ export default function Settings() {
                             </FormLabel>
                             <Input
                               placeholder="99"
+                              fontSize={["xs", "md"]}
+                              _placeholder={{ color: "gray.500" }}
+                              w={["100%", "220px"]}
+                              {...field}
+                            />
+                          </FormControl>
+                        )}
+                      </Field>
+                      <Field name="reserveTimeFrom">
+                        {({ field }) => (
+                          <FormControl id="reserveTimeFrom" w={["100%", "220px"]}>
+                            <FormLabel
+                              fontSize={["xs", "md"]}
+                              color="#104DBA"
+                              fontWeight={400}
+                              lineHeight={["12.3px", "16.24px"]}
+                              w={["100%", "220px"]}
+                            >
+                              Inicio horario de atencion
+                            </FormLabel>
+                            <Input
+                              type="number"
+                              placeholder="10"
+                              fontSize={["xs", "md"]}
+                              _placeholder={{ color: "gray.500" }}
+                              w={["100%", "220px"]}
+                              {...field}
+                            />
+                          </FormControl>
+                        )}
+                      </Field>
+                      <Field name="reserveTimeUntil">
+                        {({ field }) => (
+                          <FormControl id="reserveTimeUntil" w={["100%", "220px"]}>
+                            <FormLabel
+                              fontSize={["xs", "md"]}
+                              color="#104DBA"
+                              fontWeight={400}
+                              lineHeight={["12.3px", "16.24px"]}
+                              w={["100%", "220px"]}
+                            >
+                              Fin horario de atencion
+                            </FormLabel>
+                            <Input
+                              type="number"
+                              placeholder="17"
                               fontSize={["xs", "md"]}
                               _placeholder={{ color: "gray.500" }}
                               w={["100%", "220px"]}

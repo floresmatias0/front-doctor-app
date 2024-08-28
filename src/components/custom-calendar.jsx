@@ -40,8 +40,8 @@ const CustomCalendar = ({ currentDateState, setDaySelected, calendarEvents, sele
 
   const generateEventsForDay = (day) => {
     const eventDivs = [];
-    const startTime = setHours(day, 9); // 9 a.m.
-    const endTime = setHours(day, 18); // 6 p.m.
+    const startTime = setHours(day, selectedDoc?.reserveTimeFrom || 9); // 9 a.m.
+    const endTime = setHours(day, selectedDoc?.reserveTimeUntil || 18); // 6 p.m.
 
     let currentTime = startOfDay(day);
 
