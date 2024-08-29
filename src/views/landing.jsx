@@ -1076,6 +1076,11 @@ const LandingHome = () => {
                 title="¿Como recibo mi orden médica?"
                 description="La estarás recibiendo tanto por mail como a través de la app en la que gestionas el turno."
               />
+
+              <CustomAccordion
+                title="Tutoriales"
+                description="<div><a href='https://www.loom.com/share/60831746e4f0489c9dd1c3640e83ff27?sid=e2cb664e-327f-45a8-a356-66806618fa12' target='__blank'>Creación de cuentas medicos</a><br><a href='https://www.loom.com/share/df1294e3a2e44bb5916a5e2ce13e8780?sid=b3d335ef-a183-4257-8a24-dcbb4b281e35' target='__blank'>Configurar agendas y bloquear fin de semana</a></div>"
+              />
             </Flex>
           </Flex>
         </Container>

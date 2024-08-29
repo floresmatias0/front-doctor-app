@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Box, Button, Text, Grid, Flex } from '@chakra-ui/react';
-import { format, getDaysInMonth, addMinutes, setHours, startOfDay } from 'date-fns';
+import { isToday, format, getDaysInMonth, addMinutes, setHours, startOfDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from 'react-icons/md';
 
@@ -42,15 +42,26 @@ const CustomCalendar = ({ currentDateState, setDaySelected, calendarEvents, sele
     const eventDivs = [];
     const startTime = setHours(day, selectedDoc?.reserveTimeFrom || 9); // 9 a.m.
     const endTime = setHours(day, selectedDoc?.reserveTimeUntil || 18); // 6 p.m.
+    const now = new Date(); // Hora actual
+
+    // Obtener el día de la semana (0 = domingo, 6 = sábado)
+    const dayOfWeek = day.getDay();
+
+    // Verificar si es sábado o domingo
+    const isSaturday = dayOfWeek === 6;
+    const isSunday = dayOfWeek === 0;
+
+    const availableSaturday = selectedDoc?.reserveSaturday;
+    const availableSunday = selectedDoc?.reserveSunday;
 
     let currentTime = startOfDay(day);
-
+  
     while (currentTime < endTime) {
       const eventStartTime = currentTime;
       const eventEndTime = addMinutes(currentTime, selectedDoc?.reserveTime);
-
-      let emptyEvent = true; // Suponemos que inicialmente el evento está vacío y disponible
-
+  
+      let emptyEvent = true;
+  
       // Verificar si hay un evento en el rango de tiempo actual
       const isEventAvailable = calendarEvents?.some(event => {
         const eventStartDate = new Date(event?.start?.dateTime);
@@ -59,11 +70,16 @@ const CustomCalendar = ({ currentDateState, setDaySelected, calendarEvents, sele
           eventStartDate <= eventStartTime && eventEndDate >= eventEndTime
         );
       });
-
-      if (isEventAvailable) {
-        emptyEvent = false; // Si hay un evento, marcarlo como no disponible
+  
+      if (
+        isEventAvailable || 
+        (isToday(day) && eventStartTime <= now) ||
+        (isSaturday && availableSaturday) ||
+        (isSunday && availableSunday)
+      ) {
+        emptyEvent = false;
       }
-
+  
       if (eventStartTime >= startTime && eventEndTime <= endTime) {
         eventDivs.push(
           <Button
@@ -90,10 +106,10 @@ const CustomCalendar = ({ currentDateState, setDaySelected, calendarEvents, sele
           </Button>
         );
       }
-
+  
       currentTime = addMinutes(currentTime, 15);
     }
-
+  
     return eventDivs;
   };
 

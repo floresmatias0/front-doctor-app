@@ -15,6 +15,7 @@ import {
   Heading,
   Select,
   FormLabel,
+  Checkbox,
 } from "@chakra-ui/react";
 import { AppContext } from "../components/context";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
@@ -83,7 +84,9 @@ export default function Settings() {
         especialization: values?.especialization,
         enrollment: values?.enrollment,
         reserveTimeFrom: values?.reserveTimeFrom,
-        reserveTimeUntil: values?.reserveTimeUntil
+        reserveTimeUntil: values?.reserveTimeUntil,
+        reserveSaturday: values?.reserveSaturday,
+        reserveSunday: values?.reserveSunday 
       });
       setUser(updatedUser.data.data);
       setIsEditable(initialState);
@@ -251,7 +254,9 @@ export default function Settings() {
               socialWorkId: user?.socialWorkId,
               enrollment: user?.enrollment,
               reserveTimeFrom: user?.reserveTimeFrom,
-              reserveTimeUntil: user?.reserveTimeUntil
+              reserveTimeUntil: user?.reserveTimeUntil,
+              reserveSaturday: user?.reserveSaturday,
+              reserveSunday: user?.reserveSunday 
             }}
             onSubmit={handleSubmit}
           >
@@ -631,6 +636,38 @@ export default function Settings() {
                               w={["100%", "220px"]}
                               {...field}
                             />
+                          </FormControl>
+                        )}
+                      </Field>
+                      <Field name="reserveSaturday">
+                        {({ field }) => (
+                          <FormControl id="reserveSaturday" w={["100%", "220px"]}>
+                            <FormLabel
+                              fontSize={["xs", "md"]}
+                              color="#104DBA"
+                              fontWeight={400}
+                              lineHeight={["12.3px", "16.24px"]}
+                              w={["100%", "220px"]}
+                            >
+                              Bloquear Sabado
+                            </FormLabel>
+                            <Checkbox {...field} defaultChecked={field?.value}></Checkbox>
+                          </FormControl>
+                        )}
+                      </Field>
+                      <Field name="reserveSunday">
+                        {({ field }) => (
+                          <FormControl id="reserveSunday" w={["100%", "220px"]}>
+                            <FormLabel
+                              fontSize={["xs", "md"]}
+                              color="#104DBA"
+                              fontWeight={400}
+                              lineHeight={["12.3px", "16.24px"]}
+                              w={["100%", "220px"]}
+                            >
+                              Bloquear Domingo
+                            </FormLabel>
+                            <Checkbox {...field} defaultChecked={field?.value}></Checkbox>
                           </FormControl>
                         )}
                       </Field>

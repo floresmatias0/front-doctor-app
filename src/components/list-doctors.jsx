@@ -70,6 +70,8 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
               reserveTime: doctors[i].reserveTime,
               reserveTimeFrom: doctors[i].reserveTimeFrom,
               reserveTimeUntil: doctors[i].reserveTimeUntil,
+              reserveSaturday: doctors[i].reserveSaturday,
+              reserveSunday: doctors[i].reserveSunday,
               especialization: doctors[i].especialization,
               public_key: doctors[i].mercadopago_access?.public_key
             });
