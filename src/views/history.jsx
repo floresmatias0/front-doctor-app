@@ -552,7 +552,7 @@ const History = () => {
                         px={[0, 8]}
                         textAlign="center"
                       >
-                        <Td textAlign="center">DR. {x.organizer.name}</Td>
+                        <Td textAlign="center">Dr/Dra. {x.organizer.name}</Td>
                         <Td textAlign="center">{startDate}</Td>
                         <Td textAlign="center">{hourDate}</Td>
                         <Td textAlign="center">Consulta</Td>
@@ -720,7 +720,7 @@ const History = () => {
                         lineHeight="12.3px"
                         textAlign="left"
                       >
-                        Dr. {turnSelected?.organizer?.name}
+                        Dr/Dra. {turnSelected?.organizer?.name}
                       </Text>
                       <Text fontSize="sm" fontWeight={400} lineHeight="10.55px">
                         {turnSelected?.organizer?.especialization}

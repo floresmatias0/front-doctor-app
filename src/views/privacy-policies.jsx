@@ -15,7 +15,7 @@ export default function PrivacyPolicies() {
               <Box mb={4} overflow="auto" mx={[4, 20]} p={4}>
                 <Box mt={4}>
                     <Text fontSize="xl" fontWeight="bold" color="#104DBA" my={2}>Última actualización: 25/06/2024</Text>
-                    <Text>Agradecemos que utilices nuestra aplicación <b>ZonaPediatrica</b>. La protección de tus datos personales es una prioridad para nosotros. Esta Política de Privacidad describe cómo recopilamos, utilizamos y compartimos información personal a través de nuestra aplicación. Al utilizar la aplicación, aceptas los términos de esta política.</Text>
+                    <Text>Agradecemos que utilices nuestra aplicación <b>ZonaMed</b>. La protección de tus datos personales es una prioridad para nosotros. Esta Política de Privacidad describe cómo recopilamos, utilizamos y compartimos información personal a través de nuestra aplicación. Al utilizar la aplicación, aceptas los términos de esta política.</Text>
                 </Box>
 
                 <Box mt={4}>

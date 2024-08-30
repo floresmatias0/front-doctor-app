@@ -77,7 +77,7 @@ export const FooterLanding = ({styles = {}}) => {
               lineHeight={["12px", "16px"]}
               mt={3}
             >
-              ayuda@zonapediatrica.com.ar
+              ayuda@zonamed.com.ar
             </Text>
             <Text
               fontSize={["xs", "sm"]}
@@ -87,7 +87,7 @@ export const FooterLanding = ({styles = {}}) => {
               lineHeight={["12px", "16px"]}
               mt={4}
             >
-              © 2024 ZonaPediatrica – Todos los derechos reservados
+              © 2024 ZonaMed – Todos los derechos reservados
             </Text>
           </Box>
         </Flex>
@@ -133,7 +133,7 @@ export const Footer = ({styles = {}, display}) => {
               lineHeight={["12px", "16px"]}
               alignContent='center'
             >
-              ayuda@zonapediatrica.com.ar
+              ayuda@zonamed.com.ar
             </Text>
           </Box>
           <Box h='full' alignContent='center'>
@@ -145,7 +145,20 @@ export const Footer = ({styles = {}, display}) => {
               lineHeight={["12px", "16px"]}
               alignContent='center'
             >
-              © 2024 ZonaPediatrica – Todos los derechos reservados
+              © 2024 ZonaMed – Todos los derechos reservados
+            </Text>
+            <Text
+              fontSize={["xs", "sm"]}
+              align={["left", "right"]}
+              color="white"
+              fontWeight="400"
+              lineHeight={["12px", "16px"]}
+              alignContent='center'
+            >
+                Tecnología desarrollada por {" "}
+              <Link href="https://merliteam.com" target="__blank">
+                  merliteam.com
+              </Link>
             </Text>
           </Box>
         </Flex>

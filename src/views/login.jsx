@@ -76,7 +76,7 @@ export default function Login({ handleLogin }) {
                     fontSize={["lg", "lg", "3xl", "3xl"]}
                     lineHeight={["18px", "70px"]}
                   >
-                    Zona Pediatrica
+                    Zona Med
                   </Heading>
                 </Box>
               </Flex>

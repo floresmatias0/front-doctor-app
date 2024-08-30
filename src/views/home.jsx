@@ -230,7 +230,7 @@ const Home = () => {
 
   const titleText =
     (user.role === "DOCTOR" || user.role === "ADMIN")
-      ? `Hola Dr. ${user?.lastName}`
+      ? `Hola Dr/Dra. ${user?.lastName}`
       : dataBookings?.length > 0 && verifyTurnsAvailable(dataBookings)
       ? "Tienes turnos proximos"
       : "Sin turnos próximos.";
@@ -418,7 +418,7 @@ const Home = () => {
                                 px={8}
                                 textAlign="center"
                               >
-                                <Td textAlign="center">DR. {x.organizer.name}</Td>
+                                <Td textAlign="center">Dr/Dra. {x.organizer.name}</Td>
                                 <Td textAlign="center">{extraDate}</Td>
                                 <Td textAlign="center">{hour}</Td>
                                 <Td textAlign="center">Consulta</Td>
@@ -651,7 +651,7 @@ const Home = () => {
                             lineHeight="12.3px"
                             textAlign="left"
                           >
-                            Dr. {turnSelected?.organizer?.name}
+                            Dr/Dra. {turnSelected?.organizer?.name}
                           </Text>
                           <Text
                             fontSize="sm"

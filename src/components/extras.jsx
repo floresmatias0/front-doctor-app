@@ -62,7 +62,7 @@ export const LogoCustom = ({
       alignContent="end"
       display={displayText}
     >
-      Zona Pediatrica
+      Zona Med
     </Heading>
   </Flex>
 );

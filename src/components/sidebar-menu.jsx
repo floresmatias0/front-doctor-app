@@ -380,7 +380,7 @@ const SidebarMenu = ({ children }) => {
               onClick={() => handleRefFocus(refServices)}
             >
               <Text fontSize="14px" color="#474747">
-                ayuda@zonapediatrica.com.ar
+                ayuda@zonamed.com.ar
               </Text>
             </Box>
             <Box
@@ -395,10 +395,20 @@ const SidebarMenu = ({ children }) => {
             </Box>
             <Box bgColor="transparent" onClick={() => handleRefFocus(refWhoUs)}>
               <Text fontSize="14px" color="#474747">
-                © 2024 ZonaPediatrica
+                © 2024 ZonaMed
               </Text>
               <Text fontSize="14px" color="#474747">
                 Todos los derechos reservados
+              </Text>
+            </Box>
+            <Box bgColor="transparent" onClick={() => handleRefFocus(refWhoUs)}>
+              <Text fontSize="14px" color="#474747">
+                Tecnología desarrollada por 
+                <Link href="https://merliteam.com" _hover={{ textDecoration: "none" }}>
+                  <Text fontSize="14px" color="#474747">
+                    merliteam.com 
+                  </Text>
+                </Link>
               </Text>
             </Box>
             <Box

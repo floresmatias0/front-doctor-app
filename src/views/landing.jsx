@@ -516,7 +516,7 @@ const LandingHome = () => {
                     fontSize={["sm", "sm", "6xl", "6xl"]}
                     lineHeight={["18px", "70px"]}
                   >
-                    Zona Pediatrica
+                    Zona Med
                   </Heading>
                 </Box>
               </Flex>

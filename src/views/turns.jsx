@@ -394,7 +394,7 @@ const Turns = () => {
                                     px={8}
                                     textAlign="center"
                                     >
-                                    <Td textAlign="center">DR. {x.organizer.name}</Td>
+                                    <Td textAlign="center">Dr/Dra. {x.organizer.name}</Td>
                                     <Td textAlign="center">{extraDate}</Td>
                                     <Td textAlign="center">{hour}</Td>
                                     <Td textAlign="center">Consulta</Td>

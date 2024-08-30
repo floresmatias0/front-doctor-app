@@ -16,7 +16,7 @@ import {
 
                             <Box mt={4}>
                                 <Text fontSize="xl" fontWeight="bold" color="#104DBA" my={2}>Última actualización: 25/06/2024</Text>
-                                <Text>Al utilizar nuestra aplicación <b>ZonaPediatrica</b>, aceptas cumplir con las siguientes condiciones de servicio:</Text>
+                                <Text>Al utilizar nuestra aplicación <b>ZonaMed</b>, aceptas cumplir con las siguientes condiciones de servicio:</Text>
                             </Box>
 
                             <Box mt={4}>

@@ -236,7 +236,7 @@ const ListSymptoms = ({
                       fontWeight={700}
                       lineHeight="19.69px"
                     >
-                      Dr. {doctorSelected?.label}
+                      Dr/Dra. {doctorSelected?.label}
                     </Text>
                     <Text fontSize="xs" fontWeight={400} lineHeight="16.88px">
                       {doctorSelected?.especialization}
