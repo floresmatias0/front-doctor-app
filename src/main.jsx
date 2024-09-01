@@ -12,22 +12,22 @@ import DoctorContext from "./components/context";
 import ErrorPage from "./components/error-page";
 import { LayoutWithSidebarAndFooter, ProtectedRoutes, ProtectedRoutesAdmin, ProtectedRoutesPatient } from "./components/layouts";
 
-import Login from "./views/login";
-import Verify from "./views/verify";
-import Home from "./views/home";
 import Appointment from "./views/appointment";
-import Settings from "./views/settings";
+import Graphs from "./views/charts";
 import History from "./views/history";
+import Home from "./views/home";
+import LandingHome from "./views/landing";
+import Login from "./views/login";
+import Patients from "./views/patients";
 import PrivacyPolicies from "./views/privacy-policies";
+import Settings from "./views/settings";
 import TermsOfServices from "./views/terms-of-services";
 import Turns from "./views/turns";
-import Graphs from "./views/charts";
-import LandingHome from "./views/landing";
+import Verify from "./views/verify";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './styles/main.css';
-import Patients from "./views/patients";
 
 const colors = {
   brand: {

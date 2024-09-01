@@ -1,7 +1,6 @@
 import {
     Flex,
     Text,
-    Button,
     Box,
     Table,
     TableContainer,
@@ -26,7 +25,6 @@ import {
   
   const Patients = () => {
     const [dataBookings, setDataBookings] = useState([]);
-    const [dataBookingsNext, setDataBookingsNext] = useState([]);
     const [bookingSelected, setBookingSelected] = useState({});
     const [documentsSelected, setDocumentsSelected] = useState([])
     const [loading, setLoading] = useState(false);

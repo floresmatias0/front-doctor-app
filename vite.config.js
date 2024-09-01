@@ -9,7 +9,7 @@ export default defineConfig({
     VitePWA({
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'maskable-icon.png'],
       manifest: {
-        name: 'Atencion Medica',
+        name: 'Atencion Médica',
         short_name: 'ZonaMed',
         description: 'Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.',
         theme_color: '#ffffff',
@@ -30,6 +30,10 @@ export default defineConfig({
             type: 'image/png'
           }
         ]
+      },
+      registerType: 'autoUpdate',
+      devOptions: {
+        enabled: true
       }
     })
   ],
