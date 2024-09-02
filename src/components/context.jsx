@@ -4,6 +4,7 @@ import { instance } from '../utils/axios';
 import { Box, Text, useToast } from '@chakra-ui/react';
 import { HiOutlineBadgeCheck } from 'react-icons/hi';
 import { MdErrorOutline } from 'react-icons/md';
+import { jwtDecode } from "jwt-decode";
 
 export const AppContext = createContext(null);
 
@@ -17,8 +18,14 @@ export default function DoctorContext({ children }) {
     const fetchDataUser = useCallback(async () => {
       try {
         setIsLoading(true)
-        const idUser = localStorage.getItem("user")
+        const token = localStorage.getItem("authToken");
+
+        const {id} = jwtDecode(token)
+
+        const idUser = id;
+
         const userData = await instance.get(`/users/${idUser}`)
+
         setUser(userData.data.data)
         setIsLoading(false)
       }catch(err) {

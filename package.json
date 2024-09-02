@@ -30,6 +30,7 @@
     "dotenv": "^16.3.1",
     "formik": "^2.4.5",
     "framer-motion": "^10.16.1",
+    "jwt-decode": "^4.0.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
     "prop-types": "^15.8.1",

@@ -6,16 +6,35 @@ export default function Verify() {
   const [searchParams] = useSearchParams();
   
   const currentParams = Object.fromEntries([...searchParams]);
-  const { _valid: idUser } = currentParams;
-  
-  useEffect(() => {
-    if (idUser) {
-      localStorage.setItem("user", idUser);
-      return navigate("/inicio")
-    }
+  const { token } = currentParams;
 
-    navigate("/iniciar-sesion")
-  }, [idUser, navigate]);
+  useEffect(() => {
+    const handleVerification = async () => {
+      try {
+        if (token) {
+          let existToken = localStorage.getItem("authToken");
+          if(existToken) {
+            localStorage.removeItem("authToken");
+          }
+          localStorage.setItem("authToken", token);
+
+          return navigate("/inicio");
+        } else {
+          let token = localStorage.getItem("authToken");
+
+          if(token) {
+            return navigate("/inicio");
+          }
+          return navigate("/iniciar-sesion");
+        }
+      } catch (error) {
+        console.error('Error verificando el token:', error);
+        return navigate("/iniciar-sesion");
+      }
+    };
+
+    handleVerification();
+  }, [token, navigate]);
 
   return null;
 }

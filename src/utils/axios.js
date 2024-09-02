@@ -1,19 +1,24 @@
 import axios from 'axios';
 
 export const instance = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
-    timeout: 5000,
-    credentials: 'include',
-    withCredentials: true,
-    mode: 'cors', 
+    baseURL: import.meta.env.VITE_BACKEND_URL, 
     headers: {
         'Content-Type': 'application/json'
     }
 });
 
+instance.interceptors.request.use(config => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  }, error => {
+    return Promise.reject(error);
+});
+
 export const instanceUpload = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL,
-    timeout: 300000,
     headers: {
         'Content-Type': 'multipart/form-data'
     }
