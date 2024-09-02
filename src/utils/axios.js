@@ -14,6 +14,11 @@ instance.interceptors.request.use(config => {
     }
     return config;
   }, error => {
+    localStorage?.removeItem("user");
+    localStorage?.removeItem("authToken");
+    window.location.href = `${
+      import.meta.env.VITE_BACKEND_URL
+    }/auth/google/logout`;
     return Promise.reject(error);
 });
 

@@ -26,26 +26,28 @@ import { FaXmark } from "react-icons/fa6";
 import { LinkCustom } from "../components/buttons";
 import { LogoCustom, TitleCustom } from "../components/extras";
 import { FooterLanding } from "../components/footer";
-import photoDefaultDoctor from "../assets/photo-default-doctor.jpeg"
+// import photoDefaultDoctor from "../assets/photo-default-doctor.jpeg";
+import photoDraNatalia from "../assets/dra.natalia.png";
+import photoDrMartin from "../assets/dr.martin.jpg";
 
 const principalServices = [
   {
     icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="#FFF" class="icon-responsive" viewBox="0 0 640 512"><path d="M128 32C92.7 32 64 60.7 64 96V352h64V96H512V352h64V96c0-35.3-28.7-64-64-64H128zM19.2 384C8.6 384 0 392.6 0 403.2C0 445.6 34.4 480 76.8 480H563.2c42.4 0 76.8-34.4 76.8-76.8c0-10.6-8.6-19.2-19.2-19.2H19.2z"/></svg>',
     title: "Consultas Médicas  y Especialistas a tu Alcance",
     description:
-      "Consulta a especialistas en salud infantil desde cualquier lugar y mantén una comunicación directa con nuestros médicos.",
+      "Consulta a especialistas en salud desde cualquier lugar y mantén una comunicación directa con nuestros médicos.",
   },
   {
     icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="#FFF" class="icon-responsive" viewBox="0 0 384 512"><path d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg>',
     title: "HISTORIAL MÉDICO DIGITAL SEGURO",
     description:
-      "Almacena, accede y realiza un seguimiento seguro del historial y los antecedentes médicos de tus hijos.",
+      "Almacena, accede y realiza un seguimiento seguro del historial y los antecedentes médicos.",
   },
   {
     icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="#FFF" class="icon-responsive" viewBox="0 0 640 512"><path d="M320 32c-8.1 0-16.1 1.4-23.7 4.1L15.8 137.4C6.3 140.9 0 149.9 0 160s6.3 19.1 15.8 22.6l57.9 20.9C57.3 229.3 48 259.8 48 291.9v28.1c0 28.4-10.8 57.7-22.3 80.8c-6.5 13-13.9 25.8-22.5 37.6C0 442.7-.9 448.3 .9 453.4s6 8.9 11.2 10.2l64 16c4.2 1.1 8.7 .3 12.4-2s6.3-6.1 7.1-10.4c8.6-42.8 4.3-81.2-2.1-108.7C90.3 344.3 86 329.8 80 316.5V291.9c0-30.2 10.2-58.7 27.9-81.5c12.9-15.5 29.6-28 49.2-35.7l157-61.7c8.2-3.2 17.5 .8 20.7 9s-.8 17.5-9 20.7l-157 61.7c-12.4 4.9-23.3 12.4-32.2 21.6l159.6 57.6c7.6 2.7 15.6 4.1 23.7 4.1s16.1-1.4 23.7-4.1L624.2 182.6c9.5-3.4 15.8-12.5 15.8-22.6s-6.3-19.1-15.8-22.6L343.7 36.1C336.1 33.4 328.1 32 320 32zM128 408c0 35.3 86 72 192 72s192-36.7 192-72L496.7 262.6 354.5 314c-11.1 4-22.8 6-34.5 6s-23.5-2-34.5-6L143.3 262.6 128 408z"/></svg>',
-    title: "RECURSOS EDUCATIVOS PARA PADRES",
+    title: "RECURSOS EDUCATIVOS",
     description:
-      "Descubre información y consejos prácticos sobre la salud infantil.",
+      "Descubre información y consejos prácticos sobre la salud.",
     url: "https://comunidad.sap.org.ar/",
   },
   {
@@ -73,29 +75,23 @@ const steps = [
     position: "03",
     title: "CONSULTA PERSONALIZADA",
     description:
-      "Inicia la videollamada o chat con nuestro pediatra certificado. Recibe atención médica detallada y respuestas a todas tus preguntas.",
+      "Inicia la videollamada con nuestro pediatra certificado. Recibe atención médica detallada y respuestas a todas tus preguntas.",
   },
 ];
 
 const docs = new Array(
   {
-    title: 'Dr. Rodríguez',
-    image: photoDefaultDoctor,
-    description: 'Pediatra especialista en desarrollo',
-    enrollment: 'Lorem ipsum dolor sit amet consectetur. Platea non mi sagittis dignissim. Habitant malesuada quis auctor varius lorem ut. Id id tellus sed id sit eleifend a pretium. Luctus velit varius viverra cursus integer arcu. Turpis turpis pretium congue sit. Ut mi morbi mauris a massa pretium eget semper. Massa etiam nisi sit commodo. Velit orci odio lectus eget ultricies luctus ac morbi nec. Quam ornare senectus gravida sit nibh sed quam etiam. Semper pretium eu scelerisque sit diam sit non malesuada. Neque sit viverra tincidunt porttitor facilisi nullam. In.'
+    title: 'Dra. Natalia Siscar',
+    image: photoDraNatalia,
+    description: 'Médica Pediatra Especialista en Intensivismo Infantil',
+    enrollment: 'MN 117548'
   },
   {
-    title: 'Dr. Rodríguez',
-    image: photoDefaultDoctor,
-    description: 'Pediatra especialista en desarrollo',
-    enrollment: 'Lorem ipsum dolor sit amet consectetur. Platea non mi sagittis dignissim. Habitant malesuada quis auctor varius lorem ut. Id id tellus sed id sit eleifend a pretium. Luctus velit varius viverra cursus integer arcu. Turpis turpis pretium congue sit. Ut mi morbi mauris a massa pretium eget semper. Massa etiam nisi sit commodo. Velit orci odio lectus eget ultricies luctus ac morbi nec. Quam ornare senectus gravida sit nibh sed quam etiam. Semper pretium eu scelerisque sit diam sit non malesuada. Neque sit viverra tincidunt porttitor facilisi nullam. In.'
+    title: 'Dr. Martín Pascutto',
+    image: photoDrMartin,
+    description: 'Médico pediatra especialista en terapia intensiva',
+    enrollment: 'MN 111714'
   },
-  {
-    title: 'Dr. Rodríguez',
-    image: photoDefaultDoctor,
-    description: 'Pediatra especialista en desarrollo',
-    enrollment: 'Lorem ipsum dolor sit amet consectetur. Platea non mi sagittis dignissim. Habitant malesuada quis auctor varius lorem ut. Id id tellus sed id sit eleifend a pretium. Luctus velit varius viverra cursus integer arcu. Turpis turpis pretium congue sit. Ut mi morbi mauris a massa pretium eget semper. Massa etiam nisi sit commodo. Velit orci odio lectus eget ultricies luctus ac morbi nec. Quam ornare senectus gravida sit nibh sed quam etiam. Semper pretium eu scelerisque sit diam sit non malesuada. Neque sit viverra tincidunt porttitor facilisi nullam. In.'
-  }
 )
 
 const Card = ({ index, icon, title, description, url }) => {
@@ -121,6 +117,7 @@ const Card = ({ index, icon, title, description, url }) => {
         boxShadow="0px 4px 4px 0px #0000001A"
         border="0.5px"
         borderColor="#104DBA80"
+        target="_blank"
       >
         <Box
           dangerouslySetInnerHTML={{ __html: icon }}
@@ -232,11 +229,11 @@ const LandingHome = () => {
   };
 
   const settings = {
-    dots: true,
-    infinite: true,
+    dots: false,
+    infinite: false,
     speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 3,
+    slidesToShow: 2,
+    slidesToScroll: 2,
     initialSlide: 0,
     arrows: false,
     responsive: [
@@ -257,6 +254,7 @@ const LandingHome = () => {
       {
         breakpoint: 480,
         settings: {
+          dots: true,
           slidesToShow: 1,
           slidesToScroll: 1,
         },
@@ -535,7 +533,7 @@ const LandingHome = () => {
                   lineHeight={["28.13px", "28.13px", "56.25px", "56.25px"]}
                   fontFamily="Roboto"
                 >
-                  Bienestar y seguridad para tus pequeños desde casa.
+                  Bienestar y seguridad para tu familia desde casa.
                 </Heading>
 
                 <Flex
@@ -556,8 +554,7 @@ const LandingHome = () => {
                       lineHeight={["15.23px", "23.44px"]}
                     >
                       Nuestra plataforma cuenta con una red de médicos
-                      especializados en pediatría y otras áreas de la salud
-                      infantiles.
+                      especializados.
                     </Text>
                   </Flex>
                   <Flex gap={4} alignItems="center">
@@ -883,8 +880,8 @@ const LandingHome = () => {
               mb={12}
               ml={4}
             >
-              Somos un equipo de médicos pediatras comprometidos en ampliar el
-              acceso a la atención médica infantil. Esta plataforma fue creada
+              Somos un equipo de médicos comprometidos en ampliar el
+              acceso a la atención médica. Esta plataforma fue creada
               por médicos especializados para ofrecer apoyo y cuidado
               conveniente y confiable.
             </Text>
@@ -933,6 +930,7 @@ const LandingHome = () => {
                           </Text>
                         </Box>
                         {selectedDoctorIndex === idx && (
+                          console.log(selectedDoctorIndex, dr),
                           <Fade initialScale={0.9} in={selectedDoctorIndex === idx}>
                             <Button
                               bgColor="transparent"
@@ -1028,8 +1026,7 @@ const LandingHome = () => {
                 fontWeight="400"
                 lineHeight={["12px", "18px"]}
               >
-                Estamos aquí para garantizar la salud y el bienestar de tus
-                hijos.
+                Estamos aquí para garantizar la salud y el bienestar de tu familia.
               </Text>
             </Flex>
           </Flex>
@@ -1059,7 +1056,7 @@ const LandingHome = () => {
 
               <CustomAccordion
                 title="¿Para quien está destinado el uso de la plataforma?"
-                description="está destinado para todos los pacientes pediátricos inicialmente."
+                description="está destinado para todos los pacientes inicialmente."
               />
 
               <CustomAccordion

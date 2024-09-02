@@ -14,7 +14,8 @@ export default function Verify() {
         if (token) {
           let existToken = localStorage.getItem("authToken");
           if(existToken) {
-            localStorage.removeItem("authToken");
+            localStorage?.removeItem("user");
+            localStorage?.removeItem("authToken");
           }
           localStorage.setItem("authToken", token);
 

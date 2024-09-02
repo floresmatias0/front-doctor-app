@@ -97,13 +97,24 @@ export const FooterLanding = ({styles = {}}) => {
               lineHeight={["12px", "16px"]}
               alignContent='center'
             >
-                Tecnología desarrollada por {" "}
-              <Link href="https://merliteam.com" target="__blank">
-                  merliteam.com
-              </Link>
+              <Link href="/politica-de-privacidad" fontSize={["xs", "sm"]} color="white" my={4}>Politica de privacidad</Link>
             </Text>
           </Box>
         </Flex>
+          <Text
+            fontSize={["xs", "sm"]}
+            align="center"
+            color="white"
+            fontWeight="400"
+            lineHeight={["12px", "16px"]}
+            alignContent='center'
+            marginTop={[5, 0]}
+          >
+              Tecnología desarrollada por {" "}
+            <Link href="https://merliteam.com" target="__blank">
+                merliteam.com
+            </Link>
+          </Text>
       </Container>
     </Flex>
   );
@@ -124,6 +135,7 @@ export const Footer = ({styles = {}, display}) => {
           flexDirection={["column", "column", "column", "row"]}
           justifyContent="space-between"
           h='full'
+          position='relative'
         >
           <Box h='full' alignContent='center'>
             <Link href="/condiciones-del-servicio" _hover={{ textDecoration: "none" }}>
@@ -149,6 +161,22 @@ export const Footer = ({styles = {}, display}) => {
               ayuda@zonamed.com.ar
             </Text>
           </Box>
+          <Text
+            fontSize={["xs", "sm"]}
+            align={["left", "right"]}
+            color="white"
+            fontWeight="400"
+            lineHeight={["12px", "16px"]}
+            position='absolute'
+            bottom={0}
+            left={["", "", "", "50%"]}
+            transform={["", "", "", "translateX(-50%)"]}
+          >
+              Tecnología desarrollada por {" "}
+            <Link href="https://merliteam.com" target="__blank">
+                merliteam.com
+            </Link>
+          </Text>
           <Box h='full' alignContent='center'>
             <Text
               fontSize={["xs", "sm"]}
@@ -168,10 +196,7 @@ export const Footer = ({styles = {}, display}) => {
               lineHeight={["12px", "16px"]}
               alignContent='center'
             >
-                Tecnología desarrollada por {" "}
-              <Link href="https://merliteam.com" target="__blank">
-                  merliteam.com
-              </Link>
+              <Link href="/politica-de-privacidad" fontSize={["xs", "sm"]} color="white" my={4}>Politica de privacidad</Link>
             </Text>
           </Box>
         </Flex>

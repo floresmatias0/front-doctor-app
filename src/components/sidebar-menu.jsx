@@ -143,7 +143,8 @@ const SidebarMenu = ({ children }) => {
   const menuMobileItems = receiveMenu(isOpen, "#104DBA", "24px", "24px", user?.role, true);
 
   const logout = () => {
-    localStorage.removeItem("user");
+    localStorage?.removeItem("user");
+    localStorage?.removeItem("authToken");
     window.location.href = `${
       import.meta.env.VITE_BACKEND_URL
     }/auth/google/logout`;
