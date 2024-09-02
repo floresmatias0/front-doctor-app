@@ -21,6 +21,7 @@ const Graphs = () => {
         const fetchDataCountReserveByDay = async () => {
             try {
                 const { data } = await instance.get('/calendars/charts-booking');
+                console.log({data})
                 setCountsReserveByDay(data.data);
             } catch (err) {
                 console.log(err?.message);
@@ -33,7 +34,7 @@ const Graphs = () => {
     }, []);
 
     useEffect(() => {
-        if (!loading && chartRef.current && pieChartRef.current) {
+        if (!loading && chartRef?.current && pieChartRef?.current) {
             const ctxBar = chartRef.current.getContext("2d");
             const ctxPie = pieChartRef.current.getContext("2d");
 
@@ -78,35 +79,58 @@ const Graphs = () => {
                     type: 'bar',
                     data: {
                         labels: months,
-                        datasets: [{
-                            type: 'bar',
-                            label: `Total consultas`,
-                            borderColor: 'rgb(75, 192, 192)',
-                            borderWidth: 2,
-                            fontFamily:"Roboto",
-                            fill: false,
-                            data: totalReservationsData,
-                        },
-                        {
-                            type: 'bar',
-                            label: 'Total recaudado',
-                            borderColor: 'rgb(255, 99, 132)',
-                            fontFamily:"Roboto",
-                            borderWidth: 2,
-                            fill: false,
-                            data: totalPriceData,
-                        }]
+                        datasets: [
+                            {
+                                label: 'Total consultas',
+                                data: totalReservationsData,
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgb(75, 192, 192)',
+                                borderWidth: 2,
+                                fontFamily: "Roboto",
+                                yAxisID: 'y1',  // Eje Y para totalReservationsData
+                            },
+                            {
+                                label: 'Total recaudado',
+                                data: totalPriceData,
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgb(255, 99, 132)',
+                                borderWidth: 2,
+                                fontFamily: "Roboto",
+                                yAxisID: 'y2',  // Eje Y para totalPriceData
+                            }
+                        ]
                     },
                     options: {
                         scales: {
-                            y: {
+                            y1: {
+                                type: 'linear',
+                                position: 'left',
                                 beginAtZero: true,
                                 min: 0,
-                                max: Math.max(1, Math.max(...totalReservationsData), Math.max(...totalPriceData)),
+                                max: Math.max(1, Math.max(...totalReservationsData)),
+                                title: {
+                                    display: true,
+                                    text: 'Total consultas',
+                                },
+                            },
+                            y2: {
+                                type: 'linear',
+                                position: 'right',
+                                beginAtZero: true,
+                                min: 0,
+                                max: Math.max(1, Math.max(...totalPriceData)),
+                                title: {
+                                    display: true,
+                                    text: 'Total recaudado',
+                                },
+                                grid: {
+                                    drawOnChartArea: false, // Esto evita que las líneas del eje Y2 se superpongan con las del Y1
+                                },
                             },
                         },
                     },
                 });
+                
             }
         }
     }, [loading, countsReserveByDay]);
