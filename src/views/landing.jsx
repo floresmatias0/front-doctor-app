@@ -903,14 +903,21 @@ const LandingHome = () => {
                       <Box
                         w={["240px", "335px"]}
                         h={["420px", "489px"]}
-                        bgImage={`url(${dr.image})`}
                         rounded="xl"
                         bgPosition="center"
                         bgSize="cover"
                         bgRepeat="no-repeat"
                         position="relative"
                         boxShadow="0px 4px 4px 0px #00000026"
+                        justifyContent="center"
+                        alignItems="center"
+                        bgGradient="linear-gradient(61.63deg, #104DBA 26.71%, #88A6DD 85.17%, #FFFFFF 134.61%)"
                       >
+                        <Flex w="full" textAlign="center" justifyContent="center" alignItems="center" marginTop={10}>
+                          <Box width={200} height={200} rounded="full" borderWidth={10} borderColor="#FFF">
+                            <Image src={dr.image} width={180} height={180} rounded="full"/>
+                          </Box>
+                        </Flex>
                         <Box
                           bgColor="white"
                           rounded="xl"
