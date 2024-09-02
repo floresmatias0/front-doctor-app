@@ -89,7 +89,7 @@ const docs = new Array(
   {
     title: 'Dr. Martín Pascutto',
     image: photoDrMartin,
-    description: 'Médico pediatra especialista en terapia intensiva',
+    description: 'Médico Pediatra Especialista en Intensivismo Infantil',
     enrollment: 'MN 111714'
   },
 )
