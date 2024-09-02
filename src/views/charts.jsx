@@ -14,7 +14,9 @@ const Graphs = () => {
     const [countsReserveByDay, setCountsReserveByDay] = useState({
         bookingDays: [],
         countsByDay: [],
-        bookingStats: []
+        bookingStats: [],
+        totalRevenueAllMonths: 0,
+        currentMonthRevenue: 0
     });
 
     useEffect(() => {
@@ -200,6 +202,8 @@ const Graphs = () => {
                             >
                                 <TabPanel flex={1} p={0} py={2}>
                                     <Flex w="100%" h="100%" flexDirection="column">
+                                        <Text fontSize={["sm","md"]} fontWeight={600}>Total este mes: ${countsReserveByDay.currentMonthRevenue}</Text>
+                                        <Text fontSize={["sm","md"]} fontWeight={600}>Total facturado: ${countsReserveByDay.totalRevenueAllMonths}</Text>
                                         <Flex w="100%" h="50%" minWidth={["100%", "600px"]} overflow="auto" justifyContent="center" alignItems="center">
                                             <canvas style={{width: '100%', height: '100%'}} ref={chartRef}></canvas>
                                         </Flex>
