@@ -45,25 +45,27 @@ export const FormHistory = ({
   handleUpdateBooking,
   handleFileInputChange,
   handleDeleteEvent,
+  uploadLoading,
+  handleDeleteCertificate
 }) => {
   const [details, setDetails] = useState(values?.details || "");
 
   let now = new Date();
-  let bookingStart = new Date(values.start.dateTime);
-  let isBookingPassed = now > bookingStart || values.status === "deleted";
+  let bookingStart = new Date(values?.start?.dateTime);
+  let isBookingPassed = now > bookingStart || values?.status === "deleted";
 
-  let extraDate = `${getFormattedDateTime(values.start.dateTime, {
+  let extraDate = `${getFormattedDateTime(values?.start?.dateTime, {
     day: "numeric",
     month: "numeric",
     year: "numeric",
   })}`;
 
-  let hour = `${getFormattedDateTime(values.start.dateTime, {
+  let hour = `${getFormattedDateTime(values?.start?.dateTime, {
     hour: "numeric",
     minute: "numeric",
   })}`;
 
-  let endHour = `${getFormattedDateTime(values.end.dateTime, {
+  let endHour = `${getFormattedDateTime(values?.end?.dateTime, {
     hour: "numeric",
     minute: "numeric",
   })}`;
@@ -72,9 +74,11 @@ export const FormHistory = ({
     setDetails(e.target.value);
   };
 
+
+
   return (
     <Box px={2}>
-      {values.status === "deleted" ? (
+      {values?.status === "deleted" ? (
         <Text color="gray" textAlign="right">
           Consulta no disponible
         </Text>
@@ -83,7 +87,7 @@ export const FormHistory = ({
           Consulta no disponible
         </Text>
       ) : (
-        <Link href={values.hangoutLink}>
+        <Link href={values?.hangoutLink}>
           <Text
             color="#104DBA"
             textDecoration="underline"
@@ -95,10 +99,10 @@ export const FormHistory = ({
         </Link>
       )}
       <Text color="#104DBA" textAlign="left">
-        Doctor: {values.organizer.name}
+        Doctor: {values?.organizer?.name}
       </Text>
       <Text color="#104DBA" textAlign="left">
-        Paciente: {values?.patient?.name} {values?.patient?.lastName}
+        Paciente: {values?.patient?.firstName || values?.patient?.lastName ? `${values?.patient?.firstName} ${values?.patient?.lastName}`: values?.patient?.name}
       </Text>
       <Text fontSize={["sm", "md"]} color="#104DBA" textAlign="left">
         Fecha: {extraDate}
@@ -108,7 +112,7 @@ export const FormHistory = ({
       </Text>
       <Text color="#104DBA">
         Estado:{" "}
-        {values.status === "deleted"
+        {values?.status === "deleted"
           ? "Cancelado"
           : now > bookingStart
           ? "Expiró"
@@ -129,7 +133,7 @@ export const FormHistory = ({
 
         {(role === "DOCTOR" || role === "ADMIN") && (
           <Button
-            onClick={() => handleUpdateBooking(values._id, details)}
+            onClick={() => handleUpdateBooking(values?._id, details)}
             my={2}
             size="sm"
           >
@@ -145,11 +149,14 @@ export const FormHistory = ({
         <Box mb={4}>
           {values?.certificate?.length > 0 &&
             values.certificate.map((c, idx) => (
-              <Flex gap={2}>
+              <Flex gap={2} my={1} key={idx}>
                 <Text>Documento {idx + 1}</Text>
-                  <Link key={idx} href={c.url} target="_blank" bg="#EDF2F7" px={2} rounded="md" fontSize="xs" alignContent="center" fontWeight={700} _hover={{ bg: "#EDF2F7" }} rel="noopener noreferrer" download={c.name.trim()}>
-                    Ver
-                  </Link>
+                <Link href={c?.url} target="_blank" bg="#EDF2F7" px={2} rounded="md" fontSize="xs" alignContent="center" fontWeight={700} _hover={{ bg: "#EDF2F7" }} rel="noopener noreferrer" download={c?.name?.trim()}>
+                  Ver
+                </Link>
+                <Button size="xs" onClick={() => handleDeleteCertificate(values?._id, c?._id)} bg="#EDF2F7" px={2} rounded="md" fontSize="xs" alignContent="center" fontWeight={700} _hover={{ bg: "#EDF2F7" }}>
+                  Borrar
+                </Button>
               </Flex>
             ))}
         </Box>
@@ -175,19 +182,24 @@ export const FormHistory = ({
               left="0"
               w="full"
             />
-            Cargar certificado
+            {uploadLoading ? (
+                <Spinner/>
+              ): (
+               'Cargar certificado '
+            )}
+            
           </Button>
         )}
         <Divider my={4} />
         <Button
-          onClick={() => handleDeleteEvent(values._id, values.organizer.email)}
+          onClick={() => handleDeleteEvent(values?._id, values?.organizer?.email)}
           isDisabled={isBookingPassed}
           colorScheme="red"
           alignContent="center"
           size="sm"
           w="full"
         >
-          {values.status === "deleted"
+          {values?.status === "deleted"
             ? "Cancelado"
             : now > bookingStart
             ? "Cancelar"
@@ -557,7 +569,7 @@ const History = () => {
                         <Td textAlign="center">{hourDate}</Td>
                         <Td textAlign="center">Consulta</Td>
                         <Td textAlign="center">
-                          {x.status === "deleted" ? (
+                          {x?.status === "deleted" ? (
                             <Text color="gray">No disponible</Text>
                           ) : now > bookingStart ? (
                             <Text color="gray">No disponible</Text>
@@ -574,10 +586,10 @@ const History = () => {
                           )}
                         </Td>
                         <Td textAlign="center">
-                          {x.status === "deleted" ? "Cancelado" : now > bookingStart ? "Expiró" : "Confirmado"}
+                          {x?.status === "deleted" ? "Cancelado" : now > bookingStart ? "Expiró" : "Confirmado"}
                         </Td>
                         <Td textAlign="center">
-                          {x?.patient?.firstName} {x?.patient?.lastName}
+                          {x?.patient?.firstName || x?.patient?.lastName ? `${x?.patient?.firstName} ${x?.patient?.lastName}`: x?.patient?.name}
                         </Td>
                         <Td textAlign="center">
                           <Box w="full" h="full" position="relative">
@@ -627,7 +639,7 @@ const History = () => {
                               zIndex={2}
                               onClick={() => handleShowCancelTurn(x)}
                               isDisabled={isBookingPassed}
-                              title={x.status === "deleted" ? "ya se cancelo" : isBookingPassed ? "Ya no se puede cancelar" : ""}
+                              title={x?.status === "deleted" ? "ya se cancelo" : isBookingPassed ? "Ya no se puede cancelar" : ""}
                               _disabled={{
                                 opacity: 1,
                                 bg: "#DCDCDC"
@@ -642,7 +654,7 @@ const History = () => {
                                 textTransform="uppercase"
                                 lineHeight="11.72px"
                               >
-                                {x.status === "deleted"
+                                {x?.status === "deleted"
                                   ? "Cancelado"
                                   : now > bookingStart
                                   ? "Cancelar"

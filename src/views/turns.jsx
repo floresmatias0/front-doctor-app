@@ -30,6 +30,7 @@ const Turns = () => {
   const [bookingSelected, setBookingSelected] = useState({});
   const [documentsSelected, setDocumentsSelected] = useState([])
   const [loading, setLoading] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
   const { user } = useContext(AppContext);
 
   const toast = useToast();
@@ -71,6 +72,12 @@ const Turns = () => {
             return bookingStart <= new Date()
         });
 
+        if(bookingSelected) {
+            const updateBookingSelected = filteredBookingsPassed.find(x => x?._id === bookingSelected?._id);
+            console.log({updateBookingSelected})
+            setBookingSelected(updateBookingSelected);
+        }
+            setBookingSelected
         setLoading(false);
         setDataBookingsNext(filteredBookings)
         setDataBookings(filteredBookingsPassed);
@@ -178,6 +185,11 @@ const Turns = () => {
         onOpenHistory();
     };
 
+    const handleCloseHistory = () => {
+        setBookingSelected({});
+        onCloseHistory();
+    }
+
     const handleFileInputChange = async (e, doctorId, patientId, bookingId) => {
         const formData = new FormData();
         const images = e.target.files;
@@ -200,43 +212,45 @@ const Turns = () => {
         formData.append("patientId", patientId);
         formData.append("bookingId", bookingId);
 
-        try {
-        if (images) {
-            setLoading(true);
-            await instanceUpload.post("/certificates/uploads", formData);
-            await fetchBookings();
-            setLoading(false);
-
-            return toast({
-            title: "Certificado guardado",
-            description: "Se ha guardado satisfactoriamente",
-            position: "top-right",
-            isClosable: true,
-            duration: 6000,
-            status: "success",
-            });
-        }
-
-        setLoading(false);
-        toast({
-            title: "Error al intentar guardar el certificado",
-            description: "Debe seleccionar uno o mas documentos",
-            position: "top-right",
-            isClosable: true,
-            duration: 6000,
-            status: "error",
-        });
-        } catch (error) {
-        // Maneja cualquier error de la solicitud, por ejemplo, muestra un mensaje de error.
-        setLoading(false);
-        return toast({
-            title: "Error al intentar guardar el certificado",
-            description: error.message,
-            position: "top-right",
-            isClosable: true,
-            duration: 6000,
-            status: "error",
-        });
+        if(files?.length > 0) {
+            try {
+                if (images) {
+                    setUploadLoading(true);
+                    await instanceUpload.post("/certificates/uploads", formData);
+                    await fetchBookings();
+                    setUploadLoading(false);
+    
+                    return toast({
+                        title: "Certificado guardado",
+                        description: "Se ha guardado satisfactoriamente",
+                        position: "top-right",
+                        isClosable: true,
+                        duration: 6000,
+                        status: "success",
+                    });
+                }
+    
+                setUploadLoading(false);
+                toast({
+                    title: "Error al intentar guardar el certificado",
+                    description: "Debe seleccionar uno o mas documentos",
+                    position: "top-right",
+                    isClosable: true,
+                    duration: 6000,
+                    status: "error",
+                });
+            } catch (error) {
+                // Maneja cualquier error de la solicitud, por ejemplo, muestra un mensaje de error.
+                setUploadLoading(false);
+                return toast({
+                    title: "Error al intentar guardar el certificado",
+                    description: error.message,
+                    position: "top-right",
+                    isClosable: true,
+                    duration: 6000,
+                    status: "error",
+                });
+            }
         }
     };
 
@@ -283,7 +297,17 @@ const Turns = () => {
     const handleShowDocuments = (documents) => {
         setDocumentsSelected(documents)
         onOpenDocs()
-    }
+    };
+
+    const handleDeleteCertificate = async (bookingId, certificateId) => {
+        try{
+            await instance.delete(`/certificates/booking/${certificateId}?bookingId=${bookingId}`);
+            await fetchBookings();
+        }catch(err) {
+          console.log(err);
+          throw new Error(err)
+        }
+    };
 
   return (
     <Flex
@@ -423,7 +447,7 @@ const Turns = () => {
                                         : "Confirmado"}
                                     </Td>
                                     <Td textAlign="center">
-                                        {x?.patient?.firstName} {x?.patient?.lastName}
+                                        {x?.patient?.firstName || x?.patient?.lastName ? `${x?.patient?.firstName} ${x?.patient?.lastName}`: x?.patient?.name}
                                     </Td>
                                     <Td textAlign="center">
                                         <Box w="full" h="full" position="relative">
@@ -592,7 +616,7 @@ const Turns = () => {
                                     px={8}
                                     textAlign="center"
                                 >
-                                <Td textAlign="center">{x?.patient?.firstName} {x?.patient?.lastName}</Td>
+                                <Td textAlign="center">{x?.patient?.firstName || x?.patient?.lastName ? `${x?.patient?.firstName} ${x?.patient?.lastName}`: x?.patient?.name}</Td>
                                 <Td textAlign="center">{extraDate}</Td>
                                 <Td textAlign="center">{hour}</Td>
                                 <Td textAlign="center">Consulta</Td>
@@ -636,7 +660,7 @@ const Turns = () => {
         </Box>
       )}
         <AlertModal
-            onClose={onCloseHistory}
+            onClose={handleCloseHistory}
             isOpen={isOpenHistory}
             alertHeader="Consulta"
             alertBody={
@@ -646,6 +670,8 @@ const Turns = () => {
                 handleFileInputChange={handleFileInputChange}
                 handleDeleteEvent={handleDeleteEvent}
                 handleUpdateBooking={updateDetails}
+                uploadLoading={uploadLoading}
+                handleDeleteCertificate={handleDeleteCertificate}
             />
             }
             isLoading={false}

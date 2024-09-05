@@ -768,7 +768,7 @@ export default function Settings() {
                                   cursor="pointer"
                                   my={1}
                               >
-                              {patient?.firstName} {patient?.lastName}
+                              {patient?.firstName || patient?.lastName ? `${patient?.firstName} ${patient?.lastName}`: patient?.name}
                               </Text>
                           ))}
                       </AccordionPanel>

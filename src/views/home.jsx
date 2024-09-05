@@ -447,7 +447,7 @@ const Home = () => {
                                     : "Confirmado"}
                                 </Td>
                                 <Td textAlign="center">
-                                  {x?.patient?.firstName} {x?.patient?.lastName}
+                                  {x?.patient?.firstName || x?.patient?.lastName ? `${x?.patient?.firstName} ${x?.patient?.lastName}`: x?.patient?.name}
                                 </Td>
                                 <Td textAlign="center">
                                   <Box w="full" h="full" position="relative">

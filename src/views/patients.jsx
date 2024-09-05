@@ -143,10 +143,10 @@ import {
           name: "obra social",
           detail: "",
           },
-          {
-          name: "",
-          detail: "",
-          }
+        //   {
+        //   name: "",
+        //   detail: "",
+        //   }
       ];
   
       const handleSelectHistory = (booking) => {
@@ -343,15 +343,15 @@ import {
                                         px={8}
                                         textAlign="center"
                                       >
-                                      <Td textAlign="center"></Td>
+                                      <Td textAlign="center">{x.userId?.name}</Td>
                                       <Td textAlign="center">{x.firstName} {x.lastName}</Td>
                                       <Td textAlign="center">{x.identityId}</Td>
                                       <Td textAlign="center">{dateOfBirth}</Td>
                                       <Td textAlign="center">{x.phone}</Td>
                                       <Td textAlign="center">{x.socialWork}</Td>
-                                      <Td textAlign="center">
+                                      {/* <Td textAlign="center">
                                         <AiOutlineEye style={{ width: "24px", height: "24px" }}/>
-                                      </Td>
+                                      </Td> */}
                                       </Tr>
                                   );
                                   })

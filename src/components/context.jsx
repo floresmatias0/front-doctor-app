@@ -56,7 +56,7 @@ export default function DoctorContext({ children }) {
   
         if(response.success) {
           let patients = response.data;
-          let transformPatients = patients.map(patient => ({ value: patient?.identityId, label: `${patient?.firstName} ${patient?.lastName}`, ...patient }))
+          let transformPatients = patients.map(patient => ({ value: patient?.identityId, label: patient?.firstName || patient?.lastName ? `${patient?.firstName} ${patient?.lastName}`: patient?.name, ...patient }))
   
           return setPatients(transformPatients)
         }
