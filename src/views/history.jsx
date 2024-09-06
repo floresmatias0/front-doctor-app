@@ -28,7 +28,8 @@ import { AlertModal } from "../components/alerts";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { IoMdCalendar } from "react-icons/io";
-
+import { IoDocumentTextOutline } from "react-icons/io5";
+import { MdOutlineCancel } from "react-icons/md";
 import { es } from 'date-fns/locale';
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 import { MdErrorOutline } from "react-icons/md";
@@ -592,76 +593,44 @@ const History = () => {
                           {x?.patient?.firstName || x?.patient?.lastName ? `${x?.patient?.firstName} ${x?.patient?.lastName}`: x?.patient?.name}
                         </Td>
                         <Td textAlign="center">
-                          <Box w="full" h="full" position="relative">
+                          <Flex w="full" h="full" justifyContent="center" alignItems="center" gap="2">
                             {x?.certificate?.length > 0 && (
                               <Button
                                 padding={0}
-                                position="absolute"
-                                top="-12px"
-                                left="0"
-                                w="calc(100% - 20px)"
-                                bg="#38C521"
+                                w="20px"
+                                bg="#104DBA"
                                 color="#FFF"
                                 size="xs"
-                                rounded="xl"
-                                transform="translateX(0px)"
-                                transition="transform 0.8s, z-index 0.3s"
-                                zIndex={1}
-                                _hover={{
-                                  transform: "translateX(20px)",
-                                  zIndex: 3
-                                }}
-                                onClick={() => handleShowDocuments(x.certificate)}
+                                rounded="md"
+                                title="Documentos adjuntos"
+                                onClick={() =>
+                                  handleShowDocuments(x.certificate)
+                                }
                               >
-                                <Text
-                                  fontSize={["8px", "8px", "8px", "8px", "10px"]}
-                                  fontWeight={400}
-                                  textTransform="uppercase"
-                                  lineHeight="11.72px"
-                                >
-                                  DOCUMENTOS
-                                </Text>
+                                <IoDocumentTextOutline size="18px"/>
                               </Button>
                             )}
                             <Button
                               padding={0}
-                              px={4}
-                              position="absolute"
-                              top="-12px"
-                              left="0"
-                              w="calc(100% - 20px)"
+                              w="20px"
                               bg="#FF0000"
                               color="#FFF"
                               size="xs"
-                              rounded="xl"
-                              transform="translateX(20px)"
-                              transition="transform 0.5s, z-index 0.5s"
-                              zIndex={2}
+                              rounded="md"
                               onClick={() => handleShowCancelTurn(x)}
                               isDisabled={isBookingPassed}
-                              title={x?.status === "deleted" ? "ya se cancelo" : isBookingPassed ? "Ya no se puede cancelar" : ""}
                               _disabled={{
                                 opacity: 1,
-                                bg: "#DCDCDC"
+                                bg: "#DCDCDC",
                               }}
+                              title={x.status === "deleted" ? "ya se cancelo" : isBookingPassed ? "Ya no se puede cancelar" : ""}
                               _hover={{
-                                bg: isBookingPassed ? "" : "#FF000088"
+                                bg: isBookingPassed ? "" : "inherit",
                               }}
                             >
-                              <Text
-                                fontSize={["8px", "8px", "8px", "8px", "10px"]}
-                                fontWeight={400}
-                                textTransform="uppercase"
-                                lineHeight="11.72px"
-                              >
-                                {x?.status === "deleted"
-                                  ? "Cancelado"
-                                  : now > bookingStart
-                                  ? "Cancelar"
-                                  : "Cancelar"}
-                              </Text>
+                              <MdOutlineCancel size="18px"/>
                             </Button>
-                          </Box>
+                          </Flex>
                         </Td>
                       </Tr>
                     )
@@ -686,7 +655,7 @@ const History = () => {
           <Box>
             {documentsSelected?.map((doc, idx) => (
               <Flex key={idx} justifyContent="space-between" px={2}>
-                <Text>{doc?.name}</Text>
+                <Text>Documento {idx+1}</Text>
                 <Link href={doc?.url} target="_blank" color="#104DBA" fontWeight={700}>Ver</Link>
               </Flex>
             ))}
