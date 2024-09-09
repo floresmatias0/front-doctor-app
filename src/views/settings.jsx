@@ -708,7 +708,7 @@ export default function Settings() {
                           isLoading={isSubmitting}
                           type="submit"
                       >
-                          ACTUALIZAR
+                          ACTUALIZAR DATA
                       </Button>
                   </Box>
               </Form>
