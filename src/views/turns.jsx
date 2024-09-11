@@ -604,6 +604,7 @@ const Turns = () => {
                     transition: "all 1 ease-in-out"
                   },
                 }}
+                isDisabled={dataBookings?.length === 0}
               >
                 <Text
                   display={["none", "inline-block"]}
