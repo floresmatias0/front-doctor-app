@@ -124,13 +124,21 @@ import {
           detail: "",
           },
           {
+            name: "telefono del tutor",
+            detail: "",
+            },
+          {
           name: "paciente",
           detail: "",
           },
           {
-          name: "n documento",
+          name: "nº documento",
           detail: "",
           },
+          {
+            name: "genero",
+            detail: "",
+            },
           {
           name: "fecha nacimiento",
           detail: "",
@@ -143,6 +151,10 @@ import {
           name: "obra social",
           detail: "",
           },
+          {
+            name: "nº afiliado",
+            detail: "",
+            },
         //   {
         //   name: "",
         //   detail: "",
@@ -313,13 +325,13 @@ import {
                               <Tr>
                               {headingTable?.map((h, idx) => (
                                   <Th
-                                  key={idx}
-                                  color="#FFF"
-                                  fontWeight={500}
-                                  fontSize="16px"
-                                  lineHeight="18.75px"
-                                  px={8}
-                                  textAlign="center"
+                                    key={idx}
+                                    color="#FFF"
+                                    fontWeight={500}
+                                    fontSize="16px"
+                                    lineHeight="18.75px"
+                                    px={8}
+                                    textAlign="center"
                                   >
                                   {h?.name}
                                   </Th>
@@ -332,7 +344,7 @@ import {
                                   ?.map((x, idx) => {
                                   
                                   // let endHour = `${getFormattedDateTime(x.end.dateTime, { hour: "numeric", minute: "numeric" })}`;
-                                    const dateOfBirth = new Date(x.dateOfBirth).toLocaleDateString()
+                                    // const dateOfBirth = new Date(x.dateOfBirth).toLocaleDateString()
                                   return (
                                       <Tr
                                         key={idx}
@@ -343,12 +355,15 @@ import {
                                         px={8}
                                         textAlign="center"
                                       >
-                                      <Td textAlign="center">{x.userId?.name}</Td>
-                                      <Td textAlign="center">{x.firstName} {x.lastName}</Td>
-                                      <Td textAlign="center">{x.identityId}</Td>
-                                      <Td textAlign="center">{dateOfBirth}</Td>
-                                      <Td textAlign="center">{x.phone}</Td>
-                                      <Td textAlign="center">{x.socialWork}</Td>
+                                      <Td textAlign="center">{x.tutorName}</Td>
+                                      <Td textAlign="center">{x.tutorPhone}</Td>
+                                      <Td textAlign="center">{x.patientName}</Td>
+                                      <Td textAlign="center">{x.patientIdentityId}</Td>
+                                      <Td textAlign="center">{x.patientGenre}</Td>
+                                      <Td textAlign="center">{x.patientDateOfBirth}</Td>
+                                      <Td textAlign="center">{x.patientPhone}</Td>
+                                      <Td textAlign="center">{x.patientSocialWork}</Td>
+                                      <Td textAlign="center">{x.patientSocialWorkId}</Td>
                                       {/* <Td textAlign="center">
                                         <AiOutlineEye style={{ width: "24px", height: "24px" }}/>
                                       </Td> */}
