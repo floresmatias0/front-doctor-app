@@ -24,7 +24,7 @@ import { AiOutlineEye } from "react-icons/ai";
 import { FormHistory } from "./history";
 import { AlertModal } from "../components/alerts";
 import { MdFileDownload } from "react-icons/md";
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 
 const Turns = () => {
   const [dataBookings, setDataBookings] = useState([]);
@@ -65,13 +65,13 @@ const Turns = () => {
       }
       const { data, extraData } = bookings?.data;
 
-      const filteredBookings = data.filter((booking) => {
-        const bookingStart = new Date(booking.start.dateTime);
+      const filteredBookings = extraData.filter((booking) => {
+        const bookingStart = new Date(booking.originalStartTime);
         return bookingStart >= new Date();
       });
 
-      const filteredBookingsPassed = data.filter((booking) => {
-        const bookingStart = new Date(booking.start.dateTime);
+      const filteredBookingsPassed = extraData.filter((booking) => {
+        const bookingStart = new Date(booking.originalStartTime);
         return bookingStart <= new Date();
       });
 
@@ -81,14 +81,14 @@ const Turns = () => {
         );
 
         setBookingSelected(updateBookingSelected);
-      }else {
+      } else {
         setBookingSelected({});
       }
 
       setLoading(false);
       setDataBookingsNext(filteredBookings);
       setDataBookings(filteredBookingsPassed);
-      setDataExcel(extraData)
+      setDataExcel(extraData);
     } catch (err) {
       console.log(err.message);
       setLoading(false);
@@ -159,6 +159,14 @@ const Turns = () => {
       detail: "",
     },
     {
+      name: "obra social",
+      detail: "",
+    },
+    {
+      name: "n° afiliado",
+      detail: "",
+    },
+    {
       name: "fecha",
       detail: "",
     },
@@ -179,7 +187,42 @@ const Turns = () => {
       detail: "",
     },
     {
-      name: "",
+      name: "tutor",
+      detail: "",
+    },
+    {
+      name: "acciones",
+      detail: "",
+    },
+  ];
+
+  const headingTablePassed = [
+    {
+      name: "paciente",
+      detail: "",
+    },
+    {
+      name: "fecha",
+      detail: "",
+    },
+    {
+      name: "hora",
+      detail: "",
+    },
+    {
+      name: "tipo",
+      detail: "",
+    },
+    {
+      name: "link",
+      detail: "",
+    },
+    {
+      name: "estado de turno",
+      detail: "",
+    },
+    {
+      name: "tutor",
       detail: "",
     },
     {
@@ -318,7 +361,7 @@ const Turns = () => {
       throw new Error(err);
     }
   };
-  
+
   const handleDownloadFileExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(dataExcel);
     const workbook = XLSX.utils.book_new();
@@ -326,7 +369,7 @@ const Turns = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Turnos");
 
     XLSX.writeFile(workbook, "Turnos.xlsx");
-  }
+  };
 
   return (
     <Flex
@@ -408,24 +451,9 @@ const Turns = () => {
                       dataBookingsNext
                         ?.map((x, idx) => {
                           let now = new Date();
-                          let bookingStart = new Date(x.start.dateTime);
+                          let bookingStart = new Date(x.originalStartTime);
                           let isBookingPassed =
                             now > bookingStart || x.status === "deleted";
-
-                          let extraDate = `${getFormattedDateTime(
-                            x.start.dateTime,
-                            {
-                              day: "numeric",
-                              month: "numeric",
-                              year: "numeric",
-                            }
-                          )}`;
-
-                          let hour = `${getFormattedDateTime(x.start.dateTime, {
-                            hour: "numeric",
-                            minute: "numeric",
-                          })}`;
-                          // let endHour = `${getFormattedDateTime(x.end.dateTime, { hour: "numeric", minute: "numeric" })}`;
 
                           return (
                             <Tr
@@ -437,11 +465,13 @@ const Turns = () => {
                               px={8}
                               textAlign="center"
                             >
+                              <Td textAlign="center">{x.patientName}</Td>
+                              <Td textAlign="center">{x.patientSocialWork}</Td>
                               <Td textAlign="center">
-                                Dr/Dra. {x.organizer.name}
+                                {x.patientSocialWorkId}
                               </Td>
-                              <Td textAlign="center">{extraDate}</Td>
-                              <Td textAlign="center">{hour}</Td>
+                              <Td textAlign="center">{x.beginning}</Td>
+                              <Td textAlign="center">{x.startTime}</Td>
                               <Td textAlign="center">Consulta</Td>
                               <Td textAlign="center">
                                 {x.status === "deleted" ? (
@@ -449,7 +479,7 @@ const Turns = () => {
                                 ) : now > bookingStart ? (
                                   <Text color="gray">No disponible</Text>
                                 ) : (
-                                  <Link href={x.hangoutLink} target="_blank">
+                                  <Link href={x.link} target="_blank">
                                     <Text
                                       color="#104DBA"
                                       textDecoration="underline"
@@ -467,11 +497,7 @@ const Turns = () => {
                                   ? "Expiró"
                                   : "Confirmado"}
                               </Td>
-                              <Td textAlign="center">
-                                {x?.patient?.firstName || x?.patient?.lastName
-                                  ? `${x?.patient?.firstName} ${x?.patient?.lastName}`
-                                  : x?.patient?.name}
-                              </Td>
+                              <Td textAlign="center">{x?.tutorName}</Td>
                               <Td textAlign="center">
                                 <Box w="full" h="full" position="relative">
                                   {x?.certificate?.length > 0 && (
@@ -528,8 +554,8 @@ const Turns = () => {
                                     zIndex={2}
                                     onClick={() =>
                                       handleDeleteEvent(
-                                        x?.booking_id,
-                                        x?.organizer?.email
+                                        x?.bookingId,
+                                        x?.doctorEmail
                                       )
                                     }
                                     isDisabled={isBookingPassed}
@@ -586,36 +612,39 @@ const Turns = () => {
               >
                 Historial de turnos
               </Heading>
-              <Button
-                onClick={handleDownloadFileExcel}
-                title="Exportar a excel"
-                size={["xs", "sm"]}
-                variant="unstyled"
-                display="flex"
-                borderWidth={1}
-                px={3}
-                borderColor="#104DBA"
-                borderRadius="full"
-                _hover={{
-                  backgroundColor: "#104DBA",
-                  "svg, p": {
-                    color: "#FFF",
-                    fill: "#FFF",
-                    transition: "all 1 ease-in-out"
-                  },
-                }}
-                isDisabled={dataBookings?.length === 0}
-              >
-                <Text
-                  display={["none", "inline-block"]}
-                  pr={[0, 2]}
-                  color="#104DBA"
-                  fontWeight={500}
-                >
-                  Exportar a excel
-                </Text>
-                <MdFileDownload color="#104DBA" />
-              </Button>
+              {user?.role === "ADMIN" ||
+                (user?.role === "DOCTOR" && (
+                  <Button
+                    onClick={handleDownloadFileExcel}
+                    title="Exportar a excel"
+                    size={["xs", "sm"]}
+                    variant="unstyled"
+                    display="flex"
+                    borderWidth={1}
+                    px={3}
+                    borderColor="#104DBA"
+                    borderRadius="full"
+                    _hover={{
+                      backgroundColor: "#104DBA",
+                      "svg, p": {
+                        color: "#FFF",
+                        fill: "#FFF",
+                        transition: "all 1 ease-in-out",
+                      },
+                    }}
+                    isDisabled={dataBookings?.length === 0}
+                  >
+                    <Text
+                      display={["none", "inline-block"]}
+                      pr={[0, 2]}
+                      color="#104DBA"
+                      fontWeight={500}
+                    >
+                      Exportar a excel
+                    </Text>
+                    <MdFileDownload color="#104DBA" />
+                  </Button>
+                ))}
             </Flex>
             <TableContainer
               borderTopStartRadius="15px"
@@ -629,7 +658,7 @@ const Turns = () => {
               <Table size="md" variant="unstyled">
                 <Thead bgColor="#104DBA" boxShadow="xl" height={50}>
                   <Tr>
-                    {headingTable
+                    {headingTablePassed
                       ?.map((h, idx) => (
                         <Th
                           key={idx}
@@ -650,22 +679,9 @@ const Turns = () => {
                   {dataBookings?.length > 0 &&
                     dataBookings
                       ?.map((x, idx) => {
+                        console.log("bookings", x);
                         let now = new Date();
-                        let bookingStart = new Date(x.start.dateTime);
-
-                        let extraDate = `${getFormattedDateTime(
-                          x.start.dateTime,
-                          {
-                            day: "numeric",
-                            month: "numeric",
-                            year: "numeric",
-                          }
-                        )}`;
-
-                        let hour = `${getFormattedDateTime(x.start.dateTime, {
-                          hour: "numeric",
-                          minute: "numeric",
-                        })}`;
+                        let bookingStart = new Date(x.originalStartTime);
 
                         return (
                           <Tr
@@ -677,13 +693,9 @@ const Turns = () => {
                             px={8}
                             textAlign="center"
                           >
-                            <Td textAlign="center">
-                              {x?.patient?.firstName || x?.patient?.lastName
-                                ? `${x?.patient?.firstName} ${x?.patient?.lastName}`
-                                : x?.patient?.name}
-                            </Td>
-                            <Td textAlign="center">{extraDate}</Td>
-                            <Td textAlign="center">{hour}</Td>
+                            <Td textAlign="center">{x.patientName}</Td>
+                            <Td textAlign="center">{x.beginning}</Td>
+                            <Td textAlign="center">{x.startTime}</Td>
                             <Td textAlign="center">Consulta</Td>
                             <Td textAlign="center">
                               {x.status === "deleted" ? (
@@ -691,7 +703,7 @@ const Turns = () => {
                               ) : now > bookingStart ? (
                                 <Text color="gray">No disponible</Text>
                               ) : (
-                                <Link href={x.hangoutLink} target="_blank">
+                                <Link href={x.link} target="_blank">
                                   <Text
                                     color="#104DBA"
                                     textDecoration="underline"
