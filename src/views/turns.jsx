@@ -63,16 +63,16 @@ const Turns = () => {
       } else {
         bookings = await instance.get(`/calendars/all-events/${user._id}`);
       }
-      const { data, extraData } = bookings?.data;
+      const { extraData } = bookings?.data;
 
       const filteredBookings = extraData.filter((booking) => {
         const bookingStart = new Date(booking.originalStartTime);
-        return bookingStart >= new Date();
+        return bookingStart >= new Date() && booking.status !== "deleted";
       });
 
       const filteredBookingsPassed = extraData.filter((booking) => {
         const bookingStart = new Date(booking.originalStartTime);
-        return bookingStart <= new Date();
+        return bookingStart <= new Date() && booking.status !== "deleted";
       });
 
       if (bookingSelected) {
@@ -109,11 +109,6 @@ const Turns = () => {
 
     fetchDataBookings();
   }, [fetchBookings, user]);
-
-  const getFormattedDateTime = (dateTimeStr, options) => {
-    const dateTime = new Date(dateTimeStr);
-    return dateTime.toLocaleString("es", options);
-  };
 
   const handleDeleteEvent = async (bookingId, userEmail) => {
     try {
@@ -679,7 +674,6 @@ const Turns = () => {
                   {dataBookings?.length > 0 &&
                     dataBookings
                       ?.map((x, idx) => {
-                        console.log("bookings", x);
                         let now = new Date();
                         let bookingStart = new Date(x.originalStartTime);
 
