@@ -23,14 +23,12 @@ import {
 } from "@chakra-ui/react";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AppContext } from "../components/context";
-import { instance, instanceUpload } from "../utils/axios";
+import { instance } from "../utils/axios";
 import { AlertModal } from "../components/alerts";
 import { useNavigate } from "react-router-dom";
-import { format } from "date-fns";
 import { IoMdCalendar } from "react-icons/io";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
-import { es } from "date-fns/locale";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 import { MdErrorOutline } from "react-icons/md";
 
@@ -496,8 +494,8 @@ const History = () => {
 
                       let hoursDifference =
                         (bookingStart - now) / (1000 * 60 * 60);
-                      let canCancel =
-                        hoursDifference < 24 && hoursDifference > 0;
+
+                      let canCancel = hoursDifference < 24;
 
                       let isBookingPassed =
                         now > bookingStart ||
@@ -703,11 +701,7 @@ const History = () => {
                           fontWeight={300}
                           lineHeight="10.55px"
                         >
-                          {format(
-                            new Date(turnSelected?.originalStartTime),
-                            "d  MMMM yyyy, HH:mm 'Hs.'",
-                            { locale: es }
-                          )}
+                          {turnSelected?.beginning}
                         </Text>
                       </Flex>
                     </Box>
