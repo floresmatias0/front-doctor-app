@@ -95,7 +95,7 @@ export const AlertModal = ({
                     <Button
                       colorScheme="red"
                       ml={3}
-                      isDisabled={preferenceId}
+                      // isDisabled={preferenceId}
                       onClick={onConfirm}
                     >
                       {textButtonConfirm}
