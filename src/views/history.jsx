@@ -244,12 +244,12 @@ const History = () => {
           `/calendars/all-events?doctor=${user.email}`
         );
 
-        return setDataBookings(bookings.data.extraData);
+        return setDataBookings(bookings.data.data);
       }
 
       bookings = await instance.get(`/calendars/all-events/${user._id}`);
 
-      setDataBookings(bookings.data.extraData);
+      setDataBookings(bookings.data.data);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -490,12 +490,13 @@ const History = () => {
                   {dataBookings?.length > 0 &&
                     dataBookings?.map((x, idx) => {
                       let now = new Date();
+
                       let bookingStart = new Date(x.originalStartTime);
 
                       let hoursDifference =
                         (bookingStart - now) / (1000 * 60 * 60);
 
-                      let canCancel = hoursDifference < 24;
+                      let canCancel = hoursDifference > 24;
 
                       let isBookingPassed =
                         now > bookingStart ||
@@ -689,9 +690,6 @@ const History = () => {
                       >
                         Dr/Dra. {turnSelected?.doctorName}
                       </Text>
-                      {/* <Text fontSize="sm" fontWeight={400} lineHeight="10.55px">
-                        {turnSelected?.organizer?.especialization}
-                      </Text> */}
                     </Box>
                     <Box>
                       <Flex alignItems="center" gap={1}>
