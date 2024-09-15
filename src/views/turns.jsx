@@ -63,14 +63,14 @@ const Turns = () => {
       } else {
         bookings = await instance.get(`/calendars/all-events/${user._id}`);
       }
-      const { extraData } = bookings?.data;
+      const { data } = bookings?.data;
 
-      const filteredBookings = extraData.filter((booking) => {
+      const filteredBookings = data.filter((booking) => {
         const bookingStart = new Date(booking.originalStartTime);
         return bookingStart >= new Date() && booking.status !== "deleted";
       });
 
-      const filteredBookingsPassed = extraData.filter((booking) => {
+      const filteredBookingsPassed = data.filter((booking) => {
         const bookingStart = new Date(booking.originalStartTime);
         return bookingStart <= new Date() && booking.status !== "deleted";
       });
@@ -88,7 +88,7 @@ const Turns = () => {
       setLoading(false);
       setDataBookingsNext(filteredBookings);
       setDataBookings(filteredBookingsPassed);
-      setDataExcel(extraData);
+      setDataExcel(data);
     } catch (err) {
       console.log(err.message);
       setLoading(false);
@@ -446,9 +446,18 @@ const Turns = () => {
                       dataBookingsNext
                         ?.map((x, idx) => {
                           let now = new Date();
+
                           let bookingStart = new Date(x.originalStartTime);
+
+                          let hoursDifference =
+                            (bookingStart - now) / (1000 * 60 * 60);
+
+                          let canCancel = hoursDifference > 24;
+
                           let isBookingPassed =
-                            now > bookingStart || x.status === "deleted";
+                            now > bookingStart ||
+                            x.status === "deleted" ||
+                            !canCancel;
 
                           return (
                             <Tr

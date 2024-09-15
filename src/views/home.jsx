@@ -63,13 +63,13 @@ const Home = () => {
       } else {
         bookings = await instance.get(`/calendars/all-events/${user._id}`);
       }
-      const { extraData } = bookings?.data;
+      const { data } = bookings?.data;
 
-      const filteredBookings = extraData.filter((booking) => {
+      const filteredBookings = data.filter((booking) => {
         const bookingStart = new Date(booking.originalStartTime);
         return bookingStart >= new Date() && booking.status !== "deleted";
       });
-      console.log(filteredBookings);
+
       setLoading(false);
       setDataBookings(filteredBookings);
     } catch (err) {
