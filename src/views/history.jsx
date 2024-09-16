@@ -277,7 +277,7 @@ const History = () => {
       const response = await instance.delete(
         `/calendars/${bookingId}?email=${userEmail}`
       );
-      if (response?.success) {
+      if (response?.success || response?.data?.success) {
         toast({
           position: "top",
           render: () => (
@@ -305,37 +305,9 @@ const History = () => {
             </Box>
           ),
         });
-        return await fetchBookings();
       }
-
-      toast({
-        position: "top",
-        render: () => (
-          <Box
-            py={4}
-            px={8}
-            bg="white"
-            borderRadius="md"
-            maxW={["auto", "428px"]}
-            boxShadow="2xl"
-          >
-            <MdErrorOutline
-              style={{ width: "36px", height: "36px", color: "red" }}
-            />
-            <Text
-              color="#104DBA"
-              fontSize="2xl"
-              fontWeight={700}
-              textOverflow="wrap"
-              lineHeight="35.16px"
-              width="75%"
-            >
-              Ocurrio un error inesperado, intenta de nuevo mas tarde.
-            </Text>
-          </Box>
-        ),
-      });
     } catch (err) {
+      console.log(err);
       toast({
         position: "top",
         render: () => (
@@ -364,6 +336,7 @@ const History = () => {
         ),
       });
     } finally {
+      await fetchBookings();
       setCancelLoading(false);
       onCloseCancelTurn();
     }
