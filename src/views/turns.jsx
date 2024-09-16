@@ -23,8 +23,9 @@ import { instance, instanceUpload } from "../utils/axios";
 import { AiOutlineEye } from "react-icons/ai";
 import { FormHistory } from "./history";
 import { AlertModal } from "../components/alerts";
-import { MdFileDownload } from "react-icons/md";
+import { MdErrorOutline, MdFileDownload } from "react-icons/md";
 import * as XLSX from "xlsx";
+import { HiOutlineBadgeCheck } from "react-icons/hi";
 
 const Turns = () => {
   const [dataBookings, setDataBookings] = useState([]);
@@ -115,35 +116,64 @@ const Turns = () => {
       const response = await instance.delete(
         `/calendars/${bookingId}?email=${userEmail}`
       );
-      if (response.data.success) {
+      if (response?.success || response?.data?.success) {
         toast({
-          title: "Cancelado con exito",
-          description: "",
-          position: "top-right",
-          isClosable: true,
-          duration: 3000,
-          status: "success",
+          position: "top",
+          render: () => (
+            <Box
+              py={4}
+              px={8}
+              bg="white"
+              borderRadius="md"
+              maxW={["auto", "428px"]}
+              boxShadow="2xl"
+            >
+              <HiOutlineBadgeCheck
+                style={{ width: "36px", height: "36px", color: "#104DBA" }}
+              />
+              <Text
+                color="#104DBA"
+                fontSize="2xl"
+                fontWeight={700}
+                textOverflow="wrap"
+                lineHeight="35.16px"
+                width="75%"
+              >
+                Su turno ha sido cancelado exitosamente.
+              </Text>
+            </Box>
+          ),
         });
-        return await fetchBookings();
+        await fetchBookings();
       }
-
-      toast({
-        title: "Error al intentar cancelar",
-        description: "Vuelva a intentar porfavor",
-        position: "top-right",
-        isClosable: true,
-        duration: 3000,
-        status: "error",
-      });
     } catch (err) {
       console.log(err.message);
       toast({
-        title: "Error inesperado",
-        description: err.message,
-        position: "top-right",
-        isClosable: true,
-        duration: 3000,
-        status: "error",
+        position: "top",
+        render: () => (
+          <Box
+            py={4}
+            px={8}
+            bg="white"
+            borderRadius="md"
+            maxW={["auto", "428px"]}
+            boxShadow="2xl"
+          >
+            <MdErrorOutline
+              style={{ width: "36px", height: "36px", color: "red" }}
+            />
+            <Text
+              color="#104DBA"
+              fontSize="2xl"
+              fontWeight={700}
+              textOverflow="wrap"
+              lineHeight="35.16px"
+              width="75%"
+            >
+              Ocurrio un error inesperado, intenta de nuevo mas tarde.
+            </Text>
+          </Box>
+        ),
       });
     }
   };
