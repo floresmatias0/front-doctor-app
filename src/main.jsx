@@ -8,7 +8,6 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import DoctorContext from "./components/context";
 import ErrorPage from "./components/error-page";
 import { LayoutWithSidebarAndFooter, ProtectedRoutes, ProtectedRoutesAdmin, ProtectedRoutesPatient } from "./components/layouts";
 
@@ -74,7 +73,7 @@ const router = createBrowserRouter([
   },
   {
     path: "iniciar-sesion",
-    element: localStorage.getItem("user") ? <Navigate to="/inicio" replace /> : <Login handleLogin={handleLogin} />,
+    element: localStorage.getItem("authToken") ? <Navigate to="/inicio" replace /> : <Login handleLogin={handleLogin} />,
   },
   {
     path: "configuracion",
@@ -113,8 +112,6 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <ChakraProvider theme={theme}>
-    <DoctorContext>
-      <RouterProvider router={router} />
-    </DoctorContext>
+    <RouterProvider router={router} />
   </ChakraProvider>
 );
