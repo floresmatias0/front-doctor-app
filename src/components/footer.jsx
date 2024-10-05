@@ -97,7 +97,7 @@ export const FooterLanding = ({styles = {}}) => {
               lineHeight={["12px", "16px"]}
               alignContent='center'
             >
-              <Link href="/politica-de-privacidad" fontSize={["xs", "sm"]} color="white" my={4}>Politica de privacidad</Link>
+              <Link href="https://zonamed.com.ar/politica-de-privacidad" fontSize={["xs", "sm"]} color="white" my={4}>Politica de privacidad</Link>
             </Text>
           </Box>
         </Flex>
@@ -196,7 +196,7 @@ export const Footer = ({styles = {}, display}) => {
               lineHeight={["12px", "16px"]}
               alignContent='center'
             >
-              <Link href="/politica-de-privacidad" fontSize={["xs", "sm"]} color="white" my={4}>Politica de privacidad</Link>
+              <Link href="https://zonamed.com.ar/politica-de-privacidad" fontSize={["xs", "sm"]} color="white" my={4}>Politica de privacidad</Link>
             </Text>
           </Box>
         </Flex>
