@@ -9,19 +9,22 @@ export default function ErrorPage() {
   const [countdown, setCountdown] = useState(10);
 
   useEffect(() => {
-    let timer
-    if (location.pathname !== '/robots.txt') {
-      timer = setInterval(() => {
-        setCountdown((prevCountdown) => prevCountdown - 1);
-      }, 1000);
-
-      if (countdown === 0) {
-        navigate('/inicio');
-      }
+    // Si estamos en /robots.txt, no hacemos nada
+    if (location.pathname === '/robots.txt') {
+      return;
     }
 
-    return () => clearInterval(timer);
-  }, [countdown, navigate]);
+    const timer = setInterval(() => {
+      setCountdown((prevCountdown) => {
+        if (prevCountdown === 1) {
+          navigate('/inicio'); // Redirige a la página principal
+        }
+        return prevCountdown - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer); // Limpiar el intervalo al desmontar
+  }, [location.pathname, navigate]);
 
   if (location.pathname === '/robots.txt') {
     return null;
