@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import { Box, Center, Spinner } from "@chakra-ui/react";
 import { Navigate } from "react-router-dom";
-import { AppContext } from "./context";
+import DoctorContext, { AppContext } from "./context";
 import SidebarWithHeader from "./sidebar";
 import SidebarMenu from "./sidebar-menu";
 import { useContext } from 'react';
@@ -93,9 +93,11 @@ export const LayoutWithSidebarAndHeader = ({children}) => {
 
 export const LayoutWithSidebarAndFooter = ({children}) => {
     return (
-        <SidebarMenu>
-            {children}
-        </SidebarMenu>
+        <DoctorContext>
+            <SidebarMenu>
+                {children}
+            </SidebarMenu>
+        </DoctorContext>
     )
 }
 
