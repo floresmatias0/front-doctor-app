@@ -1,6 +1,6 @@
 {
     "rewrites":  [
-      {"source": "/(.*)", "destination": "/"},
-      { "source": "/robots.txt", "destination": "/robots.txt" }
+      {"source": "/robots.txt", "destination": "/robots.txt"},
+      {"source": "/(.*)", "destination": "/"}
     ]
 }
