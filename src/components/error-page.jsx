@@ -1,23 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useRouteError } from 'react-router-dom';
+import { useLocation, useNavigate, useRouteError } from 'react-router-dom';
 import { Box, Button, Text, VStack } from '@chakra-ui/react';
 
 export default function ErrorPage() {
+  const location = useLocation();
   const error = useRouteError();
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState(10);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prevCountdown) => prevCountdown - 1);
-    }, 1000);
+    let timer
+    if (location.pathname !== '/robots.txt') {
+      timer = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
 
-    if (countdown === 0) {
-      navigate('/inicio');
+      if (countdown === 0) {
+        navigate('/inicio');
+      }
     }
 
     return () => clearInterval(timer);
   }, [countdown, navigate]);
+
+  if (location.pathname === '/robots.txt') {
+    return null;
+  }
 
   return (
     <Box
