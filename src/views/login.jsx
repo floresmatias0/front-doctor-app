@@ -135,7 +135,7 @@ export default function Login({ handleLogin }) {
                     <Text color='#104DBA' fontWeight={400}>Soy Doctor</Text>
                   </Button>
                 </Box>
-                <Link href="/politica-de-privacidad" fontFamily="Roboto" fontSize={['lg', 'xl']} color="white" my={4}>Politica de privacidad</Link>
+                <Link href="https://zonamed.com.ar/politica-de-privacidad" fontFamily="Roboto" fontSize={['lg', 'xl']} color="white" my={4}>Politica de privacidad</Link>
               </Flex>
             </GridItem>
           </Grid>
