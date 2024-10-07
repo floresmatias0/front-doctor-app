@@ -221,7 +221,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
               size="sm"
               background="#FFFFFF"
               fontWeight={500}
-              isDisabled
+              
             >
               ESPECIALIDAD MEDICA
             </Button>
