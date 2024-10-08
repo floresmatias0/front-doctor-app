@@ -9,10 +9,10 @@ export const FooterLanding = ({styles = {}}) => {
       w="full"
       py={3}
       mt={20}
-      bgGradient="linear-gradient(60.5deg, #104DBA -12.14%, #88A6DD 55.27%, #FFFFFF 134.94%)"
+      bgColor="#104DBA"
       style={styles}
     >
-      <Container maxW="container.xl">
+      <Container maxW="full" px={[4, 6, 8]}>
         <Flex
           flexDirection={["column", "column", "column", "row"]}
           justifyContent="space-between"
@@ -25,7 +25,7 @@ export const FooterLanding = ({styles = {}}) => {
 
           <Box>
             <Flex gap={2} mt={5} justifyContent={["start", "end"]}>
-              <Link href="https://facebook.com">
+              <Link href="https://facebook.com" target="__blank">
                 <Box
                   w={["15px", "15px", "20px", "20px"]}
                   h={["15px", "15px", "20px", "20px"]}
@@ -39,7 +39,7 @@ export const FooterLanding = ({styles = {}}) => {
                   <FaFacebookF className="icon-responsive-v2" />
                 </Box>
               </Link>
-              <Link href="https://linkedin.com">
+              <Link href="https://linkedin.com" target="__blank">
                 <Box
                   w={["15px", "15px", "20px", "20px"]}
                   h={["15px", "15px", "20px", "20px"]}
@@ -53,7 +53,7 @@ export const FooterLanding = ({styles = {}}) => {
                   <BiLogoLinkedin className="icon-responsive-v2" />
                 </Box>
               </Link>
-              <Link href="https://instagram.com">
+              <Link href="https://instagram.com" target="__blank">
                 <Box
                   w={["15px", "15px", "20px", "20px"]}
                   h={["15px", "15px", "20px", "20px"]}
@@ -97,7 +97,7 @@ export const FooterLanding = ({styles = {}}) => {
               lineHeight={["12px", "16px"]}
               alignContent='center'
             >
-              <Link href="https://zonamed.com.ar/politica-de-privacidad" fontSize={["xs", "sm"]} color="white" my={4}>Politica de privacidad</Link>
+              <Link href="https://zonamed.com.ar/politica-de-privacidad" target="__blank" fontSize={["xs", "sm"]} color="white" my={4}>Politica de privacidad</Link>
             </Text>
           </Box>
         </Flex>
