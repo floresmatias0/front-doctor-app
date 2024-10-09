@@ -1033,7 +1033,7 @@ const LandingHome = () => {
                 fontWeight="400"
                 lineHeight={["12px", "18px"]}
               >
-                Estamos aquí para garantizar la salud y el bienestar de tu familia.
+                Estamos aquí para acompañar la salud y el bienestar de tu familia.
               </Text>
             </Flex>
           </Flex>
