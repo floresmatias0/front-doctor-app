@@ -1062,12 +1062,12 @@ const LandingHome = () => {
 
               <CustomAccordion
                 title="¿Como recibo la invitación para la videollamada?"
-                description="La estarás recibiendo a través del correo que indiques para que la llamda sea a través de google meets en el día y horario que indiques al momento de sacar el turno."
+                description="La estarás recibiendo a través del correo que indiques para que la llamada sea a través de google meets en el día y horario que indiques al momento de sacar el turno."
               />
 
               <CustomAccordion
                 title="¿Puedo cancelar un turno?"
-                description="Si claro! pero siempre que sea antes de las 24hs de que se cumpla el turno, pasado ese tiempo el pago de la atención no será devuelto a tu cuenta de MercadoPago"
+                description="Si claro! pero siempre que sea antes de las 24hs de que se cumpla el turno, pasado ese tiempo el pago de la atención no será devuelto a tu cuenta de MercadoPago."
               />
 
               <CustomAccordion
@@ -1077,7 +1077,17 @@ const LandingHome = () => {
 
               <CustomAccordion
                 title="Tutoriales"
-                description="<div><a href='https://www.loom.com/share/60831746e4f0489c9dd1c3640e83ff27?sid=e2cb664e-327f-45a8-a356-66806618fa12' target='__blank'>Creación de cuentas medicos</a><br><a href='https://www.loom.com/share/df1294e3a2e44bb5916a5e2ce13e8780?sid=b3d335ef-a183-4257-8a24-dcbb4b281e35' target='__blank'>Configurar agendas y bloquear fin de semana</a></div>"
+                description="<div>
+                  <a href='https://www.loom.com/share/60831746e4f0489c9dd1c3640e83ff27?sid=e2cb664e-327f-45a8-a356-66806618fa12' target='__blank' a:hover {color: #104DBA;}>Creación de cuentas medicos</a>
+                  <br>
+                  <a href='https://www.loom.com/share/df1294e3a2e44bb5916a5e2ce13e8780?sid=b3d335ef-a183-4257-8a24-dcbb4b281e35' target='__blank'>Configurar agendas y bloquear fin de semana</a>
+                  <style>
+                    a:hover {
+                      color: #104DBA;
+                    }
+                  </style>
+                </div>"
+                
               />
             </Flex>
           </Flex>
