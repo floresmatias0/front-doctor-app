@@ -1024,13 +1024,14 @@ const LandingHome = () => {
               p={2}
               gap={2}
               w={["214px", "auto", "auto", "580px"]}
+              mx="auto"
             >
               <Image src={handHeart} h={[15, 30]} w={[15, 30]} />
               <Text
                 color="#104DBA"
                 fontSize={["xs", "lg"]}
                 textAlign="center"
-                fontWeight="400"
+                fontWeight="bold"
                 lineHeight={["12px", "18px"]}
               >
                 Estamos aquí para acompañar la salud y el bienestar de tu familia.
