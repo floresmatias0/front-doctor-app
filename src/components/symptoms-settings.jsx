@@ -61,39 +61,45 @@ const SymptomsSettings = () => {
         fetchDataSymptoms();
     }, [fetchSymptoms])
 
-    const updateSymptom = async (id, name = null) => {
+    const updateSymptom = async (id, name = null, isDelete = false) => {
         try {
-            if(name) {
-                await instance.post(`/symptoms`, { name });
-            }else {
+            if (isDelete) {
                 await instance.delete(`/symptoms/${id}`);
+            } else {
+                await instance.post(`/symptoms`, { name });
             }
-
-
             await fetchSymptoms();
-
             toast({
                 position: "top",
                 render: () => (
                     <Box py={4} px={8} bg='white' borderRadius="md" maxW={["auto", "428px"]} boxShadow="2xl">
                         <HiOutlineBadgeCheck style={{ width: "36px", height: "36px", color: "#104DBA" }} />
-                        <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">Sintoma {name ? 'creado' : 'eliminado'} con exito</Text>
+                        <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">
+                            Síntoma {name ? 'creado' : 'eliminado'} con éxito
+                        </Text>
                     </Box>
                 )
-            })
+            });
         } catch (err) {
-            console.log(err.message)
+            console.log(err.message);
             toast({
                 position: "top",
                 render: () => (
                     <Box py={4} px={8} bg='white' borderRadius="md" maxW={["auto", "428px"]} boxShadow="2xl">
                         <MdErrorOutline style={{ width: "36px", height: "36px", color: "red" }} />
-                        <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">Hubo un error inesperado, intentelo nuevamente</Text>
+                        <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">
+                            Hubo un error inesperado, inténtelo nuevamente
+                        </Text>
                     </Box>
                 )
-            })
+            });
         }
-    }
+    };
+    
+    const handleDeleteSymptom = (id) => {
+        updateSymptom(id, null, true);
+    };
+    
 
     const handleSubmit = async (values) => {
         await updateSymptom(null, values.name);
@@ -159,7 +165,7 @@ const SymptomsSettings = () => {
                                                     <Td fontFamily="Roboto">{x.name}</Td>
                                                     <Td>
                                                         <Flex gap={3}>
-                                                            <MdCancel size={20} title="Eliminar sintoma" onClick={() => updateSymptom(x?._id, "DELETE")} />
+                                                        <MdCancel size={20} title="Eliminar síntoma" onClick={() => handleDeleteSymptom(x?._id)} />
                                                         </Flex>
                                                     </Td>
                                                 </Tr>
