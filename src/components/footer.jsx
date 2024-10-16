@@ -126,7 +126,7 @@ export const Footer = ({styles = {}, display}) => {
       w="full"
       h='80px'
       py={3}
-      bgGradient="linear-gradient(60.5deg, #104DBA -12.14%, #88A6DD 55.27%, #FFFFFF 134.94%)"
+      bgColor="#104DBA"
       style={styles}
       display={display}
     >
