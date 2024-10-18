@@ -3,17 +3,17 @@ import { LogoCustom } from "./extras";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 
-export const FooterLanding = ({styles = {}}) => {
+export const FooterLanding = ({ styles = {} }) => {
   return (
-    <Flex
-      w="full"
-      py={3}
-      mt={20}
-      bgColor="#104DBA"
-      style={styles}
-    >
+    <Flex 
+      w="full" 
+      py={3} 
+      mt={20} 
+      bgColor="#104DBA" 
+      style={styles}>
       <Container maxW="full" px={[4, 6, 8]}>
         <Flex
+          display={["none", "none", "flex"]}
           flexDirection={["column", "column", "column", "row"]}
           justifyContent="space-between"
         >
@@ -95,30 +95,114 @@ export const FooterLanding = ({styles = {}}) => {
               color="white"
               fontWeight="400"
               lineHeight={["12px", "16px"]}
-              alignContent='center'
+              alignContent="center"
             >
-              <Link href="https://zonamed.com.ar/politica-de-privacidad" target="__blank" fontSize={["xs", "sm"]} color="white" my={4}>Politica de privacidad</Link>
+              <Link
+                href="https://zonamed.com.ar/politica-de-privacidad"
+                target="__blank"
+                fontSize={["xs", "sm"]}
+                color="white"
+                my={4}
+              >
+                Política de privacidad
+              </Link>
             </Text>
           </Box>
         </Flex>
-          <Text
-            fontSize={["xs", "sm"]}
-            align="center"
-            color="white"
-            fontWeight="400"
-            lineHeight={["12px", "16px"]}
-            alignContent='center'
-            marginTop={[5, 0]}
+
+        {/* Footer para pantallas móviles */}
+        <Flex
+          display={["flex", "flex", "none"]}
+          flexDirection="column"
+          alignItems="center"
+          textAlign="center"
+        >
+          <Text 
+            fontSize="2xl"
+            fontWeight="bold" 
+            color="white" 
+            mb={4}
           >
-              Tecnología desarrollada por {" "}
-            <Link href="https://merliteam.com" target="__blank">
-                merliteam.com
+            Zona Med
+          </Text>
+
+          <Flex gap={4} mb={4}>
+            <Link href="https://linkedin.com" target="__blank">
+              <Box
+                w="30px"
+                h="30px"
+                borderRadius="50%"
+                bgColor="white"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                _hover={{ backgroundColor: "#F5F5F5" }}
+              >
+                <BiLogoLinkedin />
+              </Box>
+            </Link>
+            <Link href="https://instagram.com" target="__blank">
+              <Box
+                w="30px"
+                h="30px"
+                borderRadius="50%"
+                bgColor="white"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                _hover={{ backgroundColor: "#F5F5F5" }}
+              >
+                <FaInstagram />
+              </Box>
+            </Link>
+            <Link href="https://facebook.com" target="__blank">
+              <Box
+                w="30px"
+                h="30px"
+                borderRadius="50%"
+                bgColor="white"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                _hover={{ backgroundColor: "#F5F5F5" }}
+              >
+                <FaFacebookF />
+              </Box>
+            </Link>
+          </Flex>
+
+          <Text fontSize="xs" color="white" mt={2}>
+            ayuda@zonamed.com.ar
+          </Text>
+          <Text fontSize="xs" color="white" mt={2}>
+            © 2024 ZonaMed – Todos los derechos reservados
+          </Text>
+          <Text fontSize="xs" color="white" mt={2}>
+            <Link href="https://zonamed.com.ar/politica-de-privacidad" target="__blank">
+              Política de privacidad
             </Link>
           </Text>
+        </Flex>
+
+        <Text
+          fontSize={["xs", "sm"]}
+          align="center"
+          color="white"
+          fontWeight="400"
+          lineHeight={["12px", "16px"]}
+          alignContent="center"
+          marginTop={[3, 0]}
+        >
+          Tecnología desarrollada por{" "}
+          <Link href="https://merliteam.com" target="__blank" fontWeight="bold" >
+            merliteam.com
+          </Link>
+        </Text>
       </Container>
     </Flex>
   );
 };
+
 
 export const Footer = ({styles = {}, display}) => {
   return (
