@@ -37,6 +37,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
 
   const totalPages = Math.ceil(doctors.length / itemsPerPage);
 
+
   const currentDoctors = doctors.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -62,19 +63,21 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
 
         if (doctors && doctors?.length > 0) {
           for (let i = 0; i < doctors.length; i++) {
-            auxDoctors.push({
-              label: doctors[i].name,
-              value: doctors[i].email,
-              picture: doctors[i].picture,
-              reservePrice: doctors[i].reservePrice,
-              reserveTime: doctors[i].reserveTime,
-              reserveTimeFrom: doctors[i].reserveTimeFrom,
-              reserveTimeUntil: doctors[i].reserveTimeUntil,
-              reserveSaturday: doctors[i].reserveSaturday,
-              reserveSunday: doctors[i].reserveSunday,
-              especialization: doctors[i].especialization,
-              public_key: doctors[i].mercadopago_access?.public_key
-            });
+            if(doctors[i].validated === 'completed') {
+              auxDoctors.push({
+                label: doctors[i].name,
+                value: doctors[i].email,
+                picture: doctors[i].picture,
+                reservePrice: doctors[i].reservePrice,
+                reserveTime: doctors[i].reserveTime,
+                reserveTimeFrom: doctors[i].reserveTimeFrom,
+                reserveTimeUntil: doctors[i].reserveTimeUntil,
+                reserveSaturday: doctors[i].reserveSaturday,
+                reserveSunday: doctors[i].reserveSunday,
+                especialization: doctors[i].especialization,
+                public_key: doctors[i].mercadopago_access?.public_key
+              });
+            }
           }
           setDoctors(auxDoctors);
         }
