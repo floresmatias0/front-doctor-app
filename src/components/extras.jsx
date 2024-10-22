@@ -15,12 +15,12 @@ export const LogoCustom = ({
 }) => (
   <Link to="/">
     <Flex gap={2} flexDirection={flexDirection}>
-      <Box w={[svgWidth, maxSvgWidth]} h={[svgHeight, maxSvgWeight]}>
+      <Box w={[svgWidth, maxSvgWidth]} h={[svgHeight, maxSvgWeight]} pb={5}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 462 276"
           fill="none"
-          style={{ position: "relative", top: "0px" }}
+          style={{ position: "relative", top: "1px" }}
         >
           <path
             d="M410.743 102.043C410.743 192.059 337.77 265.032 247.754 265.032C157.738 265.032 84.7654 192.059 84.7654 102.043"
