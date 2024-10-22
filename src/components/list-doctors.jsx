@@ -1,14 +1,5 @@
 import PropTypes from "prop-types";
-import {
-  Button,
-  Flex,
-  Text,
-  Box,
-  Image,
-  Divider,
-  Center,
-  Spinner,
-} from "@chakra-ui/react";
+import { Button, Flex, Text, Box, Image, Divider, Center, Spinner, Select, FormControl, FormLabel } from "@chakra-ui/react";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import { instance } from "../utils/axios";
 import { FaMoneyBill } from "react-icons/fa";
@@ -20,21 +11,21 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     filter: false,
     doctors: true,
     calendar: true,
+    specialty: true
   };
-
   const [disableTabs, setDisableTabs] = useState(initialStateTabs);
   const [doctors, setDoctors] = useState([]);
-
+  const [specializations, setSpecializations] = useState([]);
+  const [loadingSpecializations, setLoadingSpecializations] = useState(false);
+  const [selectedSpecialization, setSelectedSpecialization] = useState("");
   const currentDate = new Date();
   const [currentDateState, setCurrentDateState] = useState(currentDate);
   const [dataDoctor, setDataDoctor] = useState(null);
   const [calendarEvents, setCalendarEvents] = useState(null);
   const [loadingCalendar, setLoadingCalendar] = useState(true);
   const [hsSelected, setHsSelected] = useState(false);
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
-
   const totalPages = Math.ceil(doctors.length / itemsPerPage);
 
 
@@ -46,45 +37,47 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   const handlePreviousPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
-
   const handleNextPage = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
 
   const fetchDoctors = async () => {
     try {
-      let filters = '{ "role":["DOCTOR", "ADMIN"]}';
+      let filters = `{ "role":["DOCTOR", "ADMIN"]`;
+      if (selectedSpecialization) {
+        filters += `, "especialization": "${selectedSpecialization}"`;
+      }
+      filters += `}`;
+      console.log("API Filters:", filters); // Verifica los filtros usados en la llamada a la API
       const { data } = await instance.get(`/users?filters=${filters}`);
       const response = data;
-
       if (response.success) {
         let doctors = response.data;
         let auxDoctors = [];
-
         if (doctors && doctors?.length > 0) {
           for (let i = 0; i < doctors.length; i++) {
-            if(doctors[i].validated === 'completed') {
+            if ((doctors[i].validated === 'completed') && (!selectedSpecialization || doctors[i].especialization === selectedSpecialization)) {
               auxDoctors.push({
-                label: doctors[i].name,
-                value: doctors[i].email,
-                picture: doctors[i].picture,
-                reservePrice: doctors[i].reservePrice,
-                reserveTime: doctors[i].reserveTime,
-                reserveTimeFrom: doctors[i].reserveTimeFrom,
-                reserveTimeUntil: doctors[i].reserveTimeUntil,
-                reserveSaturday: doctors[i].reserveSaturday,
-                reserveSunday: doctors[i].reserveSunday,
-                especialization: doctors[i].especialization,
-                public_key: doctors[i].mercadopago_access?.public_key
-              });
+                  label: doctors[i].name,
+                  value: doctors[i].email,
+                  picture: doctors[i].picture,
+                  reservePrice: doctors[i].reservePrice,
+                  reserveTime: doctors[i].reserveTime,
+                  reserveTimeFrom: doctors[i].reserveTimeFrom,
+                  reserveTimeUntil: doctors[i].reserveTimeUntil,
+                  reserveSaturday: doctors[i].reserveSaturday,
+                  reserveSunday: doctors[i].reserveSunday,
+                  especialization: doctors[i].especialization,
+                  public_key: doctors[i].mercadopago_access?.public_key
+                });
             }
+            
           }
           setDoctors(auxDoctors);
+        } else {
+          setDoctors([]);
         }
-
-        setDoctors(auxDoctors);
       }
-
       return [];
     } catch (err) {
       console.log("fetch doctors", err.message);
@@ -92,18 +85,56 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     }
   };
 
+
+
+  const fetchSpecializations = async () => {
+    try {
+      setLoadingSpecializations(true);
+      const { data } = await instance.get("/specializations");
+      const response = data;
+      if (response.success) {
+        let specializations = response.data;
+        setSpecializations(specializations);
+      } else {
+        setSpecializations([]);
+      }
+      setLoadingSpecializations(false);
+    } catch (err) {
+      console.error("fetch specializations", err.message);
+      setLoadingSpecializations(false);
+      throw new Error("Something went wrong to fetch specializations");
+    }
+  };
+
+  useEffect(() => {
+    const fetchDataSpecializations = async () => {
+      try {
+        await fetchSpecializations();
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchDataSpecializations();
+  }, []);
+
   const handleDoctorsSelect = (doctor) => {
     setDoctorSelected(doctor);
   };
-
+  const handleSpecializationSelect = (event) => {
+    setSelectedSpecialization(event.target.value);
+  };
   const handleBackFilter = () => {
+    setSelectedSpecialization(""); // Reiniciar la especialidad seleccionada a una cadena vacía
+    setDoctorSelected(null); // Reiniciar la selección del médico
     setDisableTabs({
       ...disableTabs,
       filter: false,
       doctors: true,
       calendar: true,
+      specialty: true
     });
   };
+
 
   const handleBackDoctors = () => {
     setDisableTabs({
@@ -122,29 +153,35 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       calendar: false,
     });
   };
-
   const handleNextProfesional = () => {
     setDisableTabs({
       ...disableTabs,
       filter: true,
       doctors: false,
+      specialty: true
+    });
+  };
+  const handleNextSpecialty = () => {
+    setDisableTabs({
+      ...disableTabs,
+      filter: true,
+      doctors: true,
+      calendar: true,
+      specialty: false,
     });
   };
 
   const fetchDataCalendar = useCallback(async () => {
     try {
-      if(doctorSelected?.value) {
+      if (doctorSelected?.value) {
         setLoadingCalendar(true);
         setHsSelected(false);
-  
         const { data } = await instance.get(
           `/calendars?email=${doctorSelected?.value}`
         );
-  
         setCalendarEvents(data?.data?.items);
         let filters = `{ "email": "${doctorSelected?.value}" }`;
         const doctor = await instance.get(`/users?filters=${filters}`);
-  
         setDataDoctor(doctor?.data?.data[0]);
         setLoadingCalendar(false);
       }
@@ -162,7 +199,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
         console.log(err);
       }
     };
-
     if (doctorSelected && isActive) {
       fetchDataCalendars();
     }
@@ -171,14 +207,15 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   useEffect(() => {
     const fetchDataDoctors = async () => {
       try {
+        console.log("Selected Specialization:", selectedSpecialization); // Agrega esto aquí
         await fetchDoctors();
       } catch (err) {
         throw new Error(err.message);
       }
     };
-
     if (isActive) fetchDataDoctors();
-  }, [isActive]);
+  }, [isActive, selectedSpecialization]); // <-- Asegúrate de incluir selectedSpecialization como dependencia
+
 
   if (!isActive) {
     return null;
@@ -202,12 +239,12 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
           Paciente: {patientSelected && patientSelected?.label}
         </Text>
       </Flex>
+      {/* Condición de la pestaña de filtro inicial */}
       {!disableTabs.filter && (
         <Flex flexDirection="column" flex={1} gap={4}>
           <Text fontWeight={400} fontSize="md" lineHeight="18.75px">
             ¿Como deseas realizar la busqueda de tu turno?
           </Text>
-
           <Flex
             justifyContent="space-between"
             flexDirection={["column", "row"]}
@@ -224,7 +261,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
               size="sm"
               background="#FFFFFF"
               fontWeight={500}
-              
+              onClick={handleNextSpecialty} // Agregado onClick para especialidades
             >
               ESPECIALIDAD MEDICA
             </Button>
@@ -282,6 +319,91 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
           </Flex>
         </Flex>
       )}
+
+      {!disableTabs.specialty && (
+        <Fragment>
+          <Text fontWeight={400} fontSize="md" lineHeight="18.75px" py={2}>
+            ¿Qué especialidad necesitas?
+          </Text>
+          <Select
+            placeholder="Elegir especialidad"
+            fontSize={["xs", "md"]}
+            w={["auto", "250px"]}
+            h={["28px", "36px"]}
+            border="none"
+            borderBottom="2px solid #104DBA"
+            borderRadius="0"
+            iconColor="#104DBA"
+            focusBorderColor="#104DBA"
+            sx={{
+              boxShadow: "none",
+              _focus: {
+                borderBottom: "2px solid #104DBA",
+                boxShadow: "none"
+              },
+              marginBottom: [3, 4] // Añadimos margen inferior al Select
+            }}
+            value={selectedSpecialization}
+            onChange={handleSpecializationSelect}
+          >
+            {specializations.map((spec) => (
+              <option key={spec._id} value={spec.name}>
+                {spec.name}
+              </option>
+            ))}
+          </Select>
+          <Flex justifyContent="flex-end" gap={4} mt={4}>
+            <Button
+              bg="#104DBA"
+              color="#FFFFFF"
+              w="120px"
+              size="xs"
+              py={3}
+              leftIcon={
+                <MdOutlineNavigateBefore
+                  style={{ width: "20px", height: "20px" }}
+                />
+              }
+              onClick={handleBackFilter}
+            >
+              <Text
+                fontSize="xs"
+                lineHeight="16px"
+                fontWeight={500}
+                textTransform="uppercase"
+              >
+                Anterior
+              </Text>
+            </Button>
+            {selectedSpecialization && (
+              <Button
+                bg="#104DBA"
+                color="#FFFFFF"
+                w="120px"
+                size="xs"
+                rightIcon={
+                  <MdOutlineNavigateNext
+                    style={{ width: "20px", height: "20px" }}
+                  />
+                }
+                onClick={handleNextProfesional}
+              >
+                <Text
+                  fontSize="xs"
+                  lineHeight="16px"
+                  fontWeight={500}
+                  textTransform="uppercase"
+                >
+                  Continuar
+                </Text>
+              </Button>
+            )}
+          </Flex>
+        </Fragment>
+      )}
+
+
+
       {!disableTabs.doctors && (
         <Fragment>
           <Text
@@ -304,113 +426,65 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
             maxH={["290px", "85px", "85px", "85px", "90px", "auto"]}
             overflowY={["scroll", "auto"]}
           >
+            {console.log("Current Doctors:", currentDoctors)}
             {currentDoctors.length > 0 ? (
-                currentDoctors.map((doctor, idx) => (
-                  <Flex
-                    key={idx}
-                    w={["full", "265px"]}
-                    h="83px"
-                    justifyContent="space-around"
-                    boxShadow="0px 4px 4px 0px #00000040"
-                    borderRadius="xl"
-                    p={2}
-                    cursor="pointer"
-                    onClick={() => handleDoctorsSelect(doctor)}
-                    border="2px"
-                    borderColor={
-                      doctorSelected?.label === doctor?.label
-                        ? "#104DBA"
-                        : "transparent"
-                    }
-                  >
-                    <Image
-                      rounded="full"
-                      src={doctor?.picture}
-                      w="40px"
-                      h="40px"
-                    />
-                    <Flex flexDirection="column" justifyContent="space-between">
-                      <Box>
-                        <Text
-                          fontSize="sm"
-                          textTransform="capitalize"
-                          fontWeight={700}
-                          lineHeight="16.41px"
-                        >
-                          {doctor?.label}
-                        </Text>
-                        <Text fontSize="xs" fontWeight={400} lineHeight="14.06px">
-                          {doctor?.especialization}
-                        </Text>
+              currentDoctors.map((doctor, idx) => (
+                <Flex
+                  key={idx}
+                  w={["full", "265px"]}
+                  h="83px"
+                  justifyContent="space-around"
+                  boxShadow="0px 4px 4px 0px #00000040"
+                  borderRadius="xl"
+                  p={2}
+                  cursor="pointer"
+                  onClick={() => handleDoctorsSelect(doctor)}
+                  border="2px"
+                  borderColor={
+                    doctorSelected?.label === doctor?.label
+                      ? "#104DBA"
+                      : "transparent"
+                  }
+                >
+                  <Image
+                    rounded="full"
+                    src={doctor?.picture}
+                    w="40px"
+                    h="40px"
+                  />
+                  <Flex flexDirection="column" justifyContent="space-between">
+                    <Box>
+                      <Text
+                        fontSize="sm"
+                        textTransform="capitalize"
+                        fontWeight={700}
+                        lineHeight="16.41px"
+                      >
+                        {doctor?.label}
+                      </Text>
+                      <Text fontSize="xs" fontWeight={400} lineHeight="14.06px">
+                        {doctor?.especialization}
+                      </Text>
+                    </Box>
+                    <Flex gap={2}>
+                      <Box display={["none", "block", "block", "block", "block", "block"]}>
+                        <FaMoneyBill
+                          style={{
+                            width: "16px",
+                            height: "16px",
+                            color: "gray",
+                          }}
+                        />
                       </Box>
-
-                      <Flex gap={2}>
-                        <Box
-                          display={[
-                            "none",
-                            "block",
-                            "block",
-                            "block",
-                            "block",
-                            "block",
-                          ]}
-                        >
-                          <FaMoneyBill
-                            style={{
-                              width: "16px",
-                              height: "16px",
-                              color: "gray",
-                            }}
-                          />
-                        </Box>
-                        <Text fontSize="xs" fontWeight={300} lineHeight="14.06px">
-                          Valor de la consulta: ${doctor?.reservePrice}
-                        </Text>
-                      </Flex>
+                      <Text fontSize="xs" fontWeight={300} lineHeight="14.06px">
+                        Valor de la consulta: ${doctor?.reservePrice}
+                      </Text>
                     </Flex>
                   </Flex>
-                ))
-              ) : (
-                <Text fontWeight={300}>Lo sentimos, no hay doctores disponibles</Text>
-              )
-            }
-          </Flex>
-          <Flex justifyContent="flex-end" mt={[0, 4]} gap={2}>
-            {doctors?.length > 0 && (
-              <Button
-                bg="transparent"
-                onClick={handlePreviousPage}
-                disabled={currentPage === 1}
-                size="xs"
-              >
-                <MdOutlineNavigateBefore
-                  style={{ width: "16px", height: "16px" }}
-                />
-              </Button>
-            )}
-            <Text alignSelf="center" fontSize="xs">
-              {doctors?.length > 0 ? (
-                  `
-                  ${Math.min((currentPage - 1) * itemsPerPage + 1, doctors.length)} - 
-                  ${Math.min(currentPage * itemsPerPage, doctors.length)} de
-                  ${doctors.length} resultados
-                  `
-              ) : (
-                `${doctors.length} resultados`
-              )}
-              
-            </Text>
-            {doctors?.length > 0 && (
-              <Button
-                bg="transparent"
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
-                size="xs"
-              >
-                <MdOutlineNavigateNext
-                  style={{ width: "16px", height: "16px" }}
-                />
-              </Button>
+                </Flex>
+              ))
+            ) : (
+              <Text fontWeight={300}>Lo sentimos, no hay doctores disponibles</Text>
             )}
           </Flex>
           <Flex justifyContent="flex-end" gap={[2, 4]}>
@@ -435,7 +509,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                 Anterior
               </Text>
             </Button>
-            {Object?.keys(doctorSelected).length > 0 && (
+            {currentDoctors.length > 0 && (
               <Button
                 bg="#104DBA"
                 color="#FFFFFF"
@@ -447,6 +521,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                   />
                 }
                 onClick={handleNextCalendar}
+                isDisabled={!doctorSelected}
               >
                 <Text
                   fontSize="xs"
@@ -461,6 +536,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
           </Flex>
         </Fragment>
       )}
+
       {!disableTabs.calendar && (
         <Fragment>
           <Text fontWeight={400} fontSize="md" lineHeight="18.75px">
