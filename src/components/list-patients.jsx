@@ -21,7 +21,18 @@ const ListPatient = ({ onNext, isActive, patients, patientSelected, setPatientSe
             <Select
                 w={["auto", "250px"]}
                 h={["28px", "36px"]}
-                bg="#FFFFFF"
+                border="none"
+                borderBottom="2px solid #104DBA"
+                borderRadius="0"
+                iconColor="#104DBA"
+                focusBorderColor="#104DBA"
+                sx={{
+                  boxShadow: "none",
+                  _focus: {
+                    borderBottom: "2px solid #104DBA",
+                    boxShadow: "none"
+                  }
+                }}
                 placeholder='Elegir paciente'
                 value={patientSelected?.value}
                 onChange={(e) => {
