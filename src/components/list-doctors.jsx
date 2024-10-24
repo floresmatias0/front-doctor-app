@@ -51,6 +51,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       console.log("API Filters:", filters); // Verifica los filtros usados en la llamada a la API
       const { data } = await instance.get(`/users?filters=${filters}`);
       const response = data;
+      setDoctorSelected(null);
       if (response.success) {
         let doctors = response.data;
         let auxDoctors = [];
@@ -71,9 +72,9 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                 reserveSunday: doctors[i].reserveSunday,
                 especialization: doctors[i].especialization,
                 public_key: doctors[i].mercadopago_access?.public_key
-                });
+              });
             }
-            
+
           }
           setDoctors(auxDoctors);
         } else {
@@ -511,7 +512,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                 Anterior
               </Text>
             </Button>
-            {currentDoctors.length > 0 && (
+            {doctorSelected && (
               <Button
                 bg="#104DBA"
                 color="#FFFFFF"
@@ -523,7 +524,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                   />
                 }
                 onClick={handleNextCalendar}
-                isDisabled={!doctorSelected}
               >
                 <Text
                   fontSize="xs"
