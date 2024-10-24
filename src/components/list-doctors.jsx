@@ -51,6 +51,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       console.log("API Filters:", filters); // Verifica los filtros usados en la llamada a la API
       const { data } = await instance.get(`/users?filters=${filters}`);
       const response = data;
+      setDoctorSelected(null);
       if (response.success) {
         let doctors = response.data;
         let auxDoctors = [];
@@ -58,20 +59,22 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
           for (let i = 0; i < doctors.length; i++) {
             if ((doctors[i].validated === 'completed') && (!selectedSpecialization || doctors[i].especialization === selectedSpecialization)) {
               auxDoctors.push({
-                  label: doctors[i].name,
-                  value: doctors[i].email,
-                  picture: doctors[i].picture,
-                  reservePrice: doctors[i].reservePrice,
-                  reserveTime: doctors[i].reserveTime,
-                  reserveTimeFrom: doctors[i].reserveTimeFrom,
-                  reserveTimeUntil: doctors[i].reserveTimeUntil,
-                  reserveSaturday: doctors[i].reserveSaturday,
-                  reserveSunday: doctors[i].reserveSunday,
-                  especialization: doctors[i].especialization,
-                  public_key: doctors[i].mercadopago_access?.public_key
-                });
+                label: doctors[i].name,
+                value: doctors[i].email,
+                picture: doctors[i].picture,
+                reservePrice: doctors[i].reservePrice,
+                reserveTime: doctors[i].reserveTime,
+                reserveTimeFrom: doctors[i].reserveTimeFrom,
+                reserveTimeUntil: doctors[i].reserveTimeUntil,
+                reserveTimeFrom2: doctors[i].reserveTimeFrom2,
+                reserveTimeUntil2: doctors[i].reserveTimeUntil2,
+                reserveSaturday: doctors[i].reserveSaturday,
+                reserveSunday: doctors[i].reserveSunday,
+                especialization: doctors[i].especialization,
+                public_key: doctors[i].mercadopago_access?.public_key
+              });
             }
-            
+
           }
           setDoctors(auxDoctors);
         } else {
@@ -341,7 +344,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                 borderBottom: "2px solid #104DBA",
                 boxShadow: "none"
               },
-              marginBottom: [3, 4] // Añadimos margen inferior al Select
+              paddingBottom: [3, 1] // Añadimos margen inferior al Select
             }}
             value={selectedSpecialization}
             onChange={handleSpecializationSelect}
@@ -509,7 +512,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                 Anterior
               </Text>
             </Button>
-            {currentDoctors.length > 0 && (
+            {doctorSelected && (
               <Button
                 bg="#104DBA"
                 color="#FFFFFF"
@@ -521,7 +524,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                   />
                 }
                 onClick={handleNextCalendar}
-                isDisabled={!doctorSelected}
               >
                 <Text
                   fontSize="xs"
