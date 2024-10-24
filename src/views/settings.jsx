@@ -52,6 +52,7 @@ export default function Settings() {
   const { user, setUser, patients, createPatient, updatePatient } = useContext(AppContext);
   const [isEditable, setIsEditable] = useState(initialState);
   const [patientSelected, setPatientSelected] = useState(null);
+  const [secondSlotEnabled, setSecondSlotEnabled] = useState(!!(user?.reserveTimeFrom2 && user?.reserveTimeUntil2));
 
   // Estado para el primer AlertModal
   const {
@@ -69,26 +70,30 @@ export default function Settings() {
 
   const handleSubmit = async (values) => {
     try {
-      const updatedUser = await instance.put(`/users/${user?._id}`, {
-        firstName: values?.firstName,
-        lastName: values?.lastName,
-        email: values?.email,
-        dateOfBirth: values?.dateOfBirth,
-        identityType: values?.identityType,
-        identityId: values?.identityId,
-        genre: values?.genre,
-        phone: values?.phone,
-        socialWork: values?.socialWork,
-        socialWorkId: values?.socialWorkId,
-        reservePrice: values?.reservePrice,
-        reserveTime: values?.reserveTime,
-        especialization: values?.especialization,
-        enrollment: values?.enrollment,
-        reserveTimeFrom: values?.reserveTimeFrom,
-        reserveTimeUntil: values?.reserveTimeUntil,
-        reserveSaturday: values?.reserveSaturday,
-        reserveSunday: values?.reserveSunday
-      });
+      const payload = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        dateOfBirth: values.dateOfBirth,
+        identityType: values.identityType,
+        identityId: values.identityId,
+        genre: values.genre,
+        phone: values.phone,
+        socialWork: values.socialWork,
+        socialWorkId: values.socialWorkId,
+        reservePrice: values.reservePrice,
+        reserveTime: values.reserveTime,
+        especialization: values.especialization,
+        enrollment: values.enrollment,
+        reserveTimeFrom1: values.reserveTimeFrom1,
+        reserveTimeUntil1: values.reserveTimeUntil1,
+        reserveTimeFrom2: secondSlotEnabled ? values.reserveTimeFrom2 : null,
+        reserveTimeUntil2: secondSlotEnabled ? values.reserveTimeUntil2 : null,
+        reserveSaturday: values.reserveSaturday,
+        reserveSunday: values.reserveSunday,
+      };
+
+      const updatedUser = await instance.put(`/users/${user?._id}`, payload);
       setUser(updatedUser.data.data);
       setIsEditable(initialState);
       toast({
@@ -96,23 +101,28 @@ export default function Settings() {
         render: () => (
           <Box py={4} px={8} bg='white' borderRadius="md" maxW={["auto", "428px"]} boxShadow="2xl">
             <HiOutlineBadgeCheck style={{ width: "36px", height: "36px", color: "#104DBA" }} />
-            <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">El usuario se ha actualizado exitosamente.</Text>
+            <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">
+              El usuario se ha actualizado exitosamente.
+            </Text>
           </Box>
         )
-      })
+      });
     } catch (err) {
       toast({
         position: "top",
         render: () => (
           <Box py={4} px={8} bg='white' borderRadius="md" maxW={["auto", "428px"]} boxShadow="2xl">
             <MdErrorOutline style={{ width: "36px", height: "36px", color: "red" }} />
-            <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">El usuario no se pudo actualizar.</Text>
+            <Text color="#104DBA" fontSize="2xl" fontWeight={700} textOverflow="wrap" lineHeight="35.16px" width="75%">
+              El usuario no se pudo actualizar.
+            </Text>
           </Box>
         )
-      })
+      });
       throw new Error(err.message);
     }
   };
+
 
   const handleSelectPatient = (patient) => {
     let formattedDate = patient.birthdate;
@@ -288,6 +298,8 @@ export default function Settings() {
               enrollment: user?.enrollment,
               reserveTimeFrom: user?.reserveTimeFrom,
               reserveTimeUntil: user?.reserveTimeUntil,
+              reserveTimeFrom2: secondSlotEnabled ? user?.reserveTimeFrom2 : null,
+              reserveTimeUntil2: secondSlotEnabled ? user?.reserveTimeUntil2 : null,
               reserveSaturday: user?.reserveSaturday,
               reserveSunday: user?.reserveSunday
             }}
@@ -562,7 +574,7 @@ export default function Settings() {
                     >
                       <Field name="enrollment">
                         {({ field }) => (
-                          <FormControl id="enrollment" w={["100%", "220px"]} isRequired>
+                          <FormControl id="enrollment" w={["100%", "240px"]} isRequired>
                             <FormLabel
                               fontSize={["xs", "md"]}
                               color="#104DBA"
@@ -576,15 +588,40 @@ export default function Settings() {
                               placeholder="99"
                               fontSize={["xs", "md"]}
                               _placeholder={{ color: "gray.500" }}
-                              w={["100%", "220px"]}
+                              w={["100%", "240px"]}
                               {...field}
                             />
                           </FormControl>
                         )}
                       </Field>
+                      <Field name="especialization">
+                        {({ field }) => (
+                          <FormControl id="especialization" w={["100%", "240px"]} isRequired>
+                            <FormLabel fontSize={["xs", "md"]} color="#104DBA" fontWeight={400} lineHeight={["12.3px", "16.24px"]} w={["100%", "220px"]}>
+                              Especialización
+                            </FormLabel>
+                            {loading ? (
+                              <Spinner />
+                            ) : (
+                              <Select
+                                placeholder="Seleccionar"
+                                fontSize={["xs", "md"]}
+                                w={["100%", "240px"]}
+                                {...field}
+                              >
+                                {specializations.map((spec) => (
+                                  <option key={spec._id} value={spec.name}>
+                                    {spec.name}
+                                  </option>
+                                ))}
+                              </Select>
+                            )}
+                          </FormControl>
+                        )}
+                      </Field>
                       <Field name="reservePrice">
                         {({ field }) => (
-                          <FormControl id="reservePrice" w={["100%", "220px"]} isRequired>
+                          <FormControl id="reservePrice" w={["100%", "240px"]} isRequired>
                             <FormLabel
                               fontSize={["xs", "md"]}
                               color="#104DBA"
@@ -598,7 +635,7 @@ export default function Settings() {
                               placeholder="99"
                               fontSize={["xs", "md"]}
                               _placeholder={{ color: "gray.500" }}
-                              w={["100%", "220px"]}
+                              w={["100%", "240px"]}
                               {...field}
                             />
                           </FormControl>
@@ -606,135 +643,131 @@ export default function Settings() {
                       </Field>
                       <Field name="reserveTime">
                         {({ field }) => (
-                          <FormControl id="reserveTime" w={["100%", "220px"]} isRequired>
-                            <FormLabel
-                              fontSize={["xs", "md"]}
-                              color="#104DBA"
-                              fontWeight={400}
-                              lineHeight={["12.3px", "16.24px"]}
-                              w={["100%", "220px"]}
-                            >
+                          <FormControl id="reserveTime" w={["100%", "240px"]} isRequired>
+                            <FormLabel fontSize={["xs", "md"]} color="#104DBA" fontWeight={400} lineHeight={["12.3px", "16.24px"]} w={["100%", "220px"]}>
                               Tiempo de consulta
                             </FormLabel>
                             <Input
                               placeholder="99"
                               fontSize={["xs", "md"]}
                               _placeholder={{ color: "gray.500" }}
-                              w={["100%", "220px"]}
+                              w={["100%", "240px"]}
                               {...field}
                             />
                           </FormControl>
                         )}
                       </Field>
+
                       <Field name="reserveTimeFrom">
                         {({ field }) => (
-                          <FormControl id="reserveTimeFrom" w={["100%", "220px"]} isRequired>
-                            <FormLabel
-                              fontSize={["xs", "md"]}
-                              color="#104DBA"
-                              fontWeight={400}
-                              lineHeight={["12.3px", "16.24px"]}
-                              w={["100%", "220px"]}
-                            >
-                              Inicio horario de atencion
+                          <FormControl id="reserveTimeFrom" w={["100%", "240px"]} isRequired>
+                            <FormLabel fontSize={["xs", "md"]} color="#104DBA" fontWeight={400} lineHeight={["12.3px", "16.24px"]} w={["100%", "220px"]}>
+                              Inicio horario de atención
                             </FormLabel>
                             <Input
                               type="number"
                               placeholder="10"
                               fontSize={["xs", "md"]}
                               _placeholder={{ color: "gray.500" }}
-                              w={["100%", "220px"]}
+                              w={["100%", "240px"]}
                               {...field}
                             />
                           </FormControl>
                         )}
                       </Field>
+
                       <Field name="reserveTimeUntil">
                         {({ field }) => (
-                          <FormControl id="reserveTimeUntil" w={["100%", "220px"]} isRequired>
-                            <FormLabel
-                              fontSize={["xs", "md"]}
-                              color="#104DBA"
-                              fontWeight={400}
-                              lineHeight={["12.3px", "16.24px"]}
-                              w={["100%", "220px"]}
-                            >
-                              Fin horario de atencion
+                          <FormControl id="reserveTimeUntil" w={["100%", "240px"]} isRequired>
+                            <FormLabel fontSize={["xs", "md"]} color="#104DBA" fontWeight={400} lineHeight={["12.3px", "16.24px"]} w={["100%", "220px"]}>
+                              Fin horario de atención
                             </FormLabel>
                             <Input
                               type="number"
                               placeholder="17"
                               fontSize={["xs", "md"]}
                               _placeholder={{ color: "gray.500" }}
-                              w={["100%", "220px"]}
+                              w={["100%", "240px"]}
                               {...field}
                             />
                           </FormControl>
                         )}
                       </Field>
+
                       <Field name="reserveSaturday">
                         {({ field }) => (
                           <FormControl id="reserveSaturday" w={["100%", "220px"]}>
-                            <FormLabel
-                              fontSize={["xs", "md"]}
-                              color="#104DBA"
-                              fontWeight={400}
-                              lineHeight={["12.3px", "16.24px"]}
-                              w={["100%", "220px"]}
-                            >
-                              Bloquear Sabado
+                            <FormLabel fontSize={["xs", "md"]} color="#104DBA" fontWeight={400} lineHeight={["12.3px", "16.24px"]} w={["100%", "220px"]}>
+                              Bloquear Sábado
                             </FormLabel>
                             <Checkbox {...field} defaultChecked={field?.value}></Checkbox>
                           </FormControl>
                         )}
                       </Field>
+
                       <Field name="reserveSunday">
                         {({ field }) => (
                           <FormControl id="reserveSunday" w={["100%", "220px"]}>
-                            <FormLabel
-                              fontSize={["xs", "md"]}
-                              color="#104DBA"
-                              fontWeight={400}
-                              lineHeight={["12.3px", "16.24px"]}
-                              w={["100%", "220px"]}
-                            >
+                            <FormLabel fontSize={["xs", "md"]} color="#104DBA" fontWeight={400} lineHeight={["12.3px", "16.24px"]} w={["100%", "220px"]}>
                               Bloquear Domingo
                             </FormLabel>
                             <Checkbox {...field} defaultChecked={field?.value}></Checkbox>
                           </FormControl>
                         )}
                       </Field>
-                      <Field name="especialization">
-                        {({ field }) => (
-                          <FormControl id="especialization" w={["100%", "220px"]} isRequired>
-                            <FormLabel
-                              fontSize={["xs", "md"]}
-                              color="#104DBA"
-                              fontWeight={400}
-                              lineHeight={["12.3px", "16.24px"]}
-                              w={["100%", "220px"]}
-                            >
-                              Especialización
-                            </FormLabel>
-                            {loading ? (
-                              <Spinner />
-                            ) : (
-                              <Select
-                                placeholder="Seleccionar"
+
+                      <Checkbox
+                        isChecked={secondSlotEnabled}
+                        onChange={(e) => setSecondSlotEnabled(e.target.checked)}
+                        colorScheme="blue"
+                        ml={[0, 4]}
+                        color="#104DBA"
+                        sx={{
+                          fontSize: ['sm', 'md', 'lg'], // Forzar el tamaño del texto
+                          '& .chakra-checkbox__label': {
+                            fontSize: ['sm', 'md'], // Asegurar que el texto del label también cambie
+                          }
+                        }}
+                      >
+                        Habilitar segunda franja horaria
+                      </Checkbox>
+
+                      <Flex justifyContent="space-between" mb={4} visibility={['visible', secondSlotEnabled ? 'visible' : 'hidden']} display={[secondSlotEnabled ? 'block' : 'none', 'flex']}>
+                        <Field name="reserveTimeFrom2">
+                          {({ field }) => (
+                            <FormControl id="reserveTimeFrom2" w={["100%", "240px"]} mr={[2, 10]}>
+                              <FormLabel fontSize={["xs", "md"]} color="#104DBA" fontWeight={400} lineHeight={["12.3px", "16.24px"]} w={["100%", "240px"]}>
+                                Inicio horario de atención (2°)
+                              </FormLabel>
+                              <Input
+                                type="number"
                                 fontSize={["xs", "md"]}
-                                w={["100%", "220px"]}
+                                _placeholder={{ color: "gray.500" }}
+                                w={["100%", "240px"]}
                                 {...field}
-                              >
-                                {specializations.map((spec) => (
-                                  <option key={spec._id} value={spec.name}>
-                                    {spec.name}
-                                  </option>
-                                ))}
-                              </Select>
-                            )}
-                          </FormControl>
-                        )}
-                      </Field>
+                              />
+                            </FormControl>
+                          )}
+                        </Field>
+
+                        <Field name="reserveTimeUntil2">
+                          {({ field }) => (
+                            <FormControl id="reserveTimeUntil2" w={["100%", "240px"]} ml={[0, 3]} mt={[3, 0]}>
+                              <FormLabel fontSize={["xs", "md"]} color="#104DBA" fontWeight={400} lineHeight={["12.3px", "16.24px"]} w={["100%", "240px"]}>
+                                Fin horario de atención (2°)
+                              </FormLabel>
+                              <Input
+                                type="number"
+                                fontSize={["xs", "md"]}
+                                _placeholder={{ color: "gray.500" }}
+                                w={["100%", "240px"]}
+                                {...field}
+                              />
+                            </FormControl>
+                          )}
+                        </Field>
+
+                      </Flex>
                     </Flex>
                   </Fragment>
                 )}
@@ -844,7 +877,7 @@ export default function Settings() {
               leftIcon={<SiMercadopago style={{ fontSize: "24px" }} />}
               onClick={handleLoginMp}
               color="#FFFFFF"
-              w={["220px", "300px"]}
+              w="fit-content"
               size="sm"
               borderRadius="2xl"
               mt={4}
