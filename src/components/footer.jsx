@@ -25,6 +25,7 @@ export const FooterLanding = ({ styles = {} }) => {
 
           <Box>
             <Flex gap={2} mt={5} justifyContent={["start", "end"]}>
+              {/*
               <Link href="https://facebook.com" target="__blank">
                 <Box
                   w={["15px", "15px", "20px", "20px"]}
@@ -53,10 +54,11 @@ export const FooterLanding = ({ styles = {} }) => {
                   <BiLogoLinkedin className="icon-responsive-v2" />
                 </Box>
               </Link>
+              */}
               <Link href="https://instagram.com" target="__blank">
                 <Box
-                  w={["15px", "15px", "20px", "20px"]}
-                  h={["15px", "15px", "20px", "20px"]}
+                  w="30px"
+                  h="30px"
                   borderRadius="50%"
                   bgColor="white"
                   display="flex"
@@ -78,6 +80,16 @@ export const FooterLanding = ({ styles = {} }) => {
               mt={3}
             >
               ayuda@zonamed.com.ar
+            </Text>
+            <Text
+              fontSize={["xs", "sm"]}
+              align={["left", "right"]}
+              color="white"
+              fontWeight="400"
+              lineHeight={["12px", "16px"]}
+              mt={2}
+            >
+              info@zonamed.com.ar
             </Text>
             <Text
               fontSize={["xs", "sm"]}
@@ -125,8 +137,8 @@ export const FooterLanding = ({ styles = {} }) => {
           >
             Zona Med
           </Text>
-
           <Flex gap={4} mb={4}>
+            {/*
             <Link href="https://linkedin.com" target="__blank">
               <Box
                 w="30px"
@@ -138,9 +150,10 @@ export const FooterLanding = ({ styles = {} }) => {
                 alignItems="center"
                 _hover={{ backgroundColor: "#F5F5F5" }}
               >
-                <BiLogoLinkedin />
+                <BiLogoLinkedin className="icon-responsive-v2"/>
               </Box>
             </Link>
+            */}
             <Link href="https://instagram.com" target="__blank">
               <Box
                 w="30px"
@@ -152,9 +165,10 @@ export const FooterLanding = ({ styles = {} }) => {
                 alignItems="center"
                 _hover={{ backgroundColor: "#F5F5F5" }}
               >
-                <FaInstagram />
+                <FaInstagram className="icon-responsive-v2"/>
               </Box>
             </Link>
+            {/*
             <Link href="https://facebook.com" target="__blank">
               <Box
                 w="30px"
@@ -166,13 +180,17 @@ export const FooterLanding = ({ styles = {} }) => {
                 alignItems="center"
                 _hover={{ backgroundColor: "#F5F5F5" }}
               >
-                <FaFacebookF />
+                <FaFacebookF className="icon-responsive-v2"/>
               </Box>
             </Link>
+            */}
           </Flex>
 
           <Text fontSize="xs" color="white" mt={2}>
             ayuda@zonamed.com.ar
+          </Text>
+          <Text fontSize="xs" color="white" mt={2}>
+            info@zonamed.com.ar
           </Text>
           <Text fontSize="xs" color="white" mt={2}>
             © 2024 ZonaMed – Todos los derechos reservados
