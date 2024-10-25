@@ -262,6 +262,16 @@ export const Footer = ({styles = {}, display}) => {
             >
               ayuda@zonamed.com.ar
             </Text>
+            <Text
+              fontSize={["xs", "sm"]}
+              align={["left", "right"]}
+              color="white"
+              fontWeight="400"
+              lineHeight={["12px", "16px"]}
+              alignContent='center'
+            >
+              info@zonamed.com.ar
+            </Text>
           </Box>
           <Text
             fontSize={["xs", "sm"]}
