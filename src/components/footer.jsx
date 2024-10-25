@@ -194,7 +194,7 @@ export const FooterLanding = ({ styles = {} }) => {
           marginTop={[3, 0]}
         >
           Tecnología desarrollada por{" "}
-          <Link href="https://merliteam.com" target="__blank" fontWeight="bold" >
+          <Link href="https://merliteam.com" target="__blank" fontWeight="bold" _hover={{ color: "white" }}>
             merliteam.com
           </Link>
         </Text>
@@ -257,7 +257,7 @@ export const Footer = ({styles = {}, display}) => {
             transform={["", "", "", "translateX(-50%)"]}
           >
               Tecnología desarrollada por {" "}
-            <Link href="https://merliteam.com" target="__blank">
+            <Link href="https://merliteam.com" target="__blank" fontWeight="bold">
                 merliteam.com
             </Link>
           </Text>
