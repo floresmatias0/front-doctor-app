@@ -212,6 +212,7 @@ export default function Settings() {
       const response = data;
       if (response.success) {
         let specializations = response.data;
+        specializations.sort((a, b) => a.name.localeCompare(b.name));
         setSpecializations(specializations);
       } else {
         setSpecializations([]);
@@ -223,6 +224,7 @@ export default function Settings() {
       throw new Error("Something went wrong to fetch specializations");
     }
   };
+  
 
   useEffect(() => {
     const fetchDataSpecializations = async () => {

@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
-import { Button, Flex, Text, Box, Image, Divider, Center, Spinner, Select, FormControl, FormLabel } from "@chakra-ui/react";
+import { Button, Flex, Text, Box, Image, Divider, Center, Spinner, Select, FormControl, FormLabel, Input, InputGroup, InputRightElement } from "@chakra-ui/react";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import { instance } from "../utils/axios";
-import { FaMoneyBill } from "react-icons/fa";
+import { FaMoneyBill, FaSearch } from "react-icons/fa";
 import { MdOutlineNavigateNext, MdOutlineNavigateBefore } from "react-icons/md";
 import CustomCalendar from "./custom-calendar";
 
@@ -27,7 +27,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
   const totalPages = Math.ceil(doctors.length / itemsPerPage);
-
+  const [searchTerm, setSearchTerm] = useState("");
 
   const currentDoctors = doctors.slice(
     (currentPage - 1) * itemsPerPage,
@@ -59,7 +59,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
           for (let i = 0; i < doctors.length; i++) {
             if ((doctors[i].validated === 'completed') && (!selectedSpecialization || doctors[i].especialization === selectedSpecialization)) {
               auxDoctors.push({
-                label: doctors[i].name,
+                label: `${doctors[i].firstName} ${doctors[i].lastName}`,
                 value: doctors[i].email,
                 picture: doctors[i].picture,
                 reservePrice: doctors[i].reservePrice,
@@ -88,6 +88,9 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     }
   };
 
+  const normalizeText = (text) => {
+    return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  };
 
 
   const fetchSpecializations = async () => {
@@ -97,7 +100,20 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       const response = data;
       if (response.success) {
         let specializations = response.data;
-        setSpecializations(specializations);
+
+        // Obtener los médicos
+        const { data: doctorsData } = await instance.get("/users?filters={\"role\":[\"DOCTOR\"]}");
+        const doctors = doctorsData.data;
+
+        // Filtrar especializaciones que tienen al menos un médico
+        const filteredSpecializations = specializations.filter(spec =>
+          doctors.some(doc => doc.especialization === spec.name)
+        );
+
+        // Ordenamos las especializaciones alfabéticamente
+        filteredSpecializations.sort((a, b) => a.name.localeCompare(b.name));
+
+        setSpecializations(filteredSpecializations);
       } else {
         setSpecializations([]);
       }
@@ -108,6 +124,8 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       throw new Error("Something went wrong to fetch specializations");
     }
   };
+
+
 
   useEffect(() => {
     const fetchDataSpecializations = async () => {
@@ -127,8 +145,9 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     setSelectedSpecialization(event.target.value);
   };
   const handleBackFilter = () => {
-    setSelectedSpecialization(""); // Reiniciar la especialidad seleccionada a una cadena vacía
-    setDoctorSelected(null); // Reiniciar la selección del médico
+    setSelectedSpecialization(""); // Reiniciamos selecciones y búsquedas
+    setDoctorSelected(null);
+    setSearchTerm("");
     setDisableTabs({
       ...disableTabs,
       filter: false,
@@ -136,6 +155,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       calendar: true,
       specialty: true
     });
+     
   };
 
 
@@ -217,7 +237,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       }
     };
     if (isActive) fetchDataDoctors();
-  }, [isActive, selectedSpecialization]); // <-- Asegúrate de incluir selectedSpecialization como dependencia
+  }, [isActive, selectedSpecialization]);
 
 
   if (!isActive) {
@@ -344,7 +364,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                 borderBottom: "2px solid #104DBA",
                 boxShadow: "none"
               },
-              paddingBottom: [3, 1] // Añadimos margen inferior al Select
+              paddingBottom: [3, 1]
             }}
             value={selectedSpecialization}
             onChange={handleSpecializationSelect}
@@ -409,14 +429,36 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
 
       {!disableTabs.doctors && (
         <Fragment>
-          <Text
-            fontWeight={400}
-            fontSize="md"
-            lineHeight="18.75px"
-            width="235px"
-          >
-            Por favor elija al profesional con el que desea atenderse.
-          </Text>
+          <Flex justifyContent="space-between" alignItems="center">
+            <Text
+              fontWeight={400}
+              fontSize="md"
+              lineHeight="18.75px"
+              width="235px"
+            >
+              Por favor elija al profesional con el que desea atenderse.
+            </Text>
+            <InputGroup position="absolute" right="45px" top="15px" w="220px">
+              <Input
+                placeholder="Buscar nombre de profesional"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                border="1px solid #A4A4A4"
+                borderRadius="20px"
+                fontSize="xs"
+                paddingY="1px"
+                height="22px"
+              />
+              <InputRightElement
+                pointerEvents="none"
+                display="flex"
+                alignItems="center"
+                paddingBottom="18px"
+              >
+                <FaSearch color="gray.500" style={{ width: "12px", height: "12px" }} />
+              </InputRightElement>
+            </InputGroup>
+          </Flex>
           <Flex
             flex={1}
             w="full"
@@ -431,7 +473,9 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
           >
             {console.log("Current Doctors:", currentDoctors)}
             {currentDoctors.length > 0 ? (
-              currentDoctors.map((doctor, idx) => (
+              currentDoctors.filter(doctor =>
+                normalizeText(doctor.label).includes(normalizeText(searchTerm))
+              ).map((doctor, idx) => (
                 <Flex
                   key={idx}
                   w={["full", "265px"]}
