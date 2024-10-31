@@ -155,7 +155,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       calendar: true,
       specialty: true
     });
-     
+
   };
 
 
@@ -425,37 +425,26 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
         </Fragment>
       )}
 
-
-
       {!disableTabs.doctors && (
         <Fragment>
-          <Flex justifyContent="space-between" alignItems="center">
-            <Text
-              fontWeight={400}
-              fontSize="md"
-              lineHeight="18.75px"
-              width="235px"
-            >
+          <Flex direction={{ base: 'column', md: 'row' }} alignItems={{ md: 'center' }} justifyContent="space-between" pl={{ base: '12px', md: '0' }} pt={{ base: '4px', md: '0' }} pb={{ base: '4px', md: '0' }}>
+            <Text fontWeight={400} fontSize="md" lineHeight="18.75px" width={{ base: 'fit-content', md: '235px' }}>
               Por favor elija al profesional con el que desea atenderse.
             </Text>
-            <InputGroup position="absolute" right="45px" top="15px" w="220px">
+            <InputGroup mt={{ base: 4, md: 0 }} position={{ base: 'relative', md: 'absolute' }} right={{ base: '0', md: '45px' }} top={{ base: '0', md: '17px' }} w="220px">
               <Input
                 placeholder="Buscar nombre de profesional"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                border="1px solid #A4A4A4"
+                border="2px solid #A4A4A4"
                 borderRadius="20px"
                 fontSize="xs"
                 paddingY="1px"
                 height="22px"
+                _placeholder={{ color: 'black' }}
               />
-              <InputRightElement
-                pointerEvents="none"
-                display="flex"
-                alignItems="center"
-                paddingBottom="18px"
-              >
-                <FaSearch color="gray.500" style={{ width: "12px", height: "12px" }} />
+              <InputRightElement pointerEvents="none" display="flex" alignItems="center" paddingBottom="18px">
+                <FaSearch color="gray.500" style={{ width: '12px', height: '12px' }} />
               </InputRightElement>
             </InputGroup>
           </Flex>
@@ -496,8 +485,8 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                   <Image
                     rounded="full"
                     src={doctor?.picture}
-                    w="40px"
-                    h="40px"
+                    w={{ base: '60px', md: '55px' }}
+                    h={{ base: '60px', md: '55px' }}
                   />
                   <Flex flexDirection="column" justifyContent="space-between">
                     <Box>
