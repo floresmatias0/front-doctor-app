@@ -11,8 +11,10 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     filter: false,
     doctors: true,
     calendar: true,
-    specialty: true
+    specialty: true,
+    closest: true
   };
+
   const [disableTabs, setDisableTabs] = useState(initialStateTabs);
   const [doctors, setDoctors] = useState([]);
   const [specializations, setSpecializations] = useState([]);
@@ -28,11 +30,14 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   const itemsPerPage = 4;
   const totalPages = Math.ceil(doctors.length / itemsPerPage);
   const [searchTerm, setSearchTerm] = useState("");
+  const [closestAppointments, setClosestAppointments] = useState([]);
+  const [currentDoctorIndex, setCurrentDoctorIndex] = useState(0);
 
   const currentDoctors = doctors.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
 
   const handlePreviousPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
@@ -125,8 +130,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     }
   };
 
-
-
   useEffect(() => {
     const fetchDataSpecializations = async () => {
       try {
@@ -138,12 +141,45 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     fetchDataSpecializations();
   }, []);
 
+  // Función para obtener los turnos más próximos
+  const fetchClosestAppointments = async (specialization) => {
+    setLoadingCalendar(true);
+    try {
+        const response = await instance.get(`/calendars/closest-appointments?specialization=${specialization}`);
+        console.log('Respuesta del servidor:', response);
+
+        const sortedAppointments = response.data.data.sort((a, b) => new Date(a.nextAvailable.start) - new Date(b.nextAvailable.start));
+        setClosestAppointments(sortedAppointments);
+    } catch (err) {
+        console.error("fetch closest appointments", err.message);
+        throw new Error("Something went wrong to fetch closest appointments");
+    } finally {
+        setLoadingCalendar(false);
+    }
+};
+
+
+
   const handleDoctorsSelect = (doctor) => {
     setDoctorSelected(doctor);
   };
-  const handleSpecializationSelect = (event) => {
+
+  const handleSpecializationSelect = async (event) => {
     setSelectedSpecialization(event.target.value);
+    await fetchClosestAppointments(event.target.value); // Fetch closest appointments on selection
   };
+  const handleDoctorSelection = (doctor, appointment) => {
+    const adjustedDate = new Date(appointment.nextAvailable.start);
+    adjustedDate.setHours(adjustedDate.getHours() + 3);
+    setDoctorSelected({
+        ...doctor,
+        label: `${doctor.firstName} ${doctor.lastName}`
+    });
+    setDaySelected(adjustedDate);
+};
+
+
+
   const handleBackFilter = () => {
     setSelectedSpecialization(""); // Reiniciamos selecciones y búsquedas
     setDoctorSelected(null);
@@ -153,7 +189,8 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       filter: false,
       doctors: true,
       calendar: true,
-      specialty: true
+      specialty: true,
+      closest: true
     });
 
   };
@@ -165,6 +202,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       filter: true,
       doctors: false,
       calendar: true,
+      closest: true
     });
   };
 
@@ -193,6 +231,42 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       specialty: false,
     });
   };
+
+  const handleNextClosest = () => {
+    setDisableTabs({
+      ...disableTabs,
+      filter: true,
+      closest: false,
+    });
+  };
+
+  const handleBackClosest = () => {
+    setSelectedSpecialization(""); // Reiniciamos selecciones y búsquedas
+    setDoctorSelected(null);
+    setDisableTabs({
+      ...disableTabs,
+      filter: false,
+      doctors: true,
+      calendar: true,
+      closest: true
+    });
+  };
+
+
+  //CARROUSEL DOCTORES - TURNO MAS PROXIMO
+
+  const handlePrevClick = () => {
+    setCurrentDoctorIndex((prevIndex) =>
+      prevIndex === 0 ? closestAppointments.length - 1 : prevIndex - 1
+    );
+  };
+
+  const handleNextClick = () => {
+    setCurrentDoctorIndex((prevIndex) =>
+      prevIndex === closestAppointments.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
 
   const fetchDataCalendar = useCallback(async () => {
     try {
@@ -312,10 +386,11 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
               size="sm"
               background="#FFFFFF"
               fontWeight={500}
-              isDisabled
+              onClick={handleNextClosest} // Actualiza el onClick
             >
               TURNO MAS PROXIMO
             </Button>
+
           </Flex>
           <Flex justifyContent="flex-start" alignItems="flex-start" my={1}>
             <Button
@@ -571,6 +646,193 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
           </Flex>
         </Fragment>
       )}
+
+{!disableTabs.closest && (
+    <Fragment>
+        <Flex flexDirection="column" alignItems="flex-start">
+            <Text fontWeight={400} fontSize="md" lineHeight="18.75px" mt="-1.5" p={[3, 0]}>
+                Por favor, seleccione primero la especialidad médica:
+            </Text>
+            <Select
+                placeholder="Elegir especialidad"
+                fontSize={["sm", "md"]}
+                w={["auto", "250px"]}
+                h={["30px", "36px"]}       
+                border="none"
+                borderBottom="2px solid #104DBA"
+                borderRadius="0"
+                iconColor="#104DBA"
+                focusBorderColor="#104DBA"
+                sx={{
+                    boxShadow: "none",
+                    _focus: {
+                        borderBottom: "2px solid #104DBA",
+                        boxShadow: "none"
+                    },
+                    paddingBottom: [3, 1]
+                }}
+                mt={[0, 3]}
+                value={selectedSpecialization}
+                onChange={async (e) => {
+                    setSelectedSpecialization(e.target.value);
+                    await fetchClosestAppointments(e.target.value);
+                }}
+            >
+                {specializations.map((spec) => (
+                    <option key={spec._id} value={spec.name}>
+                        {spec.name}
+                    </option>
+                ))}
+            </Select>
+        </Flex>
+
+        {selectedSpecialization && (
+            <Fragment>
+                <Text fontWeight={400} fontSize="md" lineHeight="18.75px" mt={0} p={[4,0]}>
+                    El turno más próximo es:
+                </Text>
+                {loadingCalendar ? ( 
+                  <Center h="100px" flexDirection="column"> 
+                  <Spinner /> 
+                  <Text mt={2}>Un momento por favor...</Text>
+                   </Center>
+                ) : closestAppointments.length > 0 ? (
+                    <Fragment>
+                        <Flex justifyContent="center" alignItems="center">
+                            <Button onClick={handlePrevClick}
+                                rounded="full"
+                                p={1}
+                                m={4}
+                                color="#FFF"
+                                _active={{ bgColor: "#104DBA" }}
+                                _hover={{ bgColor: "#104DBA40" }}
+                                size="xs"
+                                bg="#104DBA"
+                            >
+                                <MdOutlineNavigateBefore size="md"/>
+                            </Button>
+
+                            <Flex
+                                key={currentDoctorIndex}
+                                w={["full", "265px"]}
+                                h="83px"
+                                justifyContent="space-around"
+                                boxShadow="0px 4px 4px 0px #00000040"
+                                borderRadius="xl"
+                                p={2}
+                                cursor="pointer"
+                                onClick={() => handleDoctorSelection(closestAppointments[currentDoctorIndex].doctor, closestAppointments[currentDoctorIndex])}
+                                border="2px"
+                                borderColor={
+                                    doctorSelected?.email === closestAppointments[currentDoctorIndex].doctor.email
+                                        ? "#104DBA"
+                                        : "transparent"
+                                }
+                            >
+                                <Image
+                                    rounded="full"
+                                    src={closestAppointments[currentDoctorIndex].doctor.picture}
+                                    w={{ base: '60px', md: '55px' }}
+                                    h={{ base: '60px', md: '55px' }}
+                                />
+                                <Flex flexDirection="column" justifyContent="space-between">
+                                    <Box>
+                                        <Text fontSize="xs" lineHeight="14.06px" fontWeight={700}>
+                                            {new Date(closestAppointments[currentDoctorIndex].nextAvailable.start).toLocaleDateString('es-ES', { day: '2-digit', month: 'long' }).toUpperCase()}, {
+                                                new Date(new Date(closestAppointments[currentDoctorIndex].nextAvailable.start).setHours(new Date(closestAppointments[currentDoctorIndex].nextAvailable.start).getHours() + 3)).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+                                            } Hs.
+                                        </Text>
+                                        <Text fontSize="xs" fontWeight={700} lineHeight="14.06px">
+                                            {closestAppointments[currentDoctorIndex].doctor.firstName} {closestAppointments[currentDoctorIndex].doctor.lastName}
+                                        </Text>
+                                        <Text fontSize="xs" fontWeight={400} lineHeight="14.06px">
+                                            {closestAppointments[currentDoctorIndex].doctor.especialization}
+                                        </Text>
+                                        <Flex gap={2}>
+                                            <Box display={["none", "block", "block", "block", "block", "block"]}>
+                                                <FaMoneyBill
+                                                    style={{
+                                                        width: "16px",
+                                                        height: "16px",
+                                                        color: "gray",
+                                                    }}
+                                                />
+                                            </Box>
+                                            <Text fontSize="xs" fontWeight={300} lineHeight="14.06px">
+                                                Valor de la consulta: ${closestAppointments[currentDoctorIndex].doctor.reservePrice}
+                                            </Text>
+                                        </Flex>
+                                    </Box>
+                                </Flex>
+                            </Flex>
+
+                            <Button onClick={handleNextClick}
+                                rounded="full"
+                                p={1}
+                                m={4}
+                                color="#FFF"
+                                _active={{ bgColor: "#104DBA" }}
+                                _hover={{ bgColor: "#104DBA40" }}
+                                size="xs"
+                                bg="#104DBA"
+                            >
+                                <MdOutlineNavigateNext size="md"/>
+                            </Button>
+                        </Flex>
+
+                        <Flex justifyContent="flex-end" gap={4} mt={4}>
+                            <Button
+                                bg="#104DBA"
+                                color="#FFFFFF"
+                                w="120px"
+                                size="xs"
+                                leftIcon={
+                                    <MdOutlineNavigateBefore
+                                        style={{ width: "20px", height: "20px" }}
+                                    />
+                                }
+                                onClick={handleBackClosest}
+                            >
+                                <Text
+                                    fontSize="xs"
+                                    lineHeight="16px"
+                                    fontWeight={500}
+                                    textTransform="uppercase"
+                                >
+                                    Anterior
+                                </Text>
+                            </Button>
+                            {doctorSelected && (
+                                <Button
+                                    bg="#104DBA"
+                                    color="#FFFFFF"
+                                    w="120px"
+                                    size="xs"
+                                    rightIcon={
+                                        <MdOutlineNavigateNext
+                                            style={{ width: "20px", height: "20px" }}
+                                        />
+                                    }
+                                    onClick={onNext}
+                                >
+                                    <Text
+                                        fontSize="xs"
+                                        lineHeight="16px"
+                                        fontWeight={500}
+                                        textTransform="uppercase"
+                                    >
+                                        Continuar
+                                    </Text>
+                                </Button>
+                            )}
+                        </Flex>
+                    </Fragment>
+                ) : null}
+            </Fragment>
+        )}
+    </Fragment>
+)}
+
 
       {!disableTabs.calendar && (
         <Fragment>
