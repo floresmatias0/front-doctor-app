@@ -50,10 +50,6 @@
       }
     }
 
-    function openInChrome() {
-      window.location.href = "googlechrome://navigate?url=" + window.location.href;
-    }
-
     window.onload = checkInstagramBrowser;
   </script>
 
@@ -87,8 +83,7 @@
 
   <div id="redirectMessage">
     <p>Parece que estás usando el navegador de Instagram. Para una mejor experiencia, abre esta página en Chrome.</p>
-    <button id="redirectButton" onclick="openInChrome()">Abrir en Chrome</button>
-  </div>
+    <a id="redirectButton" href="https://zonamed-dev.vercel.app/" target="_blank">Abrir en Chrome</a></div>
 
 </body>
 
