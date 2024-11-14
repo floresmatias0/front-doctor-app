@@ -10,6 +10,19 @@
 
   <title>Atención Médica</title>
 
+  <script>
+    function redirectToChromeIfNotChrome() {
+        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        var isChrome = /Chrome/.test(userAgent) && /Google Inc/.test(navigator.vendor);
+        
+        if (!isChrome) {
+            window.location.href = "googlechrome://navigate?url=" + window.location.href;
+        }
+    }
+
+    window.onload = redirectToChromeIfNotChrome;
+</script>
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://zonamed.com.ar">
@@ -26,17 +39,6 @@
     content="Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.">
   <meta property="twitter:image" content="/maskable-icon-512x512.png">
 
-  <script>
-    function redirectIfInInstagramBrowser() {
-      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      if (userAgent.indexOf('Instagram') > -1) {
-        window.location.href = "googlechrome://navigate?url=" + window.location.href;
-      }
-    }
-
-    window.onload = redirectIfInInstagramBrowser;
-  </script>
-
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
   <link rel="mask-icon" href="/maskable-icon.png" color="#FFFFFF">
@@ -47,10 +49,6 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
-  <p id="userAgent"></p>
-  <script>
-      document.getElementById('userAgent').innerText = navigator.userAgent;
-  </script>
 </body>
 
 </html>
