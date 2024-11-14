@@ -10,18 +10,53 @@
 
   <title>Atención Médica</title>
 
-  <script>
-    function redirectToChromeIfNotChrome() {
-        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        var isChrome = /Chrome/.test(userAgent) && /Google Inc/.test(navigator.vendor);
-        
-        if (!isChrome) {
-            window.location.href = "googlechrome://navigate?url=" + window.location.href;
-        }
+  <style>
+    #redirectMessage {
+      display: none;
+      /* Ocultamos el mensaje por defecto */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #ffcc00;
+      color: #000;
+      text-align: center;
+      padding: 10px;
+      z-index: 1000;
+      font-size: 16px;
+      /* Ajustamos el tamaño de fuente */
     }
 
-    window.onload = redirectToChromeIfNotChrome;
-</script>
+    #redirectButton {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      /* Ajustamos el tamaño de fuente */
+      margin: 10px 5px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+  </style>
+  <script>
+    function checkInstagramBrowser() {
+      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      if (userAgent.indexOf('Instagram') > -1) {
+        document.getElementById('redirectMessage').style.display = 'block';
+      }
+    }
+
+    function openInChrome() {
+      window.location.href = "googlechrome://navigate?url=" + window.location.href;
+    }
+
+    window.onload = checkInstagramBrowser;
+  </script>
+
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -49,6 +84,12 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
+
+  <div id="redirectMessage">
+    <p>Parece que estás usando el navegador de Instagram. Para una mejor experiencia, abre esta página en Chrome.</p>
+    <button id="redirectButton" onclick="openInChrome()">Abrir en Chrome</button>
+  </div>
+
 </body>
 
 </html>
