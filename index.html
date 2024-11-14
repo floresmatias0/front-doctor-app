@@ -1,35 +1,52 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.">
 
-    <title>Atención Médica</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.">
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://zonamed.com.ar">
-    <meta property="og:title" content="Atención Médica">
-    <meta property="og:description" content="Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.">
-    <meta property="og:image" content="/maskable-icon-512x512.png">
+  <title>Atención Médica</title>
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://zonamed.com.ar">
-    <meta property="twitter:title" content="Atención Médica">
-    <meta property="twitter:description" content="Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.">
-    <meta property="twitter:image" content="/maskable-icon-512x512.png">
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zonamed.com.ar">
+  <meta property="og:title" content="Atención Médica">
+  <meta property="og:description"
+    content="Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.">
+  <meta property="og:image" content="/maskable-icon-512x512.png">
 
-    <link rel="icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
-    <link rel="mask-icon" href="/maskable-icon.png" color="#FFFFFF">
-    <meta name="theme-color" content="#ffffff">
-    <meta name="google-site-verification" content="JEC6LiWqLZGMHkAbd5T7WxvHLr0MLtcmov5kvK0mTy0" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://zonamed.com.ar">
+  <meta property="twitter:title" content="Atención Médica">
+  <meta property="twitter:description"
+    content="Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.">
+  <meta property="twitter:image" content="/maskable-icon-512x512.png">
+
+  <script>
+    function redirectIfInInstagramBrowser() {
+      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      if (userAgent.indexOf('Instagram') > -1) {
+        window.location.href = "googlechrome://navigate?url=" + window.location.href;
+      }
+    }
+
+    window.onload = redirectIfInInstagramBrowser;
+  </script>
+
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+  <link rel="mask-icon" href="/maskable-icon.png" color="#FFFFFF">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="google-site-verification" content="JEC6LiWqLZGMHkAbd5T7WxvHLr0MLtcmov5kvK0mTy0" />
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>
