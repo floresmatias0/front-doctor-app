@@ -10,49 +10,16 @@
 
   <title>Atención Médica</title>
 
-  <style>
-    #redirectMessage {
-      display: none;
-      /* Ocultamos el mensaje por defecto */
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background-color: #ffcc00;
-      color: #000;
-      text-align: center;
-      padding: 10px;
-      z-index: 1000;
-      font-size: 16px;
-      /* Ajustamos el tamaño de fuente */
-    }
-
-    #redirectButton {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      max-width: 100%;
-      /* Ajustamos el tamaño de fuente */
-      margin: 10px 5px;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-  </style>
   <script>
     function checkInstagramBrowser() {
-      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      if (userAgent.indexOf('Instagram') > -1) {
-        document.getElementById('redirectMessage').style.display = 'block';
-      }
+        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        if (userAgent.indexOf('Instagram') > -1) {
+            window.location.href = 'intent://zonamed-dev.vercel.app#Intent;scheme=https;package=com.android.chrome;end';
+        }
     }
 
     window.onload = checkInstagramBrowser;
-  </script>
+</script>
 
 
   <!-- Open Graph / Facebook -->
@@ -81,12 +48,6 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
-
-  <div id="redirectMessage">
-    <p>Parece que estás usando el navegador de Instagram. Para una mejor experiencia, abre esta página en Chrome.</p>
-   
-    <a id="redirectButton"
-   href="intent://zonamed-dev.vercel.app#Intent;scheme=https;package=com.android.chrome;end">Abrir en Chrome</a>
 
 
 </div>
