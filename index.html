@@ -36,6 +36,7 @@
       text-decoration: none;
       display: inline-block;
       font-size: 16px;
+      max-width: 100%;
       /* Ajustamos el tamaño de fuente */
       margin: 10px 5px;
       cursor: pointer;
@@ -83,7 +84,19 @@
 
   <div id="redirectMessage">
     <p>Parece que estás usando el navegador de Instagram. Para una mejor experiencia, abre esta página en Chrome.</p>
-    <a id="redirectButton" href="intent://zonamed-dev.vercel.app#Intent;scheme=https;package=com.android.chrome;end">Abrir en Chrome</a></div>
+    <a id="redirectButton"
+    href="googlechrome://zonamed-dev.vercel.app">Boton así: googlechrome://zonamed-dev.vercel.app </a>
+    
+    <a id="redirectButton" href="googlechrome://navigate?url=https://zonamed-dev.vercel.app">Botón así googlechrome://navigate?url=https://zonamed-dev.vercel.app</a>
+
+    <a id="redirectButton"
+   href="intent://zonamed-dev.vercel.app#Intent;scheme=https;package=com.android.chrome;end">Botón así: intent://zonamed-dev.vercel.app#Intent;scheme=https;package=com.android.chrome;end</a>
+
+   <a id="redirectButton"
+   href="https://zonamed-dev.vercel.app" target="_blank">Botón así: https://zonamed-dev.vercel.app target="_blank"</a>
+
+
+</div>
 
 </body>
 
