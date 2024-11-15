@@ -10,15 +10,6 @@
 
   <title>Atención Médica</title>
 
-  <script>
-    function checkInstagramBrowser() {
-        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        if (userAgent.indexOf('Instagram') > -1) {
-            window.location.href = 'intent://zonamed-dev.vercel.app#Intent;scheme=https;package=com.android.chrome;end';
-        }
-    }
-    window.onload = checkInstagramBrowser;
-</script>
 <style>
   #overlay {
     position: fixed;
