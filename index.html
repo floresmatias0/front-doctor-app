@@ -17,8 +17,69 @@
             window.location.href = 'intent://zonamed-dev.vercel.app#Intent;scheme=https;package=com.android.chrome;end';
         }
     }
-
     window.onload = checkInstagramBrowser;
+</script>
+<style>
+  #overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  #redirectMessage {
+    background-color: #ffffff; /* Fondo blanco */
+    color: #104DBA; /* Color de las letras */
+    width: 80%; /* Ajusta según sea necesario */
+    max-width: 600px;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    position: relative;
+  }
+
+#zonaText{
+  width: 50%;
+}
+
+  #redirectButton {
+    background-color: #104DBA; /* Color del botón */
+    color: white; /* Letras blancas */
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #redirectButton img {
+    margin-right: 10px; /* Espacio entre el logo y el texto */
+  }
+</style>
+
+<script>
+  function checkInstagramBrowser() {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    if (userAgent.indexOf('Instagram') > -1) {
+      document.getElementById('overlay').style.display = 'flex';
+    }
+  }
+
+  window.onload = checkInstagramBrowser;
 </script>
 
 
@@ -48,8 +109,20 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
+</div>
 
-
+<div id="overlay" style="display: none;">
+  <div id="redirectMessage">
+    <div style="display: flex; align-items: center; justify-content: center;">
+      <img src="public/pwa-192x192.png" alt="Logo de la empresa" width="100" />
+      <p id="zonaText" style="margin-left: 10px;">Bienvenido/a a Zona Med</p>
+    </div>
+    <p>Parece que estás usando el navegador de Instagram. Para una mejor experiencia, abre esta página en Chrome.</p>
+    <a id="redirectButton" href="intent://zonamed-dev.vercel.app#Intent;scheme=https;package=com.android.chrome;end">
+      <img src="public/Google_Chrome-Logo.png" alt="Logo de Chrome" width="20" />
+      Abrir en Google Chrome
+    </a>
+  </div>
 </div>
 
 </body>
