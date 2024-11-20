@@ -109,10 +109,10 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
         // Obtener los médicos
         const { data: doctorsData } = await instance.get("/users?filters={\"role\":[\"DOCTOR\"]}");
         const doctors = doctorsData.data;
-
-        // Filtrar especializaciones que tienen al menos un médico
+        
+        // Filtrar especializaciones que tienen al menos un médico validado
         const filteredSpecializations = specializations.filter(spec =>
-          doctors.some(doc => doc.especialization === spec.name)
+          doctors.some(doc => doc.especialization === spec.name && doc.validated === 'completed')
         );
 
         // Ordenamos las especializaciones alfabéticamente
