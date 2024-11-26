@@ -85,8 +85,8 @@ export default function Settings() {
         reserveTime: values.reserveTime,
         especialization: values.especialization,
         enrollment: values.enrollment,
-        reserveTimeFrom1: values.reserveTimeFrom1,
-        reserveTimeUntil1: values.reserveTimeUntil1,
+        reserveTimeFrom: values.reserveTimeFrom,
+        reserveTimeUntil: values.reserveTimeUntil,
         reserveTimeFrom2: secondSlotEnabled ? values.reserveTimeFrom2 : null,
         reserveTimeUntil2: secondSlotEnabled ? values.reserveTimeUntil2 : null,
         reserveSaturday: values.reserveSaturday,
@@ -212,6 +212,7 @@ export default function Settings() {
       const response = data;
       if (response.success) {
         let specializations = response.data;
+        specializations.sort((a, b) => a.name.localeCompare(b.name));
         setSpecializations(specializations);
       } else {
         setSpecializations([]);
@@ -223,6 +224,7 @@ export default function Settings() {
       throw new Error("Something went wrong to fetch specializations");
     }
   };
+  
 
   useEffect(() => {
     const fetchDataSpecializations = async () => {

@@ -54,60 +54,59 @@ const CustomCalendar = ({ currentDateState, setDaySelected, calendarEvents, sele
     let currentTime = startOfDay(day);
 
     while (currentTime < (endTime2 || endTime1)) {
-      const eventStartTime = currentTime;
-      const eventEndTime = addMinutes(currentTime, selectedDoc?.reserveTime);
+        const eventStartTime = currentTime;
+        const eventEndTime = addMinutes(currentTime, selectedDoc?.reserveTime);
 
-      let emptyEvent = true;
-  
-  
-      // Verificar si hay un evento en el rango de tiempo actual
+        let emptyEvent = true;
 
-      const isEventAvailable = calendarEvents?.some(event => {
-        const eventStartDate = new Date(event?.start?.dateTime);
-        const eventEndDate = new Date(event?.end?.dateTime);
-        return (eventStartDate <= eventStartTime && eventEndDate >= eventEndTime);
-      });
+        // Verificar si hay un evento en el rango de tiempo actual
+        const isEventAvailable = calendarEvents?.some(event => {
+            const eventStartDate = new Date(event?.start?.dateTime);
+            const eventEndDate = new Date(event?.end?.dateTime);
+            return (eventStartDate <= eventStartTime && eventEndDate >= eventEndTime);
+        });
 
-      if (isEventAvailable || (isToday(day) && eventStartTime <= now) || (isSaturday && availableSaturday) || (isSunday && availableSunday)) {
-        emptyEvent = false;
-      }
+        if (isEventAvailable || (isToday(day) && eventStartTime <= now) || (isSaturday && availableSaturday) || (isSunday && availableSunday)) {
+            emptyEvent = false;
+        }
 
-      if ((eventStartTime >= startTime1 && eventEndTime <= endTime1) || (startTime2 && endTime2 && eventStartTime >= startTime2 && eventEndTime <= endTime2)) {
-        eventDivs.push(
-          <Button
-            my={1}
-            px={1}
-            onClick={() => {
-              if (emptyEvent) {
-                setSelectedTimes(prev => {
-                  if (prev.length < 2) {
-                    return [...prev, eventStartTime];
-                  }
-                  return [prev[1], eventStartTime];
-                });
-                setDaySelected(eventStartTime);
-              }
-            }}
-            border="1px"
-            borderColor={emptyEvent ? "#104DBA" : "#EEE"}
-            bgColor="#FFF"
-            borderRadius="xl"
-            key={eventStartTime.toISOString()}
-            cursor="pointer"
-            _active={{ backgroundColor: "#104DBA" }}
-            size="xs"
-            mx="auto"
-            fontWeight={400}
-            isDisabled={!emptyEvent}
-          >
-            <Text lineHeight="normal" textAlign="center" fontSize={["9px", "sm"]}>{format(eventStartTime, 'HH:mm')}</Text>
-          </Button>
-        );
-      }
-      currentTime = addMinutes(currentTime, 15);
+        if ((eventStartTime >= startTime1 && eventEndTime <= endTime1) || (startTime2 && endTime2 && eventStartTime >= startTime2 && eventEndTime <= endTime2)) {
+            eventDivs.push(
+                <Button
+                    my={1}
+                    px={1}
+                    onClick={() => {
+                        if (emptyEvent) {
+                            setSelectedTimes(prev => {
+                                if (prev.length < 2) {
+                                    return [...prev, eventStartTime];
+                                }
+                                return [prev[1], eventStartTime];
+                            });
+                            setDaySelected(eventStartTime);
+                        }
+                    }}
+                    border="1px"
+                    borderColor={emptyEvent ? "#104DBA" : "#EEE"}
+                    bgColor="#FFF"
+                    borderRadius="xl"
+                    key={eventStartTime.toISOString()}
+                    cursor="pointer"
+                    _active={{ backgroundColor: "#104DBA" }}
+                    size="xs"
+                    mx="auto"
+                    fontWeight={400}
+                    isDisabled={!emptyEvent}
+                >
+                    <Text lineHeight="normal" textAlign="center" fontSize={["9px", "sm"]}>{format(eventStartTime, 'HH:mm')}</Text>
+                </Button>
+            );
+        }
+        currentTime = addMinutes(currentTime, selectedDoc?.reserveTime || 30); // Cambiar el intervalo aquí si es necesario
     }
     return eventDivs;
-  };
+};
+
 
 
   useEffect(() => {
