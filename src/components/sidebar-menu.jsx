@@ -26,6 +26,7 @@ import "../styles/sidebarmenu.css";
 
 const receiveMenu = (isOpen, color="#104DBA", width="20px", height="20px", role="PACIENTE", isMobile=false) => {
     const path = window.location.pathname
+    const { user } = useContext(AppContext);
     const iconsMobile = [
       {
         icon: (
@@ -118,6 +119,11 @@ const receiveMenu = (isOpen, color="#104DBA", width="20px", height="20px", role=
       iconsMobile.splice(4, 1)
     }
 
+    if(role === "DOCTOR" && !(user.validated=== "completed")) {
+      iconsMobile.splice(1, 1)
+      iconsMobile.splice(1, 1)
+      iconsMobile.splice(4, 1)
+    }
     if(role === "DOCTOR") {
       iconsMobile.splice(1, 1)
       iconsMobile.splice(1, 1)

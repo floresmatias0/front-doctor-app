@@ -4,6 +4,7 @@ import { instance } from "../utils/axios";
 import Chart from "chart.js/auto";
 import Upgrade from "../components/upgrade";
 import SymptomsSettings from "../components/symptoms-settings";
+import SpecializationsSettings from "../components/specializations-settings";
 
 const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
@@ -23,7 +24,7 @@ const Graphs = () => {
         const fetchDataCountReserveByDay = async () => {
             try {
                 const { data } = await instance.get('/calendars/charts-booking');
-                console.log({data})
+                console.log({ data })
                 setCountsReserveByDay(data.data);
             } catch (err) {
                 console.log(err?.message);
@@ -61,7 +62,7 @@ const Graphs = () => {
                             label: `Total reservas por día (${new Date().toLocaleString('default', { month: 'long' })})`,
                             borderColor: 'rgb(75, 192, 192)',
                             borderWidth: 2,
-                            fontFamily:"Roboto",
+                            fontFamily: "Roboto",
                             fill: false,
                             data: countsReserveByDay.countsByDay,
                         }]
@@ -132,7 +133,7 @@ const Graphs = () => {
                         },
                     },
                 });
-                
+
             }
         }
     }, [loading, countsReserveByDay]);
@@ -192,9 +193,18 @@ const Graphs = () => {
                             <TabList>
                                 <Tab fontFamily="Roboto">Graficos</Tab>
                                 <Tab fontFamily="Roboto">Usuarios</Tab>
-                                <Tab fontFamily="Roboto">Sintomas</Tab>
+                                <Tab fontFamily="Roboto">Síntomas</Tab>
+                                <Tab
+                                    fontFamily="Roboto"
+                                    overflow="hidden"
+                                    textOverflow="ellipsis"
+                                    whiteSpace="nowrap"
+                                    textAlign="center"
+                                    display="block"
+                                >
+                                    Especializaciones
+                                </Tab>
                             </TabList>
-
                             <TabPanels
                                 flex={1}
                                 display="flex"
@@ -202,13 +212,13 @@ const Graphs = () => {
                             >
                                 <TabPanel flex={1} p={0} py={2}>
                                     <Flex w="100%" h="100%" flexDirection="column">
-                                        <Text fontSize={["sm","md"]} fontWeight={600}>Total este mes: ${countsReserveByDay.currentMonthRevenue}</Text>
-                                        <Text fontSize={["sm","md"]} fontWeight={600}>Total facturado: ${countsReserveByDay.totalRevenueAllMonths}</Text>
+                                        <Text fontSize={["sm", "md"]} fontWeight={600}>Total este mes: ${countsReserveByDay.currentMonthRevenue}</Text>
+                                        <Text fontSize={["sm", "md"]} fontWeight={600}>Total facturado: ${countsReserveByDay.totalRevenueAllMonths}</Text>
                                         <Flex w="100%" h="50%" minWidth={["100%", "600px"]} overflow="auto" justifyContent="center" alignItems="center">
-                                            <canvas style={{width: '100%', height: '100%'}} ref={chartRef}></canvas>
+                                            <canvas style={{ width: '100%', height: '100%' }} ref={chartRef}></canvas>
                                         </Flex>
                                         <Flex w="100%" h="50%" minWidth={["100%", "600px"]} overflow="auto" justifyContent="center" alignItems="center">
-                                            <canvas style={{width: '100%', height: '100%'}} ref={pieChartRef}></canvas>
+                                            <canvas style={{ width: '100%', height: '100%' }} ref={pieChartRef}></canvas>
                                         </Flex>
                                     </Flex>
                                 </TabPanel>
@@ -218,10 +228,14 @@ const Graphs = () => {
                                 <TabPanel p={0} flex={1} py={2}>
                                     <SymptomsSettings />
                                 </TabPanel>
+                                <TabPanel p={0} flex={1} py={2}>
+                                    <SpecializationsSettings />
+                                </TabPanel>
                             </TabPanels>
                         </Tabs>
                     </Flex>
                 )}
+
             </Box>
         </Flex>
     );

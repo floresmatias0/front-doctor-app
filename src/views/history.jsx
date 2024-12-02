@@ -107,7 +107,6 @@ export const FormHistory = ({
         <Divider my={2} />
         <Textarea
           placeholder="Detalles de la consulta"
-          disabled={role !== "DOCTOR" || role !== "ADMIN"}
           value={details}
           onChange={handleDetails}
         />

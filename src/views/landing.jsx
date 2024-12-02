@@ -44,13 +44,6 @@ const principalServices = [
       "Almacena, accede y realiza un seguimiento seguro del historial y los antecedentes médicos.",
   },
   {
-    icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="#FFF" class="icon-responsive" viewBox="0 0 640 512"><path d="M320 32c-8.1 0-16.1 1.4-23.7 4.1L15.8 137.4C6.3 140.9 0 149.9 0 160s6.3 19.1 15.8 22.6l57.9 20.9C57.3 229.3 48 259.8 48 291.9v28.1c0 28.4-10.8 57.7-22.3 80.8c-6.5 13-13.9 25.8-22.5 37.6C0 442.7-.9 448.3 .9 453.4s6 8.9 11.2 10.2l64 16c4.2 1.1 8.7 .3 12.4-2s6.3-6.1 7.1-10.4c8.6-42.8 4.3-81.2-2.1-108.7C90.3 344.3 86 329.8 80 316.5V291.9c0-30.2 10.2-58.7 27.9-81.5c12.9-15.5 29.6-28 49.2-35.7l157-61.7c8.2-3.2 17.5 .8 20.7 9s-.8 17.5-9 20.7l-157 61.7c-12.4 4.9-23.3 12.4-32.2 21.6l159.6 57.6c7.6 2.7 15.6 4.1 23.7 4.1s16.1-1.4 23.7-4.1L624.2 182.6c9.5-3.4 15.8-12.5 15.8-22.6s-6.3-19.1-15.8-22.6L343.7 36.1C336.1 33.4 328.1 32 320 32zM128 408c0 35.3 86 72 192 72s192-36.7 192-72L496.7 262.6 354.5 314c-11.1 4-22.8 6-34.5 6s-23.5-2-34.5-6L143.3 262.6 128 408z"/></svg>',
-    title: "RECURSOS EDUCATIVOS",
-    description:
-      "Descubre información y consejos prácticos sobre la salud.",
-    url: "https://comunidad.sap.org.ar/",
-  },
-  {
     icon: '<svg xmlns="http://www.w3.org/2000/svg" fill="#FFF" class="icon-responsive" viewBox="0 0 512 512"><path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"/></svg>',
     title: "CALIDAD DE ATENCIÓN",
     description:
@@ -1024,16 +1017,17 @@ const LandingHome = () => {
               p={2}
               gap={2}
               w={["214px", "auto", "auto", "580px"]}
+              mx="auto"
             >
               <Image src={handHeart} h={[15, 30]} w={[15, 30]} />
               <Text
                 color="#104DBA"
                 fontSize={["xs", "lg"]}
                 textAlign="center"
-                fontWeight="400"
+                fontWeight="bold"
                 lineHeight={["12px", "18px"]}
               >
-                Estamos aquí para garantizar la salud y el bienestar de tu familia.
+                Estamos aquí para acompañar la salud y el bienestar de tu familia.
               </Text>
             </Flex>
           </Flex>
@@ -1068,12 +1062,12 @@ const LandingHome = () => {
 
               <CustomAccordion
                 title="¿Como recibo la invitación para la videollamada?"
-                description="La estarás recibiendo a través del correo que indiques para que la llamda sea a través de google meets en el día y horario que indiques al momento de sacar el turno."
+                description="La estarás recibiendo a través del correo que indiques para que la llamada sea a través de google meets en el día y horario que indiques al momento de sacar el turno."
               />
 
               <CustomAccordion
                 title="¿Puedo cancelar un turno?"
-                description="Si claro! pero siempre que sea antes de las 24hs de que se cumpla el turno, pasado ese tiempo el pago de la atención no será devuelto a tu cuenta de MercadoPago"
+                description="Si claro! pero siempre que sea antes de las 24hs de que se cumpla el turno, pasado ese tiempo el pago de la atención no será devuelto a tu cuenta de MercadoPago."
               />
 
               <CustomAccordion
@@ -1083,7 +1077,17 @@ const LandingHome = () => {
 
               <CustomAccordion
                 title="Tutoriales"
-                description="<div><a href='https://www.loom.com/share/60831746e4f0489c9dd1c3640e83ff27?sid=e2cb664e-327f-45a8-a356-66806618fa12' target='__blank'>Creación de cuentas medicos</a><br><a href='https://www.loom.com/share/df1294e3a2e44bb5916a5e2ce13e8780?sid=b3d335ef-a183-4257-8a24-dcbb4b281e35' target='__blank'>Configurar agendas y bloquear fin de semana</a></div>"
+                description="<div>
+                  <a href='https://www.loom.com/share/60831746e4f0489c9dd1c3640e83ff27?sid=e2cb664e-327f-45a8-a356-66806618fa12' target='__blank' a:hover {color: #104DBA;}>Creación de cuentas medicos</a>
+                  <br>
+                  <a href='https://www.loom.com/share/df1294e3a2e44bb5916a5e2ce13e8780?sid=b3d335ef-a183-4257-8a24-dcbb4b281e35' target='__blank'>Configurar agendas y bloquear fin de semana</a>
+                  <style>
+                    a:hover {
+                      color: #104DBA;
+                    }
+                  </style>
+                </div>"
+                
               />
             </Flex>
           </Flex>

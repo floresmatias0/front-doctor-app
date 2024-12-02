@@ -1,35 +1,121 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.">
 
-    <title>Atención Médica</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.">
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://zonamed.com.ar">
-    <meta property="og:title" content="Atención Médica">
-    <meta property="og:description" content="Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.">
-    <meta property="og:image" content="/maskable-icon-512x512.png">
+  <title>Atención Médica</title>
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://zonamed.com.ar">
-    <meta property="twitter:title" content="Atención Médica">
-    <meta property="twitter:description" content="Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.">
-    <meta property="twitter:image" content="/maskable-icon-512x512.png">
+<style>
+  #overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
 
-    <link rel="icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
-    <link rel="mask-icon" href="/maskable-icon.png" color="#FFFFFF">
-    <meta name="theme-color" content="#ffffff">
-    <meta name="google-site-verification" content="JEC6LiWqLZGMHkAbd5T7WxvHLr0MLtcmov5kvK0mTy0" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+  #redirectMessage {
+    background-color: #ffffff; /* Fondo blanco */
+    color: #104DBA; /* Color de las letras */
+    width: 80%; /* Ajusta según sea necesario */
+    max-width: 600px;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    position: relative;
+  }
+
+#zonaText{
+  width: 50%;
+}
+
+  #redirectButton {
+    background-color: #104DBA; /* Color del botón */
+    color: white; /* Letras blancas */
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #redirectButton img {
+    margin-right: 10px; /* Espacio entre el logo y el texto */
+  }
+</style>
+
+<script>
+  function checkInstagramBrowser() {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    if (userAgent.indexOf('Instagram') > -1) {
+      document.getElementById('overlay').style.display = 'flex';
+    }
+  }
+
+  window.onload = checkInstagramBrowser;
+</script>
+
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zonamed.com.ar">
+  <meta property="og:title" content="Atención Médica">
+  <meta property="og:description"
+    content="Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.">
+  <meta property="og:image" content="/maskable-icon-512x512.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://zonamed.com.ar">
+  <meta property="twitter:title" content="Atención Médica">
+  <meta property="twitter:description"
+    content="Accede a consultas médicas especializadas, seguimiento de antecedentes médicos, y recursos educativos para padres. Regístrate y cuida de la salud de tus hijos desde cualquier lugar.">
+  <meta property="twitter:image" content="/maskable-icon-512x512.png">
+
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+  <link rel="mask-icon" href="/maskable-icon.png" color="#FFFFFF">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="google-site-verification" content="JEC6LiWqLZGMHkAbd5T7WxvHLr0MLtcmov5kvK0mTy0" />
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</div>
+
+<div id="overlay" style="display: none;">
+  <div id="redirectMessage">
+    <div style="display: flex; align-items: center; justify-content: center;">
+      <img src="/pwa-192x192.png" alt="Logo de la empresa" width="100" />
+      <p id="zonaText" style="margin-left: 10px;">Bienvenido/a a Zona Med</p>
+    </div>
+    <p>Parece que estás usando el navegador de Instagram. Para una mejor experiencia, abre esta página en Chrome.</p>
+    <a id="redirectButton" href="intent://zonamed-dev.vercel.app#Intent;scheme=https;package=com.android.chrome;end">
+      <img src="/Google_Chrome-Logo.png" alt="Logo de Chrome" width="20" />
+      Abrir en Google Chrome
+    </a>
+  </div>
+</div>
+
+</body>
+
 </html>

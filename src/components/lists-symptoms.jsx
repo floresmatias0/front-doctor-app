@@ -31,19 +31,18 @@ const ListSymptoms = ({
     try {
       const { data } = await instance.get("/symptoms");
       const response = data;
-
       if (response.success) {
         let symptoms = response.data;
-
+        symptoms.sort((a, b) => a.name.localeCompare(b.name));
         return setSymptoms(symptoms);
       }
-
       setSymptoms([]);
     } catch (err) {
       console.log("fetch symptoms", err.message);
       throw new Error("Something went wrong to search symptoms");
     }
   };
+  
 
   const handleSymptomSelect = (symptom) => {
     const isSelected = selectedSymptoms.includes(symptom);
@@ -124,17 +123,18 @@ const ListSymptoms = ({
           color="#FFF"
           bg="#104DBA"
           borderRadius="xl"
-          w={["180px", "120px"]}
+          w="fit-content"
           fontSize="xs"
           lineHeight="14.06px"
           textAlign="center"
-          textTransform="capitalize"
           py={1}
+          px={4}
+          textTransform="capitalize"
         >
           Paciente: {patientSelected && patientSelected?.label}
         </Text>
         {!disableTabs.payment && (
-          <Text fontWeight={400} fontSize="lg" lineHeight="18.75px">
+          <Text fontWeight={400} fontSize="lg" lineHeight="18.75px" px={2} py={2}>
             Por favor confirme su turno
           </Text>
         )}
