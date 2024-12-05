@@ -17,7 +17,7 @@ import {
   Divider,
   Link,
   useToast,
-  useMediaQuery,
+
 } from "@chakra-ui/react";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AppContext } from "../components/context";
@@ -262,8 +262,6 @@ const Home = () => {
       detail: "",
     },
   ];
-
-  
 
   return (
     <Flex
