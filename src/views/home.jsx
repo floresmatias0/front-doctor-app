@@ -413,7 +413,7 @@ const Home = () => {
                           >
                             <Td textAlign="center">Dr/Dra. {x.doctorName}</Td>
                             <Td textAlign="center">{x.beginning}</Td>
-                            <Td textAlign="center">{x.startDate}</Td>
+                            <Td textAlign="center">{x.startTime}</Td>
                             <Td textAlign="center">Consulta</Td>
                             <Td textAlign="center">
                               {x.status === "deleted" ? (
