@@ -17,6 +17,7 @@ import {
   Divider,
   Link,
   useToast,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AppContext } from "../components/context";
@@ -262,6 +263,8 @@ const Home = () => {
     },
   ];
 
+  
+
   return (
     <Flex
       w={["full", "calc(100% - 155px)"]}
@@ -421,7 +424,7 @@ const Home = () => {
                               ) : now > bookingStart ? (
                                 <Text color="gray">No disponible</Text>
                               ) : (
-                                <Link href={x.hangoutLink} target="_blank">
+                                <Link href={x.link} target="_blank">
                                   <Text
                                     color="#104DBA"
                                     textDecoration="underline"
