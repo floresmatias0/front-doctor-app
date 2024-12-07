@@ -31,6 +31,8 @@ import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 import { MdErrorOutline } from "react-icons/md";
+import { renderStars } from '../components/rating-stars';
+import RatingPopup from '../components/rating-popup';
 
 export const FormHistory = ({
   values,
@@ -42,6 +44,7 @@ export const FormHistory = ({
   handleDeleteCertificate,
 }) => {
   const [details, setDetails] = useState(values?.details || "");
+
 
   let now = new Date();
   let bookingStart = new Date(values?.originalStartTime);
@@ -96,8 +99,8 @@ export const FormHistory = ({
         {values?.status === "deleted"
           ? "Cancelado"
           : now > bookingStart
-          ? "Expiró"
-          : "Confirmado"}
+            ? "Expiró"
+            : "Confirmado"}
       </Text>
 
       <Box my={4}>
@@ -199,8 +202,8 @@ export const FormHistory = ({
           {values?.status === "deleted"
             ? "Cancelado"
             : now > bookingStart
-            ? "Cancelar"
-            : "Cancelar"}
+              ? "Cancelar"
+              : "Cancelar"}
         </Button>
       </Box>
     </Box>
@@ -219,14 +222,17 @@ const History = () => {
 
   const { user } = useContext(AppContext);
 
-  // Estado para el primer AlertModal
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null); // Añadir estado para selectedDoctor
+
+  const { isOpen: showRatingPopup, onOpen: handleOpenRatingPopup, onClose: handleCloseRatingPopup } = useDisclosure();
+
   const {
     isOpen: isOpenDocs,
     onOpen: onOpenDocs,
     onClose: onCloseDocs,
   } = useDisclosure();
 
-  // Estado para el segundo AlertModal
   const {
     isOpen: isOpenCancelTurn,
     onOpen: onOpenCancelTurn,
@@ -239,36 +245,50 @@ const History = () => {
       let bookings = [];
 
       if (user.role === "DOCTOR" || user.role === "ADMIN") {
-        bookings = await instance.get(
-          `/calendars/all-events?doctor=${user.email}`
-        );
-
-        return setDataBookings(bookings.data.data);
+        bookings = await instance.get(`/calendars/all-events?doctor=${user.email}`);
+      } else {
+        bookings = await instance.get(`/calendars/all-events/${user._id}`);
       }
 
-      bookings = await instance.get(`/calendars/all-events/${user._id}`);
+      const { data } = bookings?.data || { data: [] };
+      console.log("Todos los datos de las reservas:", data); // Verifica que los datos contienen toda la información necesaria
 
-      setDataBookings(bookings.data.data);
+      setDataBookings(data);
       setLoading(false);
     } catch (err) {
       setLoading(false);
       throw new Error(err.message);
     }
-  }, [user]);
+  }, [instance, user]);
 
   useEffect(() => {
-    const fetchDataBookings = async () => {
-      if (user) {
-        try {
-          await fetchBookings();
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    };
+    fetchBookings();
+  }, [fetchBookings]);
 
-    fetchDataBookings();
-  }, [fetchBookings, user]);
+  const handleOpenRatingPopupWithDoctor = (appointment) => {
+    const doctor = {
+      _id: appointment.doctorId, // Asegúrate de incluir el _id del doctor
+      name: appointment.doctorName,
+      email: appointment.doctorEmail,
+      picture: appointment.doctorPicture,
+      // Puedes añadir más campos según tu estructura de datos
+    };
+    console.log("Doctor:", doctor); // Verifica que el doctor tenga la información correcta
+    console.log("Appointment:", appointment); // Verifica que la cita tenga la información correcta
+    setSelectedAppointment(appointment);
+    setSelectedDoctor(doctor);
+    handleOpenRatingPopup(); // Usar la función existente para abrir el popup
+  };
+
+
+  const handleCloseRatingPopupWithDoctor = () => {
+    setSelectedDoctor(null);
+    setSelectedAppointment(null);
+    handleCloseRatingPopup(); // Usar la función existente para cerrar el popup
+  };
+
+
+
 
   const handleDeleteEvent = async (bookingId, userEmail) => {
     try {
@@ -351,6 +371,15 @@ const History = () => {
     onOpenCancelTurn();
   };
 
+  const hasBookingPassed = (bookingStart) => {
+    const now = new Date();
+    const bookingEnd = new Date(bookingStart);
+    bookingEnd.setMinutes(bookingEnd.getMinutes() + 1); // Añadir 10 minutos
+    return now > bookingEnd;
+  };
+  
+
+
   const headingTable = [
     {
       name: "doctor",
@@ -378,6 +407,10 @@ const History = () => {
     },
     {
       name: "paciente",
+      detail: "",
+    },
+    {
+      name: "calificación", // Añadir esta línea
       detail: "",
     },
     {
@@ -459,116 +492,136 @@ const History = () => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {dataBookings?.length > 0 &&
-                    dataBookings?.map((x, idx) => {
-                      let now = new Date();
+                  {dataBookings?.length > 0 && dataBookings?.map((x, idx) => {
+                    let now = new Date();
+                    let bookingStart = new Date(x.originalStartTime);
+                    let canRate = hasBookingPassed(bookingStart);
+                    let hoursDifference = (bookingStart - now) / (1000 * 60 * 60);
+                    let canCancel = hoursDifference > 24;
+                    let isBookingPassed = now > bookingStart || x.status === "deleted" || !canCancel;
 
-                      let bookingStart = new Date(x.originalStartTime);
+                    const doctor = {
+                      _id: x.doctorId,
+                      name: x.doctorName,
+                      email: x.doctorEmail,
+                      picture: x.doctorPicture,
+                      price: x.doctorPrice,
+                    };
 
-                      let hoursDifference =
-                        (bookingStart - now) / (1000 * 60 * 60);
-
-                      let canCancel = hoursDifference > 24;
-
-                      let isBookingPassed =
-                        now > bookingStart ||
-                        x.status === "deleted" ||
-                        !canCancel;
-
-                      return (
-                        <Tr
-                          key={idx}
-                          fontSize="12px"
-                          fontWeight={400}
-                          lineHeight="14.06px"
-                          textTransform="uppercase"
-                          px={[0, 8]}
-                          textAlign="center"
-                        >
-                          <Td textAlign="center">Dr/Dra. {x.doctorName}</Td>
-                          <Td textAlign="center">{x.beginning}</Td>
-                          <Td textAlign="center">{x.startTime}</Td>
-                          <Td textAlign="center">Consulta</Td>
-                          <Td textAlign="center">
-                            {x?.status === "deleted" ? (
-                              <Text color="gray">No disponible</Text>
-                            ) : now > bookingStart ? (
-                              <Text color="gray">No disponible</Text>
-                            ) : (
-                              <Link href={x.hangoutLink} target="_blank">
-                                <Text
-                                  color="#104DBA"
-                                  textDecoration="underline"
-                                  _hover={{ textDecoration: "none" }}
-                                >
-                                  Ir a la consulta
-                                </Text>
-                              </Link>
-                            )}
-                          </Td>
-                          <Td textAlign="center">
-                            {x?.status === "deleted"
-                              ? "Cancelado"
-                              : now > bookingStart
+                    return (
+                      <Tr
+                        key={idx}
+                        fontSize="12px"
+                        fontWeight={400}
+                        lineHeight="14.06px"
+                        textTransform="uppercase"
+                        px={[0, 8]}
+                        textAlign="center"
+                      >
+                        <Td textAlign="center">Dr/Dra. {x.doctorName}</Td>
+                        <Td textAlign="center">{x.beginning}</Td>
+                        <Td textAlign="center">{x.startTime}</Td>
+                        <Td textAlign="center">Consulta</Td>
+                        <Td textAlign="center">
+                          {x?.status === "deleted" ? (
+                            <Text color="gray">No disponible</Text>
+                          ) : now > bookingStart ? (
+                            <Text color="gray">No disponible</Text>
+                          ) : (
+                            <Link href={x.hangoutLink} target="_blank">
+                              <Text
+                                color="#104DBA"
+                                textDecoration="underline"
+                                _hover={{ textDecoration: "none" }}
+                              >
+                                Ir a la consulta
+                              </Text>
+                            </Link>
+                          )}
+                        </Td>
+                        <Td textAlign="center">
+                          {x?.status === "deleted"
+                            ? "Cancelado"
+                            : now > bookingStart
                               ? "Expiró"
                               : "Confirmado"}
-                          </Td>
-                          <Td textAlign="center">{x?.patientName}</Td>
-                          <Td textAlign="center">
-                            <Flex
-                              w="full"
-                              h="full"
-                              justifyContent="center"
-                              alignItems="center"
-                              gap="2"
-                            >
-                              {x?.certificate?.length > 0 && (
-                                <Button
-                                  padding={0}
-                                  w="20px"
-                                  bg="#104DBA"
-                                  color="#FFF"
-                                  size="xs"
-                                  rounded="md"
-                                  title="Documentos adjuntos"
-                                  onClick={() =>
-                                    handleShowDocuments(x.certificate)
-                                  }
-                                >
-                                  <IoDocumentTextOutline size="18px" />
-                                </Button>
-                              )}
+                        </Td>
+                        <Td textAlign="center">{x?.patientName}</Td>
+                        <Td textAlign="center">
+                          {x.status !== "deleted" ? (
+                            x.isRated ? (
+                              <Flex alignItems="center" justifyContent="center">
+                                {renderStars(x.rating)}
+                              </Flex>
+                            ) : (
+                              <Button
+                                colorScheme="blue"
+                                bgColor="#104DBA"
+                                color="#ffffff"
+                                size="sm"
+                                onClick={() => handleOpenRatingPopupWithDoctor(x)}
+                                isDisabled={!canRate}
+                              >
+                                CALIFICAR
+                              </Button>
+                            )
+                          ) : (
+                            "TURNO CANCELADO"
+                          )}
+                        </Td>
+                        <Td textAlign="center">
+                          <Flex
+                            w="full"
+                            h="full"
+                            justifyContent="center"
+                            alignItems="center"
+                            gap="2"
+                          >
+                            {x?.certificate?.length > 0 && (
                               <Button
                                 padding={0}
                                 w="20px"
-                                bg="#FF0000"
+                                bg="#104DBA"
                                 color="#FFF"
                                 size="xs"
                                 rounded="md"
-                                onClick={() => handleShowCancelTurn(x)}
-                                isDisabled={isBookingPassed}
-                                _disabled={{
-                                  opacity: 1,
-                                  bg: "#DCDCDC",
-                                }}
-                                title={
-                                  x.status === "deleted"
-                                    ? "ya se cancelo"
-                                    : isBookingPassed
+                                title="Documentos adjuntos"
+                                onClick={() => handleShowDocuments(x.certificate)}
+                              >
+                                <IoDocumentTextOutline size="18px" />
+                              </Button>
+                            )}
+                            <Button
+                              padding={0}
+                              w="20px"
+                              bg="#FF0000"
+                              color="#FFF"
+                              size="xs"
+                              rounded="md"
+                              onClick={() => handleShowCancelTurn(x)}
+                              isDisabled={isBookingPassed}
+                              _disabled={{
+                                opacity: 1,
+                                bg: "#DCDCDC",
+                              }}
+                              title={
+                                x.status === "deleted"
+                                  ? "ya se cancelo"
+                                  : isBookingPassed
                                     ? "Ya no se puede cancelar"
                                     : ""
-                                }
-                                _hover={{
-                                  bg: isBookingPassed ? "" : "inherit",
-                                }}
-                              >
-                                <MdOutlineCancel size="18px" />
-                              </Button>
-                            </Flex>
-                          </Td>
-                        </Tr>
-                      );
-                    })}
+                              }
+                              _hover={{
+                                bg: isBookingPassed ? "" : "inherit",
+                              }}
+                            >
+                              <MdOutlineCancel size="18px" />
+                            </Button>
+                          </Flex>
+                        </Td>
+                      </Tr>
+                    );
+                  })}
                 </Tbody>
               </Table>
             </TableContainer>
@@ -721,6 +774,15 @@ const History = () => {
         }
         isLoading={false}
       ></AlertModal>
+      {showRatingPopup && selectedAppointment && (
+        <RatingPopup
+          isOpen={showRatingPopup}
+          onClose={handleCloseRatingPopupWithDoctor}
+          appointment={selectedAppointment}
+          organizer={selectedDoctor}
+          fetchBookings={fetchBookings} // Pasar fetchBookings para actualizar la lista de reservas
+        />
+      )}
     </Flex>
   );
 };
