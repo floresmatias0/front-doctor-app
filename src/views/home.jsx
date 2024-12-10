@@ -89,12 +89,12 @@ const Home = () => {
           };
           console.log('Doctor para popup:', doctor); // Verifica la información del doctor
 
-          // Verificar si han pasado al menos 2 minutos desde la última vez que se mostró el popup
+          // Verificar si han pasado al menos 2 horas desde la última vez que se mostró el popup
           const lastPopupTime = localStorage.getItem('lastPopupTime');
           const currentTime = new Date().getTime();
-          const twoMinutesInMillis = 2 * 60 * 1000; // 2 minutos en milisegundos
+          const twelveHoursInMillis = 12 * 60 * 60 * 1000; // 12 horas en milisegundos
 
-          if (!lastPopupTime || (currentTime - lastPopupTime > twoMinutesInMillis)) {
+          if (!lastPopupTime || (currentTime - lastPopupTime > twelveHoursInMillis)) {
             handleOpenRatingPopup(lastBooking, doctor);
             localStorage.setItem('lastPopupTime', currentTime.toString()); // Actualizar el tiempo en `localStorage`
           }

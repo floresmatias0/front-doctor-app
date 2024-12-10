@@ -16,16 +16,17 @@ import {
   Heading,
   useDisclosure,
   Link,
+  Icon
 } from "@chakra-ui/react";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AppContext } from "../components/context";
 import { instance, instanceUpload } from "../utils/axios";
-import { AiOutlineEye } from "react-icons/ai";
 import { FormHistory } from "./history";
 import { AlertModal } from "../components/alerts";
 import { MdErrorOutline, MdFileDownload } from "react-icons/md";
 import * as XLSX from "xlsx";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
+import { FaEye } from "react-icons/fa";
 
 const Turns = () => {
   const [dataBookings, setDataBookings] = useState([]);
@@ -247,7 +248,7 @@ const Turns = () => {
       detail: "",
     },
     {
-      name: "tutor",
+      name: "",
       detail: "",
     },
     {
@@ -528,8 +529,8 @@ const Turns = () => {
                                 {x.status === "deleted"
                                   ? "Cancelado"
                                   : now > bookingStart
-                                  ? "Expiró"
-                                  : "Confirmado"}
+                                    ? "Expiró"
+                                    : "Confirmado"}
                               </Td>
                               <Td textAlign="center">{x?.tutorName}</Td>
                               <Td textAlign="center">
@@ -616,8 +617,8 @@ const Turns = () => {
                                       {x.status === "deleted"
                                         ? "Cancelado"
                                         : now > bookingStart
-                                        ? "Cancelar"
-                                        : "Cancelar"}
+                                          ? "Cancelar"
+                                          : "Cancelar"}
                                     </Text>
                                   </Button>
                                 </Box>
@@ -751,16 +752,18 @@ const Turns = () => {
                               {x.status === "deleted"
                                 ? "Cancelado"
                                 : now > bookingStart
-                                ? "Expiró"
-                                : "Confirmado"}
+                                  ? "Expiró"
+                                  : "Confirmado"}
                             </Td>
                             <Td textAlign="center">
                               <Button
                                 onClick={() => handleSelectHistory(x)}
                                 variant="unstyled"
                               >
-                                <AiOutlineEye
-                                  style={{ width: "24px", height: "24px" }}
+                                <Icon
+                                  as={FaEye}
+                                  boxSize={6}
+                                  color="#104DBA"
                                 />
                               </Button>
                             </Td>

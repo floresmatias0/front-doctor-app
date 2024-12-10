@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from "@chakra-ui/react";
 
-export const renderStars = (rating) => {
+export const renderStars = (rating, booking, handleOpenRatingPopupWithDoctor) => {
     const stars = [];
     for (let i = 0; i < 5; i++) {
         if (rating >= i + 1) {
@@ -11,6 +11,8 @@ export const renderStars = (rating) => {
                     as="span"
                     color="#ffbd13" // Color de relleno
                     borderColor="#c6c2b8" // Color del borde
+                    cursor="pointer" // Hacer el cursor de ratón a pointer cuando pasa sobre la estrella
+                    onClick={() => handleOpenRatingPopupWithDoctor(booking)} // Llamar a la función para abrir el popup
                     sx={{
                         display: 'inline-block',
                         fontSize: '15px', // Ajusta el tamaño de las estrellas
@@ -33,6 +35,8 @@ export const renderStars = (rating) => {
                     key={i}
                     as="span"
                     position="relative"
+                    cursor="pointer" // Hacer el cursor de ratón a pointer cuando pasa sobre la estrella
+                    onClick={() => handleOpenRatingPopupWithDoctor(booking)} // Llamar a la función para abrir el popup
                     sx={{
                         display: 'inline-block',
                         fontSize: '15px', // Ajusta el tamaño de las estrellas
@@ -74,6 +78,8 @@ export const renderStars = (rating) => {
                     as="span"
                     color="#c6c2b8" // Color de relleno vacío
                     borderColor="#c6c2b8" // Color del borde
+                    cursor="pointer" // Hacer el cursor de ratón a pointer cuando pasa sobre la estrella
+                    onClick={() => handleOpenRatingPopupWithDoctor(booking)} // Llamar a la función para abrir el popup
                     sx={{
                         display: 'inline-block',
                         fontSize: '15px', // Ajusta el tamaño de las estrellas

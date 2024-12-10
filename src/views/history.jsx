@@ -45,6 +45,11 @@ export const FormHistory = ({
 }) => {
   const [details, setDetails] = useState(values?.details || "");
 
+  useEffect(() => {
+    if (values) {
+      setDetails(values.details || "");
+    }
+  }, [values]);
 
   let now = new Date();
   let bookingStart = new Date(values?.originalStartTime);
@@ -124,6 +129,7 @@ export const FormHistory = ({
           </Button>
         )}
       </Box>
+
       <Box my={4}>
         <Text color="#104DBA" fontSize={18} fontWeight={600}>
           Certificados y resultados
@@ -190,22 +196,56 @@ export const FormHistory = ({
             {uploadLoading ? <Spinner /> : "Cargar certificado "}
           </Button>
         )}
-        <Divider my={4} />
-        <Button
-          onClick={() => handleDeleteEvent(values?.id, values?.doctorEmail)}
-          isDisabled={isBookingPassed}
-          colorScheme="red"
-          alignContent="center"
-          size="sm"
-          w="full"
-        >
-          {values?.status === "deleted"
-            ? "Cancelado"
-            : now > bookingStart
-              ? "Cancelar"
-              : "Cancelar"}
-        </Button>
       </Box>
+      <Box my={6}>
+        <Text color="#104DBA" fontSize={18} fontWeight={600}>
+          Calificación del paciente
+        </Text>
+        <Divider my={2} />
+        {values?.rating ? (
+          <Box>
+            <Flex alignItems="center">
+              {[...Array(5)].map((_, index) => {
+                const ratingValue = index + 1;
+                return (
+                  <Box
+                    key={index}
+                    as="span"
+                    color={ratingValue <= values.rating ? "#FFBD13" : "#ddd"}
+                    fontSize="30px"
+                    lineHeight="1"
+                    mr="2"
+                  >
+                    ★
+                  </Box>
+                );
+              })}
+            </Flex>
+            {values.comment && (
+              <Text mt={2}>
+                {`"${values.comment}"`}
+              </Text>
+            )}
+          </Box>
+        ) : (
+          <Text>Sin calificación</Text>
+        )}
+      </Box>
+      <Divider my={4} />
+      <Button
+        onClick={() => handleDeleteEvent(values?.id, values?.doctorEmail)}
+        isDisabled={isBookingPassed}
+        colorScheme="red"
+        alignContent="center"
+        size="sm"
+        w="full"
+      >
+        {values?.status === "deleted"
+          ? "Cancelado"
+          : now > bookingStart
+            ? "Cancelar"
+            : "Cancelar"}
+      </Button>
     </Box>
   );
 };
@@ -377,7 +417,7 @@ const History = () => {
     bookingEnd.setMinutes(bookingEnd.getMinutes() + 1); // Añadir 10 minutos
     return now > bookingEnd;
   };
-  
+
 
 
   const headingTable = [
@@ -551,7 +591,7 @@ const History = () => {
                           {x.status !== "deleted" ? (
                             x.isRated ? (
                               <Flex alignItems="center" justifyContent="center">
-                                {renderStars(x.rating)}
+                                {renderStars(x.rating, x, handleOpenRatingPopupWithDoctor)}
                               </Flex>
                             ) : (
                               <Button
@@ -566,7 +606,9 @@ const History = () => {
                               </Button>
                             )
                           ) : (
-                            "TURNO CANCELADO"
+                            <Text color="gray">
+                              TURNO CANCELADO
+                            </Text>
                           )}
                         </Td>
                         <Td textAlign="center">
