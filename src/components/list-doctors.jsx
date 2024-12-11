@@ -161,14 +161,13 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
 
   // Función para obtener los turnos más próximos
   const fetchClosestAppointments = async (specialization) => {
+    console.log('Especialización seleccionada:', specialization);  // Verificar que se recibe la especialidad correcta
     setLoadingCalendar(true);
     try {
       const response = await instance.get(`/calendars/closest-appointments?specialization=${specialization}`);
       console.log('Respuesta del servidor:', response);
-
       const sortedAppointments = response.data.data.sort((a, b) => new Date(a.nextAvailable.start) - new Date(b.nextAvailable.start));
-
-      // Obtener el promedio de calificaciones para cada doctor
+  
       const appointmentsWithRatings = await Promise.all(sortedAppointments.map(async appointment => {
         const averageRating = await fetchAverageRating(appointment.doctor._id);
         return {
@@ -179,7 +178,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
           }
         };
       }));
-
+  
       setClosestAppointments(appointmentsWithRatings);
     } catch (err) {
       console.error("fetch closest appointments", err.message);
@@ -188,8 +187,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       setLoadingCalendar(false);
     }
   };
-
-
+  
   const handleDoctorsSelect = (doctor) => {
     setDoctorSelected(doctor);
   };
@@ -198,6 +196,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     setSelectedSpecialization(event.target.value);
     await fetchClosestAppointments(event.target.value); // Fetch closest appointments on selection
   };
+  
   const handleDoctorSelection = (doctor, appointment) => {
     const adjustedDate = new Date(appointment.nextAvailable.start);
     adjustedDate.setHours(adjustedDate.getHours() + 3);
@@ -329,9 +328,10 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   }, [doctorSelected, isActive, fetchDataCalendar]);
 
   useEffect(() => {
+    setCurrentPage(1); // Reiniciar la página a la primera al cambiar los filtros
     const fetchDataDoctors = async () => {
       try {
-        console.log("Selected Specialization:", selectedSpecialization); // Agrega esto aquí
+        console.log("Selected Specialization:", selectedSpecialization);
         await fetchDoctors();
       } catch (err) {
         throw new Error(err.message);
@@ -340,10 +340,150 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     if (isActive) fetchDataDoctors();
   }, [isActive, selectedSpecialization]);
 
-
   if (!isActive) {
     return null;
   }
+
+  const renderDoctors = () => {
+    const filteredDoctors = doctors.filter(doctor =>
+      normalizeText(doctor.label).includes(normalizeText(searchTerm))
+    );
+
+    // No paginamos en dispositivos móviles y mostramos todos los doctores
+    if (window.innerWidth <= 768) {
+      return filteredDoctors.map((doctor, idx) => (
+        <Flex
+          key={idx}
+          w="full"
+          h="88px"
+          justifyContent="space-around"
+          boxShadow="0px 4px 4px 0px #00000040"
+          borderRadius="xl"
+          p={2}
+          m={[4, 0]}
+          cursor="pointer"
+          onClick={() => handleDoctorsSelect(doctor)}
+          border="2px"
+          borderColor={
+            doctorSelected?.label === doctor?.label
+              ? "#104DBA"
+              : "transparent"
+          }
+        >
+          <Image
+            rounded="full"
+            src={doctor?.picture}
+            w={{ base: '60px', md: '55px' }}
+            h={{ base: '60px', md: '55px' }}
+          />
+          <Flex flexDirection="column" justifyContent="space-between" minWidth={180}>
+            <Box>
+              <Text
+                fontSize="sm"
+                textTransform="capitalize"
+                fontWeight={700}
+                lineHeight="16.41px"
+              >
+                {doctor?.label}
+              </Text>
+              <Text fontSize="xs" fontWeight={400} lineHeight="14.06px">
+                {doctor?.especialization}
+              </Text>
+              <Box display="flex" alignItems="center">
+                {renderStars(doctor.averageRating)}
+                <Text fontSize="xs" fontWeight={300} lineHeight="14.06px" ml={1}>
+                  ({doctor.averageRating.toFixed(1)})
+                </Text>
+              </Box>
+            </Box>
+            <Flex gap={2}>
+              <Box display={["none", "block", "block", "block", "block", "block"]}>
+                <FaMoneyBill
+                  style={{
+                    width: "16px",
+                    height: "16px",
+                    color: "gray",
+                  }}
+                />
+              </Box>
+              <Text fontSize="xs" fontWeight={300} lineHeight="14.06px">
+                Valor de la consulta: ${doctor?.reservePrice}
+              </Text>
+            </Flex>
+          </Flex>
+        </Flex>
+      ));
+    }
+
+    // Paginamos en dispositivos de mayor tamaño
+    const currentDoctors = filteredDoctors.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    );
+
+    return currentDoctors.map((doctor, idx) => (
+      <Flex
+        key={idx}
+        w={["full", "265px"]}
+        h="88px"
+        justifyContent="space-around"
+        boxShadow="0px 4px 4px 0px #00000040"
+        borderRadius="xl"
+        p={2}
+        m={[4, 0]}
+        cursor="pointer"
+        onClick={() => handleDoctorsSelect(doctor)}
+        border="2px"
+        borderColor={
+          doctorSelected?.label === doctor?.label
+            ? "#104DBA"
+            : "transparent"
+        }
+      >
+        <Image
+          rounded="full"
+          src={doctor?.picture}
+          w={{ base: '60px', md: '55px' }}
+          h={{ base: '60px', md: '55px' }}
+        />
+        <Flex flexDirection="column" justifyContent="space-between" minWidth={180}>
+          <Box>
+            <Text
+              fontSize="sm"
+              textTransform="capitalize"
+              fontWeight={700}
+              lineHeight="16.41px"
+            >
+              {doctor?.label}
+            </Text>
+            <Text fontSize="xs" fontWeight={400} lineHeight="14.06px">
+              {doctor?.especialization}
+            </Text>
+            <Box display="flex" alignItems="center">
+              {renderStars(doctor.averageRating)}
+              <Text fontSize="xs" fontWeight={300} lineHeight="14.06px" ml={1}>
+                ({doctor.averageRating.toFixed(1)})
+              </Text>
+            </Box>
+          </Box>
+          <Flex gap={2}>
+            <Box display={["none", "block", "block", "block", "block", "block"]}>
+              <FaMoneyBill
+                style={{
+                  width: "16px",
+                  height: "16px",
+                  color: "gray",
+                }}
+              />
+            </Box>
+            <Text fontSize="xs" fontWeight={300} lineHeight="14.06px">
+              Valor de la consulta: ${doctor?.reservePrice}
+            </Text>
+          </Flex>
+        </Flex>
+      </Flex>
+    ));
+  };
 
   return (
     <Flex h="100%" maxH="100%" overflowY="auto" flexDirection="column" py={[0, 4]} px={[0, 10]} gap={[2, 5]} mt={[5, 0]}>
@@ -550,112 +690,66 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
               </InputRightElement>
             </InputGroup>
           </Flex>
+
           <Flex
             flex={1}
             w="full"
             flexWrap="wrap"
             justifyContent="space-between"
             flexDirection="row"
-            gap={4}
+            gap={[0, 4]}
             p={2}
-            minH={["205px", "85px", "85px", "85px", "85px", "182px"]}
+            minH={["600px", "85px", "85px", "105px", "105px", "240px"]}
             maxH={["290px", "85px", "85px", "85px", "90px", "auto"]}
             overflowY={["scroll", "auto"]}
           >
-            {console.log("Current Doctors:", currentDoctors)}
-            {currentDoctors.length > 0 ? (
-              currentDoctors.filter(doctor =>
-                normalizeText(doctor.label).includes(normalizeText(searchTerm))
-              ).map((doctor, idx) => (
-                <Flex
-                  key={idx}
-                  w={["full", "265px"]}
-                  h="88px"
-                  justifyContent="space-around"
-                  boxShadow="0px 4px 4px 0px #00000040"
-                  borderRadius="xl"
-                  p={2}
-                  m={[4, 0]}
-                  cursor="pointer"
-                  onClick={() => handleDoctorsSelect(doctor)}
-                  border="2px"
-                  borderColor={
-                    doctorSelected?.label === doctor?.label
-                      ? "#104DBA"
-                      : "transparent"
-                  }
-                >
-                  <Image
-                    rounded="full"
-                    src={doctor?.picture}
-                    w={{ base: '60px', md: '55px' }}
-                    h={{ base: '60px', md: '55px' }}
-                  />
-                  <Flex flexDirection="column" justifyContent="space-between" minWidth={180}>
-                    <Box>
-                      <Text
-                        fontSize="sm"
-                        textTransform="capitalize"
-                        fontWeight={700}
-                        lineHeight="16.41px"
-                      >
-                        {doctor?.label}
-                      </Text>
-                      <Text fontSize="xs" fontWeight={400} lineHeight="14.06px">
-                        {doctor?.especialization}
-                      </Text>
-                      <Box display="flex" alignItems="center">
-                        {renderStars(doctor.averageRating)}
-                        <Text fontSize="xs" fontWeight={300} lineHeight="14.06px" ml={1}>
-                          ({doctor.averageRating.toFixed(1)})
-                        </Text>
-                      </Box>
-                    </Box>
-                    <Flex gap={2}>
-                      <Box display={["none", "block", "block", "block", "block", "block"]}>
-                        <FaMoneyBill
-                          style={{
-                            width: "16px",
-                            height: "16px",
-                            color: "gray",
-                          }}
-                        />
-                      </Box>
-                      <Text fontSize="xs" fontWeight={300} lineHeight="14.06px">
-                        Valor de la consulta: ${doctor?.reservePrice}
-                      </Text>
-                    </Flex>
-                  </Flex>
-                </Flex>
-              ))
-            ) : (
-              <Text fontWeight={300}>Lo sentimos, no hay doctores disponibles</Text>
-            )}
-
+            {renderDoctors()}
           </Flex>
-          <Flex justifyContent="flex-end" gap={[2, 4]}>
-            <Button
-              bg="#104DBA"
-              color="#FFFFFF"
-              w="120px"
-              size="xs"
-              leftIcon={
-                <MdOutlineNavigateBefore
-                  style={{ width: "20px", height: "20px" }}
-                />
-              }
-              onClick={handleBackFilter}
-            >
-              <Text
-                fontSize="xs"
-                lineHeight="16px"
-                fontWeight={500}
-                textTransform="uppercase"
-              >
-                Anterior
+
+          {/* Controles de Paginación */}
+          {window.innerWidth > 768 && totalPages > 1 && (
+            <Flex justifyContent="flex-end" alignItems="center" mt={0} pr={2} mb={1}>
+              <MdOutlineNavigateBefore
+                style={{ cursor: 'pointer', color: '#104DBA', marginRight: '5px' }}
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+              />
+              <Text mx={1} fontSize="xs">
+                Mostrando {Math.min(currentPage * itemsPerPage, doctors.length)} de {doctors.length} resultados
               </Text>
-            </Button>
-            {doctorSelected && (
+              <MdOutlineNavigateNext
+                style={{ cursor: 'pointer', color: '#104DBA', marginLeft: '5px' }}
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+              />
+            </Flex>
+          )}
+
+
+          {/* Botones de Navegación */}
+          {doctorSelected && (
+            <Flex justifyContent="flex-end" gap={[2, 4]} mt={2} mb={2}>
+              <Button
+                bg="#104DBA"
+                color="#FFFFFF"
+                w="120px"
+                size="xs"
+                leftIcon={
+                  <MdOutlineNavigateBefore
+                    style={{ width: "20px", height: "20px" }}
+                  />
+                }
+                onClick={handleBackFilter}
+              >
+                <Text
+                  fontSize="xs"
+                  lineHeight="16px"
+                  fontWeight={500}
+                  textTransform="uppercase"
+                >
+                  Anterior
+                </Text>
+              </Button>
               <Button
                 bg="#104DBA"
                 color="#FFFFFF"
@@ -677,10 +771,13 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                   Continuar
                 </Text>
               </Button>
-            )}
-          </Flex>
+            </Flex>
+          )}
         </Fragment>
       )}
+
+
+
 
       {!disableTabs.closest && (
         <Fragment>
