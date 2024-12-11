@@ -9,22 +9,22 @@ export const renderStars = (rating, booking, handleOpenRatingPopupWithDoctor) =>
                 <Box
                     key={i}
                     as="span"
-                    color="#ffbd13" // Color de relleno
-                    borderColor="#c6c2b8" // Color del borde
-                    cursor="pointer" // Hacer el cursor de ratón a pointer cuando pasa sobre la estrella
-                    onClick={() => handleOpenRatingPopupWithDoctor(booking)} // Llamar a la función para abrir el popup
+                    color="#ffbd13"
+                    borderColor="#c6c2b8"
+                    cursor="pointer"
+                    onClick={() => handleOpenRatingPopupWithDoctor(booking)}
                     sx={{
                         display: 'inline-block',
-                        fontSize: '15px', // Ajusta el tamaño de las estrellas
+                        fontSize: '15px',
                         lineHeight: '1',
                         marginRight: '4px',
                         marginTop: '2px',
                         marginBottom: '1px',
                         '::before': {
                             content: `"★"`,
-                            color: "#ffbd13", // Relleno
+                            color: "#ffbd13",
                             WebkitTextStrokeWidth: '1px',
-                            WebkitTextStrokeColor: '#ffbd13' // Borde
+                            WebkitTextStrokeColor: '#ffbd13'
                         }
                     }}
                 />
@@ -35,26 +35,26 @@ export const renderStars = (rating, booking, handleOpenRatingPopupWithDoctor) =>
                     key={i}
                     as="span"
                     position="relative"
-                    cursor="pointer" // Hacer el cursor de ratón a pointer cuando pasa sobre la estrella
-                    onClick={() => handleOpenRatingPopupWithDoctor(booking)} // Llamar a la función para abrir el popup
+                    cursor="pointer"
+                    onClick={() => handleOpenRatingPopupWithDoctor(booking)}
                     sx={{
                         display: 'inline-block',
-                        fontSize: '15px', // Ajusta el tamaño de las estrellas
+                        fontSize: '15px',
                         lineHeight: '1',
                         marginRight: '4px',
                         marginTop: '2px',
                         marginBottom: '1px',
                         '::before': {
                             content: `"★"`,
-                            color: "#ffffff", // Relleno vacío
+                            color: "#ffffff",
                             WebkitTextStrokeWidth: '1px',
-                            WebkitTextStrokeColor: '#c6c2b8' // Borde
+                            WebkitTextStrokeColor: '#c6c2b8'
                         }
                     }}
                 >
                     <Box
                         as="span"
-                        color="#ffbd13" // Color de relleno
+                        color="#ffbd13"
                         sx={{
                             position: 'absolute',
                             top: '0',
@@ -63,9 +63,9 @@ export const renderStars = (rating, booking, handleOpenRatingPopupWithDoctor) =>
                             width: '50%',
                             '::before': {
                                 content: `"★"`,
-                                color: "#ffbd13", // Relleno
+                                color: "#ffbd13",
                                 WebkitTextStrokeWidth: '1px',
-                                WebkitTextStrokeColor: '#ffbd13' // Borde
+                                WebkitTextStrokeColor: '#ffbd13'
                             }
                         }}
                     />
@@ -76,22 +76,22 @@ export const renderStars = (rating, booking, handleOpenRatingPopupWithDoctor) =>
                 <Box
                     key={i}
                     as="span"
-                    color="#c6c2b8" // Color de relleno vacío
-                    borderColor="#c6c2b8" // Color del borde
-                    cursor="pointer" // Hacer el cursor de ratón a pointer cuando pasa sobre la estrella
-                    onClick={() => handleOpenRatingPopupWithDoctor(booking)} // Llamar a la función para abrir el popup
+                    color="#c6c2b8"
+                    borderColor="#c6c2b8"
+                    cursor="pointer"
+                    onClick={() => handleOpenRatingPopupWithDoctor(booking)}
                     sx={{
                         display: 'inline-block',
-                        fontSize: '15px', // Ajusta el tamaño de las estrellas
+                        fontSize: '15px',
                         lineHeight: '1',
                         marginRight: '4px',
                         marginTop: '2px',
                         marginBottom: '1px',
                         '::before': {
                             content: `"★"`,
-                            color: "#ffffff", // Relleno vacío
+                            color: "#ffffff",
                             WebkitTextStrokeWidth: '1px',
-                            WebkitTextStrokeColor: '#c6c2b8' // Borde
+                            WebkitTextStrokeColor: '#c6c2b8'
                         }
                     }}
                 />

@@ -25,13 +25,11 @@ const Home = () => {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
-  // Estados para AlertModal
+  {/*  Estados para AlertModal */}
   const { isOpen: isOpenDocs, onOpen: onOpenDocs, onClose: onCloseDocs } = useDisclosure();
   const { isOpen: isOpenCancelTurn, onOpen: onOpenCancelTurn, onClose: onCloseCancelTurn } = useDisclosure();
 
   const handleOpenRatingPopup = (appointment, doctor) => {
-    console.log("Doctor:", doctor); // Verifica que el doctor tenga la información correcta
-    console.log("Appointment:", appointment); // Verifica que la cita tenga la información correcta
     setSelectedAppointment(appointment);
     setSelectedDoctor(doctor);
     setRatingPopupOpen(true);
@@ -50,11 +48,9 @@ const Home = () => {
       }
       const { data } = bookings?.data || { data: [] };
 
-      console.log("Todos los datos de las reservas:", data); // Verifica que los datos contienen toda la información necesaria
-
       const calculateEndTime = (startTime) => {
         const startDateTime = new Date(startTime);
-        const endDateTime = new Date(startDateTime.getTime() + 1 * 60000); // Agregar 10 minutos
+        const endDateTime = new Date(startDateTime.getTime() + 1 * 60000);
         return endDateTime.toISOString();
       };
 
@@ -67,15 +63,13 @@ const Home = () => {
       setDataBookings(filteredBookings);
 
       if (user.role === "DOCTOR" || user.role === "ADMIN") {
-        return; // No mostrar el popup de calificación para los médicos o administradores
+        return;
       }
 
       const filteredBookingsPassed = data.filter((booking) => {
         const bookingEnd = calculateEndTime(booking.originalStartTime);
         return new Date(bookingEnd) < new Date() && booking.status !== "deleted" && !booking.isRated;
       });
-
-      console.log('filteredBookingsPassed:', filteredBookingsPassed); // Verifica que las reservas pasadas contienen toda la información necesaria
 
       if (filteredBookingsPassed.length > 0) {
         const lastBooking = filteredBookingsPassed[0];
@@ -87,16 +81,15 @@ const Home = () => {
             picture: lastBooking.doctorPicture,
             price: lastBooking.doctorPrice,
           };
-          console.log('Doctor para popup:', doctor); // Verifica la información del doctor
 
-          // Verificar si han pasado al menos 2 horas desde la última vez que se mostró el popup
+          {/*Verificar si han pasado al menos 12 horas desde la última vez que se mostró el popup */}
           const lastPopupTime = localStorage.getItem('lastPopupTime');
           const currentTime = new Date().getTime();
-          const twelveHoursInMillis = 12 * 60 * 60 * 1000; // 12 horas en milisegundos
+          const twelveHoursInMillis = 12 * 60 * 60 * 1000;
 
           if (!lastPopupTime || (currentTime - lastPopupTime > twelveHoursInMillis)) {
             handleOpenRatingPopup(lastBooking, doctor);
-            localStorage.setItem('lastPopupTime', currentTime.toString()); // Actualizar el tiempo en `localStorage`
+            localStorage.setItem('lastPopupTime', currentTime.toString());
           }
         }
       }
@@ -556,6 +549,7 @@ const Home = () => {
             }
             isLoading={false}
           ></AlertModal>
+          
           {/* Modal cancelar turno */}
           <AlertModal
             customWidth={300}
