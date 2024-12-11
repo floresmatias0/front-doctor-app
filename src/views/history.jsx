@@ -263,7 +263,7 @@ const History = () => {
   const { user } = useContext(AppContext);
 
   const [selectedAppointment, setSelectedAppointment] = useState(null);
-  const [selectedDoctor, setSelectedDoctor] = useState(null); // Añadir estado para selectedDoctor
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
 
   const { isOpen: showRatingPopup, onOpen: handleOpenRatingPopup, onClose: handleCloseRatingPopup } = useDisclosure();
 
@@ -291,7 +291,6 @@ const History = () => {
       }
 
       const { data } = bookings?.data || { data: [] };
-      console.log("Todos los datos de las reservas:", data); // Verifica que los datos contienen toda la información necesaria
 
       setDataBookings(data);
       setLoading(false);
@@ -307,24 +306,21 @@ const History = () => {
 
   const handleOpenRatingPopupWithDoctor = (appointment) => {
     const doctor = {
-      _id: appointment.doctorId, // Asegúrate de incluir el _id del doctor
+      _id: appointment.doctorId,
       name: appointment.doctorName,
       email: appointment.doctorEmail,
       picture: appointment.doctorPicture,
-      // Puedes añadir más campos según tu estructura de datos
     };
-    console.log("Doctor:", doctor); // Verifica que el doctor tenga la información correcta
-    console.log("Appointment:", appointment); // Verifica que la cita tenga la información correcta
     setSelectedAppointment(appointment);
     setSelectedDoctor(doctor);
-    handleOpenRatingPopup(); // Usar la función existente para abrir el popup
+    handleOpenRatingPopup();
   };
 
 
   const handleCloseRatingPopupWithDoctor = () => {
     setSelectedDoctor(null);
     setSelectedAppointment(null);
-    handleCloseRatingPopup(); // Usar la función existente para cerrar el popup
+    handleCloseRatingPopup();
   };
 
 
@@ -414,7 +410,7 @@ const History = () => {
   const hasBookingPassed = (bookingStart) => {
     const now = new Date();
     const bookingEnd = new Date(bookingStart);
-    bookingEnd.setMinutes(bookingEnd.getMinutes() + 1); // Añadir 10 minutos
+    bookingEnd.setMinutes(bookingEnd.getMinutes() + 1);
     return now > bookingEnd;
   };
 
@@ -450,7 +446,7 @@ const History = () => {
       detail: "",
     },
     {
-      name: "calificación", // Añadir esta línea
+      name: "calificación",
       detail: "",
     },
     {
@@ -822,7 +818,7 @@ const History = () => {
           onClose={handleCloseRatingPopupWithDoctor}
           appointment={selectedAppointment}
           organizer={selectedDoctor}
-          fetchBookings={fetchBookings} // Pasar fetchBookings para actualizar la lista de reservas
+          fetchBookings={fetchBookings}
         />
       )}
     </Flex>

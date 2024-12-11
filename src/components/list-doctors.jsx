@@ -55,7 +55,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
         filters += `, "especialization": "${selectedSpecialization}"`;
       }
       filters += `}`;
-      console.log("API Filters:", filters); // Verifica los filtros usados en la llamada a la API
       const { data } = await instance.get(`/users?filters=${filters}`);
       const response = data;
       setDoctorSelected(null);
@@ -80,7 +79,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                 reserveSunday: doctors[i].reserveSunday,
                 especialization: doctors[i].especialization,
                 public_key: doctors[i].mercadopago_access?.public_key,
-                averageRating, // Añadir el promedio de calificaciones
+                averageRating,
                 id: doctors[i]._id,
               });
             }
@@ -101,7 +100,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   };
 
-  //Estrellas de puntuación del médico
 
   const fetchAverageRating = async (doctorId) => {
     try {
@@ -124,16 +122,15 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       if (response.success) {
         let specializations = response.data;
 
-        // Obtener los médicos
+        {/* Obtener los médicos*/}
         const { data: doctorsData } = await instance.get("/users?filters={\"role\":[\"DOCTOR\"]}");
         const doctors = doctorsData.data;
 
-        // Filtrar especializaciones que tienen al menos un médico validado
+        {/*Filtrar especializaciones que tienen al menos un médico validado*/}
         const filteredSpecializations = specializations.filter(spec =>
           doctors.some(doc => doc.especialization === spec.name && doc.validated === 'completed')
         );
 
-        // Ordenamos las especializaciones alfabéticamente
         filteredSpecializations.sort((a, b) => a.name.localeCompare(b.name));
 
         setSpecializations(filteredSpecializations);
@@ -159,15 +156,16 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     fetchDataSpecializations();
   }, []);
 
-  // Función para obtener los turnos más próximos
+  {/* Función para obtener los turnos más próximos */} 
   const fetchClosestAppointments = async (specialization) => {
     console.log('Especialización seleccionada:', specialization);  // Verificar que se recibe la especialidad correcta
     setLoadingCalendar(true);
     try {
       const response = await instance.get(`/calendars/closest-appointments?specialization=${specialization}`);
-      console.log('Respuesta del servidor:', response);
+
       const sortedAppointments = response.data.data.sort((a, b) => new Date(a.nextAvailable.start) - new Date(b.nextAvailable.start));
-  
+
+      {/*Promedio de calificaciones para cada doctor */}
       const appointmentsWithRatings = await Promise.all(sortedAppointments.map(async appointment => {
         const averageRating = await fetchAverageRating(appointment.doctor._id);
         return {
@@ -194,7 +192,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
 
   const handleSpecializationSelect = async (event) => {
     setSelectedSpecialization(event.target.value);
-    await fetchClosestAppointments(event.target.value); // Fetch closest appointments on selection
+    await fetchClosestAppointments(event.target.value);
   };
   
   const handleDoctorSelection = (doctor, appointment) => {
@@ -208,7 +206,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   };
 
   const handleBackFilter = () => {
-    setSelectedSpecialization(""); // Reiniciamos selecciones y búsquedas
+    setSelectedSpecialization("");
     setDoctorSelected(null);
     setSearchTerm("");
     setDisableTabs({
@@ -267,7 +265,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   };
 
   const handleBackClosest = () => {
-    setSelectedSpecialization(""); // Reiniciamos selecciones y búsquedas
+    setSelectedSpecialization("");
     setDoctorSelected(null);
     setDisableTabs({
       ...disableTabs,
@@ -279,7 +277,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   };
 
 
-  //CARROUSEL DOCTORES - TURNO MAS PROXIMO
+  {/* CARROUSEL DOCTORES - TURNO MAS PROXIMO*/}
 
   const handlePrevClick = () => {
     setCurrentDoctorIndex((prevIndex) =>
@@ -328,10 +326,9 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   }, [doctorSelected, isActive, fetchDataCalendar]);
 
   useEffect(() => {
-    setCurrentPage(1); // Reiniciar la página a la primera al cambiar los filtros
+    setCurrentPage(1);
     const fetchDataDoctors = async () => {
       try {
-        console.log("Selected Specialization:", selectedSpecialization);
         await fetchDoctors();
       } catch (err) {
         throw new Error(err.message);
@@ -349,7 +346,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       normalizeText(doctor.label).includes(normalizeText(searchTerm))
     );
 
-    // No paginamos en dispositivos móviles y mostramos todos los doctores
+    {/*No paginamos en dispositivos móviles y mostramos todos los doctores*/} 
     if (window.innerWidth <= 768) {
       return filteredDoctors.map((doctor, idx) => (
         <Flex
@@ -503,6 +500,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
           Paciente: {patientSelected && patientSelected?.label}
         </Text>
       </Flex>
+
       {/* Condición de la pestaña de filtro inicial */}
       {!disableTabs.filter && (
         <Flex flexDirection="column" flex={1} gap={4}>
@@ -525,7 +523,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
               size="sm"
               background="#FFFFFF"
               fontWeight={500}
-              onClick={handleNextSpecialty} // Agregado onClick para especialidades
+              onClick={handleNextSpecialty}
             >
               ESPECIALIDAD MEDICA
             </Button>
@@ -553,7 +551,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
               size="sm"
               background="#FFFFFF"
               fontWeight={500}
-              onClick={handleNextClosest} // Actualiza el onClick
+              onClick={handleNextClosest}
             >
               TURNO MAS PROXIMO
             </Button>
@@ -775,8 +773,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
           )}
         </Fragment>
       )}
-
-
 
 
       {!disableTabs.closest && (

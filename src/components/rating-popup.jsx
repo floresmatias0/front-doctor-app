@@ -5,7 +5,7 @@ import {
 import { FaStar } from "react-icons/fa";
 import { instance } from "../utils/axios";
 
-const MAX_COMMENT_LENGTH = 200; // Límite de caracteres
+const MAX_COMMENT_LENGTH = 200;
 
 const RatingPopup = ({ isOpen, onClose, appointment, organizer, fetchBookings }) => {
   const [rating, setRating] = useState(0);
@@ -37,10 +37,6 @@ const RatingPopup = ({ isOpen, onClose, appointment, organizer, fetchBookings })
     try {
       if (organizer && appointment) {
         const validObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
-
-        console.log('Doctor ID:', organizer._id); 
-        console.log('Patient ID:', appointment.patientId);
-        console.log('Booking ID:', appointment.bookingId);
 
         if (!validObjectId(organizer._id) || !validObjectId(appointment.patientId)) {
           return toast({
@@ -97,7 +93,7 @@ const RatingPopup = ({ isOpen, onClose, appointment, organizer, fetchBookings })
   };
 
   if (!appointment) {
-    return null; // Retorna null si appointment es null para evitar errores.
+    return null;
   }
 
   return (

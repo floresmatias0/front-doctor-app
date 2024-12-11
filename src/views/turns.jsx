@@ -40,14 +40,14 @@ const Turns = () => {
 
   const toast = useToast();
 
-  // Estado para el segundo AlertModal
+  {/* Estado para el segundo AlertModal*/}
   const {
     isOpen: isOpenHistory,
     onOpen: onOpenHistory,
     onClose: onCloseHistory,
   } = useDisclosure();
 
-  // Estado para el primer AlertModal
+  {/*Estado para el primer AlertModal*/}
   const {
     isOpen: isOpenDocs,
     onOpen: onOpenDocs,
@@ -270,15 +270,15 @@ const Turns = () => {
   const handleFileInputChange = async (e, doctorId, patientId, bookingId) => {
     const formData = new FormData();
     const images = e.target.files;
-    // Convierte la colección de archivos en un array
+    {/*Convierte la colección de archivos en un array */} 
     const files = Array.from(images);
 
-    // Utiliza Promise.all para esperar a que se completen todas las promesas
+    {/*Utiliza Promise.all para esperar a que se completen todas las promesas */}
     await Promise.all(
       files.map(async (file) => {
         return new Promise((resolve) => {
-          // Haces el push al array dentro de la promesa
-          // Esto asegura que el push se complete antes de continuar
+          {/*Haces el push al array dentro de la promesa */}
+          {/*Esto asegura que el push se complete antes de continuar*/}
           formData.append("files", file);
           resolve();
         });
@@ -317,7 +317,7 @@ const Turns = () => {
           status: "error",
         });
       } catch (error) {
-        // Maneja cualquier error de la solicitud, por ejemplo, muestra un mensaje de error.
+        {/*Maneja cualquier error de la solicitud, por ejemplo, muestra un mensaje de error */}
         setUploadLoading(false);
         return toast({
           title: "Error al intentar guardar el certificado",
