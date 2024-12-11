@@ -17,6 +17,7 @@ import {
   Divider,
   Link,
   useToast,
+
 } from "@chakra-ui/react";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AppContext } from "../components/context";
@@ -413,7 +414,7 @@ const Home = () => {
                           >
                             <Td textAlign="center">Dr/Dra. {x.doctorName}</Td>
                             <Td textAlign="center">{x.beginning}</Td>
-                            <Td textAlign="center">{x.startDate}</Td>
+                            <Td textAlign="center">{x.startTime}</Td>
                             <Td textAlign="center">Consulta</Td>
                             <Td textAlign="center">
                               {x.status === "deleted" ? (
@@ -421,7 +422,7 @@ const Home = () => {
                               ) : now > bookingStart ? (
                                 <Text color="gray">No disponible</Text>
                               ) : (
-                                <Link href={x.hangoutLink} target="_blank">
+                                <Link href={x.link} target="_blank">
                                   <Text
                                     color="#104DBA"
                                     textDecoration="underline"
