@@ -35,11 +35,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   const [closestAppointments, setClosestAppointments] = useState([]);
   const [currentDoctorIndex, setCurrentDoctorIndex] = useState(0);
 
-  const currentDoctors = doctors.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
 
   const handlePreviousPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
@@ -158,7 +153,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
 
   {/* Función para obtener los turnos más próximos */} 
   const fetchClosestAppointments = async (specialization) => {
-    console.log('Especialización seleccionada:', specialization);  // Verificar que se recibe la especialidad correcta
     setLoadingCalendar(true);
     try {
       const response = await instance.get(`/calendars/closest-appointments?specialization=${specialization}`);
@@ -412,7 +406,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       ));
     }
 
-    // Paginamos en dispositivos de mayor tamaño
+    {/*Paginamos en dispositivos de mayor tamaño*/}
     const currentDoctors = filteredDoctors.slice(
       (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage

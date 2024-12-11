@@ -442,7 +442,7 @@ const Home = () => {
                               ) : now > bookingStart ? (
                                 <Text color="gray">No disponible</Text>
                               ) : (
-                                <Link href={x.hangoutLink} target="_blank">
+                                <Link href={x.link} target="_blank">
                                   <Text
                                     color="#104DBA"
                                     textDecoration="underline"
