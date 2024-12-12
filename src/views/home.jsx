@@ -1,7 +1,5 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react';
-import {
-  Button, Flex, Text, Box, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Center, Image, useDisclosure, Divider, Link, useToast
-} from "@chakra-ui/react";
+import { Button, Flex, Text, Box, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Center, Image, useDisclosure, Divider, Link, useToast } from "@chakra-ui/react";
 import { AppContext } from "../components/context";
 import { instance } from "../utils/axios";
 import { AlertModal } from "../components/alerts";
@@ -434,7 +432,7 @@ const Home = () => {
                           >
                             <Td textAlign="center">Dr/Dra. {x.doctorName}</Td>
                             <Td textAlign="center">{x.beginning}</Td>
-                            <Td textAlign="center">{x.startDate}</Td>
+                            <Td textAlign="center">{x.startTime}</Td>
                             <Td textAlign="center">Consulta</Td>
                             <Td textAlign="center">
                               {x.status === "deleted" ? (
