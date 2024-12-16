@@ -691,9 +691,14 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
             flexDirection="row"
             gap={[0, 4]}
             p={2}
-            minH={["600px", "85px", "85px", "105px", "105px", "240px"]}
-            maxH={["290px", "85px", "85px", "85px", "90px", "auto"]}
-            overflowY={["scroll", "auto"]}
+            mt={1}
+            minH={["300px", "85px", "85px", "105px", "105px", "240px"]}
+            sx={{
+              '@media (max-width: 768px)': {
+                maxHeight: '45vh',
+                overflowY: 'scroll',
+              },
+            }}
           >
             {renderDoctors()}
           </Flex>
@@ -717,10 +722,25 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
             </Flex>
           )}
 
-
           {/* Botones de Navegación */}
           {doctorSelected && (
-            <Flex justifyContent="flex-end" gap={[2, 4]} mt={2} mb={2}>
+            <Flex
+              justifyContent={{ base: "center", md: "flex-end" }}
+              gap={[2, 4]}
+              mt={2}
+              mb={2}
+              sx={{
+                '@media (max-width: 500px)': {
+                  position: 'fixed',
+                  bottom: '75px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  bg: 'white',
+                  zIndex: 1000,
+                  p: 7,
+                },
+              }}
+            >
               <Button
                 bg="#104DBA"
                 color="#FFFFFF"
