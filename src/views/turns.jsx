@@ -54,48 +54,43 @@ const Turns = () => {
   } = useDisclosure();
 
   const fetchBookings = useCallback(async () => {
-    try {
-      let bookings = [];
-      setLoading(true);
-      if (user.role === "DOCTOR" || user.role === "ADMIN") {
-        bookings = await instance.get(
-          `/calendars/all-events?doctor=${user.email}`
-        );
-      } else {
-        bookings = await instance.get(`/calendars/all-events/${user._id}`);
-      }
-      const { data } = bookings?.data;
-
-      const filteredBookings = data.filter((booking) => {
-        const bookingStart = new Date(booking.originalStartTime);
-        return bookingStart >= new Date() && booking.status !== "deleted";
-      });
-
-      const filteredBookingsPassed = data.filter((booking) => {
-        const bookingStart = new Date(booking.originalStartTime);
-        return bookingStart <= new Date() && booking.status !== "deleted";
-      });
-
-      if (bookingSelected) {
-        const updateBookingSelected = filteredBookingsPassed.find(
-          (x) => x?._id === bookingSelected?._id
-        );
-
-        setBookingSelected(updateBookingSelected);
-      } else {
-        setBookingSelected({});
-      }
-
-      setLoading(false);
-      setDataBookingsNext(filteredBookings);
-      setDataBookings(filteredBookingsPassed);
-      setDataExcel(data);
-    } catch (err) {
-      console.log(err.message);
-      setLoading(false);
-      throw new Error(err.message);
+  try {
+    let bookings = [];
+    setLoading(true);
+    if (user.role === "DOCTOR" || user.role === "ADMIN") {
+      bookings = await instance.get(`/calendars/all-events?doctor=${user.email}`);
+    } else {
+      bookings = await instance.get(`/calendars/all-events/${user._id}`);
     }
-  }, [user]);
+    const { data } = bookings?.data;
+
+    const filteredBookings = data.filter((booking) => {
+      const bookingStart = new Date(booking.originalStartTime);
+      return bookingStart >= new Date() && booking.status !== "deleted";
+    });
+
+    setLoading(false);
+    setDataBookings(filteredBookings);
+
+    // ALERTA: Mostrar si hay turnos disponibles
+    if (filteredBookings.length > 0) {
+      const nextBooking = filteredBookings[0];
+      Swal.fire({
+        title: "Próximo turno",
+        text: `Tu próximo turno es el ${new Date(
+          nextBooking.originalStartTime
+        ).toLocaleString()} con el Dr./Dra. ${nextBooking.doctorName || ''}.`,
+        icon: "info",
+        confirmButtonText: "Entendido",
+      });
+    }
+  } catch (err) {
+    console.log(err.message);
+    setLoading(false);
+    throw new Error(err.message);
+  }
+}, [user, alertShown]);
+
 
   useEffect(() => {
     const fetchDataBookings = async () => {

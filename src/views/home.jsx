@@ -30,10 +30,12 @@ import { MdOutlineCancel } from "react-icons/md";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 import { MdErrorOutline } from "react-icons/md";
 
+import BookingReminder from "../components/BookingReminder";
 const Home = () => {
   const toast = useToast();
   const { user } = useContext(AppContext);
 
+  const [nextBooking, setNextBooking] = useState(null);
   const [dataBookings, setDataBookings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [documentsSelected, setDocumentsSelected] = useState([]);
@@ -55,15 +57,15 @@ const Home = () => {
 
   const fetchBookings = useCallback(async () => {
     try {
-      let bookings = [];
       setLoading(true);
+      let bookings = [];
+
       if (user.role === "DOCTOR" || user.role === "ADMIN") {
-        bookings = await instance.get(
-          `/calendars/all-events?doctor=${user.email}`
-        );
+        bookings = await instance.get(`/calendars/all-events?doctor=${user.email}`);
       } else {
         bookings = await instance.get(`/calendars/all-events/${user._id}`);
       }
+
       const { data } = bookings?.data;
 
       const filteredBookings = data.filter((booking) => {
@@ -71,28 +73,31 @@ const Home = () => {
         return bookingStart >= new Date() && booking.status !== "deleted";
       });
 
+      setDataBookings(filteredBookings); // Actualizamos la lista completa de turnos
       setLoading(false);
-      setDataBookings(filteredBookings);
     } catch (err) {
       console.log(err.message);
       setLoading(false);
-      throw new Error(err.message);
     }
   }, [user]);
 
+  // Calcular el próximo turno siempre que `dataBookings` cambie
   useEffect(() => {
-    const fetchDataBookings = async () => {
-      if (user) {
-        try {
-          await fetchBookings();
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    };
+    if (dataBookings.length > 0) {
+      const sortedBookings = [...dataBookings].sort(
+        (a, b) =>
+          new Date(a.originalStartTime) - new Date(b.originalStartTime)
+      );
+      setNextBooking(sortedBookings[0]); // Guardar el turno más cercano
+    } else {
+      setNextBooking(null); // No hay turnos disponibles
+    }
+  }, [dataBookings]);
 
-    fetchDataBookings();
-  }, [fetchBookings, user]);
+  useEffect(() => {
+    fetchBookings();
+  }, [fetchBookings]);
+
 
   const handleDeleteEvent = async (bookingId, userEmail) => {
     try {
@@ -342,6 +347,18 @@ const Home = () => {
               style={{ alignContent: "center" }}
             ></div>
           </Box>
+          {/* Aquí añadimos el popup del próximo turno */}
+          {user?.role === "PACIENTE" &&  dataBookings?.length > 0 && !loading && (
+            <div style={{ padding: "20px" }}>
+              {/* Recordatorio de turno */}
+              {nextBooking && (
+                <div style={{ marginTop: "20px" }}>
+                  <BookingReminder booking={nextBooking} />
+                </div>
+              )}
+              {loading && <p>Cargando tus turnos...</p>}
+            </div>
+          )}
           {dataBookings?.length > 0 && loading ? (
             <Flex
               w="100%"
