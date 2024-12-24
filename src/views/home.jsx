@@ -31,6 +31,7 @@ import { HiOutlineBadgeCheck } from "react-icons/hi";
 import { MdErrorOutline } from "react-icons/md";
 
 import BookingReminder from "../components/BookingReminder";
+import "../styles/BookingReminder.css"
 const Home = () => {
   const toast = useToast();
   const { user } = useContext(AppContext);
@@ -348,17 +349,19 @@ const Home = () => {
             ></div>
           </Box>
           {/* Aquí añadimos el popup del próximo turno */}
-          {user?.role === "PACIENTE" &&  dataBookings?.length > 0 && !loading && (
-            <div style={{ padding: "20px" }}>
-              {/* Recordatorio de turno */}
-              {nextBooking && (
-                <div style={{ marginTop: "20px" }}>
-                  <BookingReminder booking={nextBooking} />
-                </div>
-              )}
-              {loading && <p>Cargando tus turnos...</p>}
-            </div>
-          )}
+          <div className="mobile-only">
+            {user?.role === "PACIENTE" && dataBookings?.length > 0 && !loading && (
+              <div style={{ padding: "20px" }}>
+                {/* Recordatorio de turno */}
+                {nextBooking && (
+                  <div style={{ marginTop: "20px" }}>
+                    <BookingReminder booking={nextBooking} />
+                  </div>
+                )}
+                {loading && <p>Cargando tus turnos...</p>}
+              </div>
+            )}
+          </div>
           {dataBookings?.length > 0 && loading ? (
             <Flex
               w="100%"
