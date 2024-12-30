@@ -170,7 +170,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
           }
         };
       }));
-  
+
       setClosestAppointments(appointmentsWithRatings);
     } catch (err) {
       console.error("fetch closest appointments", err.message);
@@ -179,7 +179,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       setLoadingCalendar(false);
     }
   };
-  
+
   const handleDoctorsSelect = (doctor) => {
     setDoctorSelected(doctor);
   };
@@ -787,7 +787,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
           )}
         </Fragment>
       )}
-
 
       {!disableTabs.closest && (
         <Fragment>
