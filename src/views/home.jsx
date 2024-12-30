@@ -1,34 +1,14 @@
-import {
-  Button,
-  Flex,
-  Text,
-  Box,
-  Spinner,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  Center,
-  Image,
-  useDisclosure,
-  Divider,
-  Link,
-  useToast,
-
-} from "@chakra-ui/react";
-import { useCallback, useContext, useEffect, useState } from "react";
+import React, { useState, useCallback, useEffect, useContext } from 'react';
+import { Button, Flex, Text, Box, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Center, Image, useDisclosure, Divider, Link, useToast } from "@chakra-ui/react";
 import { AppContext } from "../components/context";
 import { instance } from "../utils/axios";
 import { AlertModal } from "../components/alerts";
 import { IoMdCalendar } from "react-icons/io";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
-
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 import { MdErrorOutline } from "react-icons/md";
+import RatingPopup from '../components/rating-popup';
 
 import BookingReminder from "../components/BookingReminder";
 import "../styles/BookingReminder.css"
@@ -42,19 +22,21 @@ const Home = () => {
   const [documentsSelected, setDocumentsSelected] = useState([]);
   const [turnSelected, setTurnSelected] = useState("");
 
-  // Estado para el primer AlertModal
-  const {
-    isOpen: isOpenDocs,
-    onOpen: onOpenDocs,
-    onClose: onCloseDocs,
-  } = useDisclosure();
+  const [isRatingPopupOpen, setRatingPopupOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
 
-  // Estado para el segundo AlertModal
-  const {
-    isOpen: isOpenCancelTurn,
-    onOpen: onOpenCancelTurn,
-    onClose: onCloseCancelTurn,
-  } = useDisclosure();
+  {/*  Estados para AlertModal */}
+  const { isOpen: isOpenDocs, onOpen: onOpenDocs, onClose: onCloseDocs } = useDisclosure();
+  const { isOpen: isOpenCancelTurn, onOpen: onOpenCancelTurn, onClose: onCloseCancelTurn } = useDisclosure();
+
+  const handleOpenRatingPopup = (appointment, doctor) => {
+    setSelectedAppointment(appointment);
+    setSelectedDoctor(doctor);
+    setRatingPopupOpen(true);
+  };
+
+  const handleCloseRatingPopup = () => { setRatingPopupOpen(false); };
 
   const fetchBookings = useCallback(async () => {
     try {
@@ -66,7 +48,6 @@ const Home = () => {
       } else {
         bookings = await instance.get(`/calendars/all-events/${user._id}`);
       }
-
       const { data } = bookings?.data;
 
       const filteredBookings = data.filter((booking) => {
@@ -76,29 +57,27 @@ const Home = () => {
 
       setDataBookings(filteredBookings); // Actualizamos la lista completa de turnos
       setLoading(false);
+      setDataBookings(filteredBookings);
     } catch (err) {
       console.log(err.message);
       setLoading(false);
     }
-  }, [user]);
+  }, [instance, user]);
 
   // Calcular el próximo turno siempre que `dataBookings` cambie
   useEffect(() => {
-    if (dataBookings.length > 0) {
-      const sortedBookings = [...dataBookings].sort(
-        (a, b) =>
-          new Date(a.originalStartTime) - new Date(b.originalStartTime)
-      );
-      setNextBooking(sortedBookings[0]); // Guardar el turno más cercano
-    } else {
-      setNextBooking(null); // No hay turnos disponibles
-    }
-  }, [dataBookings]);
+    const fetchDataBookings = async () => {
+      if (user) {
+        try {
+          await fetchBookings();
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    };
 
-  useEffect(() => {
-    fetchBookings();
-  }, [fetchBookings]);
-
+    fetchDataBookings();
+  }, [fetchBookings, user]);
 
   const handleDeleteEvent = async (bookingId, userEmail) => {
     try {
@@ -218,21 +197,21 @@ const Home = () => {
     user.role === "DOCTOR" || user.role === "ADMIN"
       ? `Hola Dr/Dra. ${user?.lastName}`
       : dataBookings?.length > 0 && verifyTurnsAvailable(dataBookings)
-      ? "Tienes turnos proximos"
-      : "Sin turnos próximos.";
+        ? "Tienes turnos proximos"
+        : "Sin turnos próximos.";
 
   const welcomeText =
     (user.role === "DOCTOR" && user.validated === "incompleted")
       ? "<p>Por favor complete sus datos para realizar la validación de sus datos.</p>"
       : (user.role === "DOCTOR" && user.validated === "pending")
-      ? "<p>Su validación está pendiente. Por favor, espere la confirmación.</p>"
-      : (user.role === "DOCTOR" && user.validated === "disabled")
-      ? "<p>Lo sentimos, pero usted no se encuentra habilitado. Por favor revise los datos ingresados.</p>"
-      : (user.role === "DOCTOR" || user.role === "ADMIN") && dataBookings?.length === 0
-      ? "<p>Por el momento no tiene turnos agendados.</p>"
-      : user.role === "PACIENTE" && dataBookings?.length === 0
-      ? "Encuentra al médico que necesitas y programa tu cita en solo unos pasos. <b>¡Tu atención pediátrica está a solo cuatro pasos de distancia!</b>"
-      : "";
+        ? "<p>Su validación está pendiente. Por favor, espere la confirmación.</p>"
+        : (user.role === "DOCTOR" && user.validated === "disabled")
+          ? "<p>Lo sentimos, pero usted no se encuentra habilitado. Por favor revise los datos ingresados.</p>"
+          : (user.role === "DOCTOR" || user.role === "ADMIN") && dataBookings?.length === 0
+            ? "<p>Por el momento no tiene turnos agendados.</p>"
+            : user.role === "PACIENTE" && dataBookings?.length === 0
+              ? "Encuentra al médico que necesitas y programa tu cita en solo unos pasos. <b>¡Tu atención pediátrica está a solo cuatro pasos de distancia!</b>"
+              : "";
 
   const headingTable = [
     {
@@ -281,7 +260,7 @@ const Home = () => {
       <Box maxW={["full", "1240px", "full"]}>
         <Flex flexDirection="column">
           {(user.role === "DOCTOR" || user.role === "ADMIN") &&
-          dataBookings?.length > 0 ? (
+            dataBookings?.length > 0 ? (
             <Text
               fontSize={["26px", "30px"]}
               lineHeight={["30.47px", "35.16px"]}
@@ -457,8 +436,8 @@ const Home = () => {
                               {x.status === "deleted"
                                 ? "Cancelado"
                                 : now > bookingStart
-                                ? "Expiró"
-                                : "Confirmado"}
+                                  ? "Expiró"
+                                  : "Confirmado"}
                             </Td>
                             <Td textAlign="center">{x?.patientName}</Td>
                             <Td textAlign="center">
@@ -502,8 +481,8 @@ const Home = () => {
                                     x.status === "deleted"
                                       ? "ya se cancelo"
                                       : isBookingPassed
-                                      ? "Ya no se puede cancelar"
-                                      : ""
+                                        ? "Ya no se puede cancelar"
+                                        : ""
                                   }
                                   _hover={{
                                     bg: "#fff",
@@ -549,6 +528,7 @@ const Home = () => {
             }
             isLoading={false}
           ></AlertModal>
+          
           {/* Modal cancelar turno */}
           <AlertModal
             customWidth={300}
@@ -670,6 +650,15 @@ const Home = () => {
           ></AlertModal>
         </Flex>
       </Box>
+
+      <RatingPopup
+        isOpen={isRatingPopupOpen}
+        onClose={handleCloseRatingPopup}
+        appointment={selectedAppointment}
+        organizer={selectedDoctor}
+        fetchBookings={fetchBookings}
+      />
+
     </Flex>
   );
 };
