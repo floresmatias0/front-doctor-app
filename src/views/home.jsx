@@ -48,7 +48,15 @@ const Home = () => {
       } else {
         bookings = await instance.get(`/calendars/all-events/${user._id}`);
       }
-      const { data } = bookings?.data;
+
+      const { data } = bookings?.data || { data: [] };
+
+      const calculateEndTime = (startTime) => {
+        const startDateTime = new Date(startTime);
+        const endDateTime = new Date(startDateTime.getTime() + 1 * 60000);
+        return endDateTime.toISOString();
+      };
+
 
       const filteredBookings = data.filter((booking) => {
         const bookingStart = new Date(booking.originalStartTime);
@@ -57,9 +65,40 @@ const Home = () => {
 
       setDataBookings(filteredBookings); // Actualizamos la lista completa de turnos
       setLoading(false);
-      setDataBookings(filteredBookings);
-    } catch (err) {
-      console.log(err.message);
+
+      if (user.role === "DOCTOR" || user.role === "ADMIN") {
+        return;
+      }
+
+      const filteredBookingsPassed = data.filter((booking) => {
+        const bookingEnd = calculateEndTime(booking.originalStartTime);
+        return new Date(bookingEnd) < new Date() && booking.status !== "deleted" && !booking.isRated;
+      });
+
+      if (filteredBookingsPassed.length > 0) {
+        const lastBooking = filteredBookingsPassed[0];
+        if (lastBooking && lastBooking.originalStartTime) {
+          const doctor = {
+            _id: lastBooking.doctorId,
+            name: lastBooking.doctorName,
+            email: lastBooking.doctorEmail,
+            picture: lastBooking.doctorPicture,
+            price: lastBooking.doctorPrice,
+          };
+
+          {/*Verificar si han pasado al menos 12 horas desde la última vez que se mostró el popup */}
+          const lastPopupTime = localStorage.getItem('lastPopupTime');
+          const currentTime = new Date().getTime();
+          const twelveHoursInMillis = 12 * 60 * 60 * 1000;
+
+          if (!lastPopupTime || (currentTime - lastPopupTime > twelveHoursInMillis)) {
+            handleOpenRatingPopup(lastBooking, doctor);
+            localStorage.setItem('lastPopupTime', currentTime.toString());
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
       setLoading(false);
     }
   }, [instance, user]);
