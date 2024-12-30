@@ -16,16 +16,17 @@ import {
   Heading,
   useDisclosure,
   Link,
+  Icon
 } from "@chakra-ui/react";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AppContext } from "../components/context";
 import { instance, instanceUpload } from "../utils/axios";
-import { AiOutlineEye } from "react-icons/ai";
 import { FormHistory } from "./history";
 import { AlertModal } from "../components/alerts";
 import { MdErrorOutline, MdFileDownload } from "react-icons/md";
 import * as XLSX from "xlsx";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
+import { FaEye } from "react-icons/fa";
 
 const Turns = () => {
   const [dataBookings, setDataBookings] = useState([]);
@@ -39,14 +40,14 @@ const Turns = () => {
 
   const toast = useToast();
 
-  // Estado para el segundo AlertModal
+  {/* Estado para el segundo AlertModal*/}
   const {
     isOpen: isOpenHistory,
     onOpen: onOpenHistory,
     onClose: onCloseHistory,
   } = useDisclosure();
 
-  // Estado para el primer AlertModal
+  {/*Estado para el primer AlertModal*/}
   const {
     isOpen: isOpenDocs,
     onOpen: onOpenDocs,
@@ -242,7 +243,7 @@ const Turns = () => {
       detail: "",
     },
     {
-      name: "tutor",
+      name: "",
       detail: "",
     },
     {
@@ -264,15 +265,15 @@ const Turns = () => {
   const handleFileInputChange = async (e, doctorId, patientId, bookingId) => {
     const formData = new FormData();
     const images = e.target.files;
-    // Convierte la colección de archivos en un array
+    {/*Convierte la colección de archivos en un array */} 
     const files = Array.from(images);
 
-    // Utiliza Promise.all para esperar a que se completen todas las promesas
+    {/*Utiliza Promise.all para esperar a que se completen todas las promesas */}
     await Promise.all(
       files.map(async (file) => {
         return new Promise((resolve) => {
-          // Haces el push al array dentro de la promesa
-          // Esto asegura que el push se complete antes de continuar
+          {/*Haces el push al array dentro de la promesa */}
+          {/*Esto asegura que el push se complete antes de continuar*/}
           formData.append("files", file);
           resolve();
         });
@@ -311,7 +312,7 @@ const Turns = () => {
           status: "error",
         });
       } catch (error) {
-        // Maneja cualquier error de la solicitud, por ejemplo, muestra un mensaje de error.
+        {/*Maneja cualquier error de la solicitud, por ejemplo, muestra un mensaje de error */}
         setUploadLoading(false);
         return toast({
           title: "Error al intentar guardar el certificado",
@@ -523,8 +524,8 @@ const Turns = () => {
                                 {x.status === "deleted"
                                   ? "Cancelado"
                                   : now > bookingStart
-                                  ? "Expiró"
-                                  : "Confirmado"}
+                                    ? "Expiró"
+                                    : "Confirmado"}
                               </Td>
                               <Td textAlign="center">{x?.tutorName}</Td>
                               <Td textAlign="center">
@@ -611,8 +612,8 @@ const Turns = () => {
                                       {x.status === "deleted"
                                         ? "Cancelado"
                                         : now > bookingStart
-                                        ? "Cancelar"
-                                        : "Cancelar"}
+                                          ? "Cancelar"
+                                          : "Cancelar"}
                                     </Text>
                                   </Button>
                                 </Box>
@@ -746,16 +747,18 @@ const Turns = () => {
                               {x.status === "deleted"
                                 ? "Cancelado"
                                 : now > bookingStart
-                                ? "Expiró"
-                                : "Confirmado"}
+                                  ? "Expiró"
+                                  : "Confirmado"}
                             </Td>
                             <Td textAlign="center">
                               <Button
                                 onClick={() => handleSelectHistory(x)}
                                 variant="unstyled"
                               >
-                                <AiOutlineEye
-                                  style={{ width: "24px", height: "24px" }}
+                                <Icon
+                                  as={FaEye}
+                                  boxSize={6}
+                                  color="#104DBA"
                                 />
                               </Button>
                             </Td>
