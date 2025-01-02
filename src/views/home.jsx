@@ -11,7 +11,7 @@ import { MdErrorOutline } from "react-icons/md";
 import RatingPopup from '../components/rating-popup';
 
 import BookingReminder from "../components/BookingReminder";
-import "../styles/BookingReminder.css"
+import "../styles/BookingReminder.css";
 const Home = () => {
   const toast = useToast();
   const { user } = useContext(AppContext);
