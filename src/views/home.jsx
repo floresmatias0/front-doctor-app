@@ -1,5 +1,24 @@
-import React, { useState, useCallback, useEffect, useContext } from 'react';
-import { Button, Flex, Text, Box, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Center, Image, useDisclosure, Divider, Link, useToast } from "@chakra-ui/react";
+import React, { useState, useCallback, useEffect, useContext } from "react";
+import {
+  Button,
+  Flex,
+  Text,
+  Box,
+  Spinner,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  Center,
+  Image,
+  useDisclosure,
+  Divider,
+  Link,
+  useToast,
+} from "@chakra-ui/react";
 import { AppContext } from "../components/context";
 import { instance } from "../utils/axios";
 import { AlertModal } from "../components/alerts";
@@ -8,10 +27,10 @@ import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 import { MdErrorOutline } from "react-icons/md";
-import RatingPopup from '../components/rating-popup';
+import RatingPopup from "../components/rating-popup";
 
 import BookingReminder from "../components/BookingReminder";
-import "../styles/BookingReminder.css";
+
 const Home = () => {
   const toast = useToast();
   const { user } = useContext(AppContext);
@@ -26,9 +45,19 @@ const Home = () => {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
-  {/*  Estados para AlertModal */}
-  const { isOpen: isOpenDocs, onOpen: onOpenDocs, onClose: onCloseDocs } = useDisclosure();
-  const { isOpen: isOpenCancelTurn, onOpen: onOpenCancelTurn, onClose: onCloseCancelTurn } = useDisclosure();
+  {
+    /*  Estados para AlertModal */
+  }
+  const {
+    isOpen: isOpenDocs,
+    onOpen: onOpenDocs,
+    onClose: onCloseDocs,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenCancelTurn,
+    onOpen: onOpenCancelTurn,
+    onClose: onCloseCancelTurn,
+  } = useDisclosure();
 
   const handleOpenRatingPopup = (appointment, doctor) => {
     setSelectedAppointment(appointment);
@@ -36,7 +65,9 @@ const Home = () => {
     setRatingPopupOpen(true);
   };
 
-  const handleCloseRatingPopup = () => { setRatingPopupOpen(false); };
+  const handleCloseRatingPopup = () => {
+    setRatingPopupOpen(false);
+  };
 
   const fetchBookings = useCallback(async () => {
     try {
@@ -44,7 +75,9 @@ const Home = () => {
       let bookings = [];
 
       if (user.role === "DOCTOR" || user.role === "ADMIN") {
-        bookings = await instance.get(`/calendars/all-events?doctor=${user.email}`);
+        bookings = await instance.get(
+          `/calendars/all-events?doctor=${user.email}`
+        );
       } else {
         bookings = await instance.get(`/calendars/all-events/${user._id}`);
       }
@@ -56,7 +89,6 @@ const Home = () => {
         const endDateTime = new Date(startDateTime.getTime() + 1 * 60000);
         return endDateTime.toISOString();
       };
-
 
       const filteredBookings = data.filter((booking) => {
         const bookingStart = new Date(booking.originalStartTime);
@@ -72,7 +104,11 @@ const Home = () => {
 
       const filteredBookingsPassed = data.filter((booking) => {
         const bookingEnd = calculateEndTime(booking.originalStartTime);
-        return new Date(bookingEnd) < new Date() && booking.status !== "deleted" && !booking.isRated;
+        return (
+          new Date(bookingEnd) < new Date() &&
+          booking.status !== "deleted" &&
+          !booking.isRated
+        );
       });
 
       if (filteredBookingsPassed.length > 0) {
@@ -86,14 +122,19 @@ const Home = () => {
             price: lastBooking.doctorPrice,
           };
 
-          {/*Verificar si han pasado al menos 12 horas desde la última vez que se mostró el popup */}
-          const lastPopupTime = localStorage.getItem('lastPopupTime');
+          {
+            /*Verificar si han pasado al menos 12 horas desde la última vez que se mostró el popup */
+          }
+          const lastPopupTime = localStorage.getItem("lastPopupTime");
           const currentTime = new Date().getTime();
           const twelveHoursInMillis = 12 * 60 * 60 * 1000;
 
-          if (!lastPopupTime || (currentTime - lastPopupTime > twelveHoursInMillis)) {
+          if (
+            !lastPopupTime ||
+            currentTime - lastPopupTime > twelveHoursInMillis
+          ) {
             handleOpenRatingPopup(lastBooking, doctor);
-            localStorage.setItem('lastPopupTime', currentTime.toString());
+            localStorage.setItem("lastPopupTime", currentTime.toString());
           }
         }
       }
@@ -236,21 +277,22 @@ const Home = () => {
     user.role === "DOCTOR" || user.role === "ADMIN"
       ? `Hola Dr/Dra. ${user?.lastName}`
       : dataBookings?.length > 0 && verifyTurnsAvailable(dataBookings)
-        ? "Tienes turnos proximos"
-        : "Sin turnos próximos.";
+      ? "Tienes turnos proximos"
+      : "Sin turnos próximos.";
 
   const welcomeText =
-    (user.role === "DOCTOR" && user.validated === "incompleted")
+    user.role === "DOCTOR" && user.validated === "incompleted"
       ? "<p>Por favor complete sus datos para realizar la validación de sus datos.</p>"
-      : (user.role === "DOCTOR" && user.validated === "pending")
-        ? "<p>Su validación está pendiente. Por favor, espere la confirmación.</p>"
-        : (user.role === "DOCTOR" && user.validated === "disabled")
-          ? "<p>Lo sentimos, pero usted no se encuentra habilitado. Por favor revise los datos ingresados.</p>"
-          : (user.role === "DOCTOR" || user.role === "ADMIN") && dataBookings?.length === 0
-            ? "<p>Por el momento no tiene turnos agendados.</p>"
-            : user.role === "PACIENTE" && dataBookings?.length === 0
-              ? "Encuentra al médico que necesitas y programa tu cita en solo unos pasos. <b>¡Tu atención pediátrica está a solo cuatro pasos de distancia!</b>"
-              : "";
+      : user.role === "DOCTOR" && user.validated === "pending"
+      ? "<p>Su validación está pendiente. Por favor, espere la confirmación.</p>"
+      : user.role === "DOCTOR" && user.validated === "disabled"
+      ? "<p>Lo sentimos, pero usted no se encuentra habilitado. Por favor revise los datos ingresados.</p>"
+      : (user.role === "DOCTOR" || user.role === "ADMIN") &&
+        dataBookings?.length === 0
+      ? "<p>Por el momento no tiene turnos agendados.</p>"
+      : user.role === "PACIENTE" && dataBookings?.length === 0
+      ? "Encuentra al médico que necesitas y programa tu cita en solo unos pasos. <b>¡Tu atención pediátrica está a solo cuatro pasos de distancia!</b>"
+      : "";
 
   const headingTable = [
     {
@@ -299,7 +341,7 @@ const Home = () => {
       <Box maxW={["full", "1240px", "full"]}>
         <Flex flexDirection="column">
           {(user.role === "DOCTOR" || user.role === "ADMIN") &&
-            dataBookings?.length > 0 ? (
+          dataBookings?.length > 0 ? (
             <Text
               fontSize={["26px", "30px"]}
               lineHeight={["30.47px", "35.16px"]}
@@ -313,7 +355,9 @@ const Home = () => {
               order={user.role === "DOCTOR" || user.role === "ADMIN" ? 2 : 1}
               gap={4}
             >
-              {!(user.role === "DOCTOR" && !(user.validated === "completed")) && (
+              {!(
+                user.role === "DOCTOR" && !(user.validated === "completed")
+              ) && (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 448 512"
@@ -323,7 +367,8 @@ const Home = () => {
                   <path d="M128 0c13.3 0 24 10.7 24 24V64H296V24c0-13.3 10.7-24 24-24s24 10.7 24 24V64h40c35.3 0 64 28.7 64 64v16 48V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V192 144 128C0 92.7 28.7 64 64 64h40V24c0-13.3 10.7-24 24-24zM400 192H48V448c0 8.8 7.2 16 16 16H384c8.8 0 16-7.2 16-16V192zm-95 89l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" />
                 </svg>
               )}
-              {((user.role === "DOCTOR") && (user.validated === "completed") || user.role === "ADMIN") &&
+              {((user.role === "DOCTOR" && user.validated === "completed") ||
+                user.role === "ADMIN") &&
                 dataBookings?.length === 0 && (
                   <Text
                     fontSize={["26px", "48px"]}
@@ -367,19 +412,21 @@ const Home = () => {
             ></div>
           </Box>
           {/* Aquí añadimos el popup del próximo turno */}
-          <div className="mobile-only">
-            {user?.role === "PACIENTE" && dataBookings?.length > 0 && !loading && (
-              <div style={{ padding: "20px" }}>
-                {/* Recordatorio de turno */}
-                {nextBooking && (
-                  <div style={{ marginTop: "20px" }}>
-                    <BookingReminder booking={nextBooking} />
-                  </div>
-                )}
-                {loading && <p>Cargando tus turnos...</p>}
-              </div>
-            )}
-          </div>
+          <Box display={["block", "block", "block", "none"]}>
+            {user?.role === "PACIENTE" &&
+              dataBookings?.length > 0 &&
+              !loading && (
+                <div style={{ padding: "20px" }}>
+                  {/* Recordatorio de turno */}
+                  {nextBooking && (
+                    <div style={{ marginTop: "20px" }}>
+                      <BookingReminder booking={nextBooking} />
+                    </div>
+                  )}
+                  {loading && <p>Cargando tus turnos...</p>}
+                </div>
+              )}
+          </Box>
           {dataBookings?.length > 0 && loading ? (
             <Flex
               w="100%"
@@ -475,8 +522,8 @@ const Home = () => {
                               {x.status === "deleted"
                                 ? "Cancelado"
                                 : now > bookingStart
-                                  ? "Expiró"
-                                  : "Confirmado"}
+                                ? "Expiró"
+                                : "Confirmado"}
                             </Td>
                             <Td textAlign="center">{x?.patientName}</Td>
                             <Td textAlign="center">
@@ -520,8 +567,8 @@ const Home = () => {
                                     x.status === "deleted"
                                       ? "ya se cancelo"
                                       : isBookingPassed
-                                        ? "Ya no se puede cancelar"
-                                        : ""
+                                      ? "Ya no se puede cancelar"
+                                      : ""
                                   }
                                   _hover={{
                                     bg: "#fff",
@@ -567,7 +614,7 @@ const Home = () => {
             }
             isLoading={false}
           ></AlertModal>
-          
+
           {/* Modal cancelar turno */}
           <AlertModal
             customWidth={300}
@@ -697,7 +744,6 @@ const Home = () => {
         organizer={selectedDoctor}
         fetchBookings={fetchBookings}
       />
-
     </Flex>
   );
 };
