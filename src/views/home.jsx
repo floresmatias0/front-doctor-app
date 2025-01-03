@@ -1,3 +1,4 @@
+import React, { useState, useCallback, useEffect, useContext } from "react";
 import {
   Button,
   Flex,
@@ -18,44 +19,61 @@ import {
   Link,
   useToast,
 } from "@chakra-ui/react";
-import { useCallback, useContext, useEffect, useState } from "react";
 import { AppContext } from "../components/context";
 import { instance } from "../utils/axios";
 import { AlertModal } from "../components/alerts";
 import { IoMdCalendar } from "react-icons/io";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
-
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 import { MdErrorOutline } from "react-icons/md";
+import RatingPopup from "../components/rating-popup";
+
+import BookingReminder from "../components/BookingReminder";
 
 const Home = () => {
   const toast = useToast();
   const { user } = useContext(AppContext);
 
+  const [nextBooking, setNextBooking] = useState(null);
   const [dataBookings, setDataBookings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [documentsSelected, setDocumentsSelected] = useState([]);
   const [turnSelected, setTurnSelected] = useState("");
 
-  // Estado para el primer AlertModal
+  const [isRatingPopupOpen, setRatingPopupOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+
+  {
+    /*  Estados para AlertModal */
+  }
   const {
     isOpen: isOpenDocs,
     onOpen: onOpenDocs,
     onClose: onCloseDocs,
   } = useDisclosure();
-
-  // Estado para el segundo AlertModal
   const {
     isOpen: isOpenCancelTurn,
     onOpen: onOpenCancelTurn,
     onClose: onCloseCancelTurn,
   } = useDisclosure();
 
+  const handleOpenRatingPopup = (appointment, doctor) => {
+    setSelectedAppointment(appointment);
+    setSelectedDoctor(doctor);
+    setRatingPopupOpen(true);
+  };
+
+  const handleCloseRatingPopup = () => {
+    setRatingPopupOpen(false);
+  };
+
   const fetchBookings = useCallback(async () => {
     try {
-      let bookings = [];
       setLoading(true);
+      let bookings = [];
+
       if (user.role === "DOCTOR" || user.role === "ADMIN") {
         bookings = await instance.get(
           `/calendars/all-events?doctor=${user.email}`
@@ -63,22 +81,70 @@ const Home = () => {
       } else {
         bookings = await instance.get(`/calendars/all-events/${user._id}`);
       }
-      const { data } = bookings?.data;
+
+      const { data } = bookings?.data || { data: [] };
+
+      const calculateEndTime = (startTime) => {
+        const startDateTime = new Date(startTime);
+        const endDateTime = new Date(startDateTime.getTime() + 1 * 60000);
+        return endDateTime.toISOString();
+      };
 
       const filteredBookings = data.filter((booking) => {
         const bookingStart = new Date(booking.originalStartTime);
         return bookingStart >= new Date() && booking.status !== "deleted";
       });
 
+      setDataBookings(filteredBookings); // Actualizamos la lista completa de turnos
       setLoading(false);
-      setDataBookings(filteredBookings);
-    } catch (err) {
-      console.log(err.message);
-      setLoading(false);
-      throw new Error(err.message);
-    }
-  }, [user]);
 
+      if (user.role === "DOCTOR" || user.role === "ADMIN") {
+        return;
+      }
+
+      const filteredBookingsPassed = data.filter((booking) => {
+        const bookingEnd = calculateEndTime(booking.originalStartTime);
+        return (
+          new Date(bookingEnd) < new Date() &&
+          booking.status !== "deleted" &&
+          !booking.isRated
+        );
+      });
+
+      if (filteredBookingsPassed.length > 0) {
+        const lastBooking = filteredBookingsPassed[0];
+        if (lastBooking && lastBooking.originalStartTime) {
+          const doctor = {
+            _id: lastBooking.doctorId,
+            name: lastBooking.doctorName,
+            email: lastBooking.doctorEmail,
+            picture: lastBooking.doctorPicture,
+            price: lastBooking.doctorPrice,
+          };
+
+          {
+            /*Verificar si han pasado al menos 12 horas desde la última vez que se mostró el popup */
+          }
+          const lastPopupTime = localStorage.getItem("lastPopupTime");
+          const currentTime = new Date().getTime();
+          const twelveHoursInMillis = 12 * 60 * 60 * 1000;
+
+          if (
+            !lastPopupTime ||
+            currentTime - lastPopupTime > twelveHoursInMillis
+          ) {
+            handleOpenRatingPopup(lastBooking, doctor);
+            localStorage.setItem("lastPopupTime", currentTime.toString());
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+      setLoading(false);
+    }
+  }, [instance, user]);
+
+  // Calcular el próximo turno siempre que `dataBookings` cambie
   useEffect(() => {
     const fetchDataBookings = async () => {
       if (user) {
@@ -215,13 +281,14 @@ const Home = () => {
       : "Sin turnos próximos.";
 
   const welcomeText =
-    (user.role === "DOCTOR" && user.validated === "incompleted")
+    user.role === "DOCTOR" && user.validated === "incompleted"
       ? "<p>Por favor complete sus datos para realizar la validación de sus datos.</p>"
-      : (user.role === "DOCTOR" && user.validated === "pending")
+      : user.role === "DOCTOR" && user.validated === "pending"
       ? "<p>Su validación está pendiente. Por favor, espere la confirmación.</p>"
-      : (user.role === "DOCTOR" && user.validated === "disabled")
+      : user.role === "DOCTOR" && user.validated === "disabled"
       ? "<p>Lo sentimos, pero usted no se encuentra habilitado. Por favor revise los datos ingresados.</p>"
-      : (user.role === "DOCTOR" || user.role === "ADMIN") && dataBookings?.length === 0
+      : (user.role === "DOCTOR" || user.role === "ADMIN") &&
+        dataBookings?.length === 0
       ? "<p>Por el momento no tiene turnos agendados.</p>"
       : user.role === "PACIENTE" && dataBookings?.length === 0
       ? "Encuentra al médico que necesitas y programa tu cita en solo unos pasos. <b>¡Tu atención pediátrica está a solo cuatro pasos de distancia!</b>"
@@ -288,7 +355,9 @@ const Home = () => {
               order={user.role === "DOCTOR" || user.role === "ADMIN" ? 2 : 1}
               gap={4}
             >
-              {!(user.role === "DOCTOR" && !(user.validated === "completed")) && (
+              {!(
+                user.role === "DOCTOR" && !(user.validated === "completed")
+              ) && (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 448 512"
@@ -298,7 +367,8 @@ const Home = () => {
                   <path d="M128 0c13.3 0 24 10.7 24 24V64H296V24c0-13.3 10.7-24 24-24s24 10.7 24 24V64h40c35.3 0 64 28.7 64 64v16 48V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V192 144 128C0 92.7 28.7 64 64 64h40V24c0-13.3 10.7-24 24-24zM400 192H48V448c0 8.8 7.2 16 16 16H384c8.8 0 16-7.2 16-16V192zm-95 89l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" />
                 </svg>
               )}
-              {((user.role === "DOCTOR") && (user.validated === "completed") || user.role === "ADMIN") &&
+              {((user.role === "DOCTOR" && user.validated === "completed") ||
+                user.role === "ADMIN") &&
                 dataBookings?.length === 0 && (
                   <Text
                     fontSize={["26px", "48px"]}
@@ -340,6 +410,22 @@ const Home = () => {
               dangerouslySetInnerHTML={{ __html: welcomeText }}
               style={{ alignContent: "center" }}
             ></div>
+          </Box>
+          {/* Aquí añadimos el popup del próximo turno */}
+          <Box display={["block", "block", "block", "none"]}>
+            {user?.role === "PACIENTE" &&
+              dataBookings?.length > 0 &&
+              !loading && (
+                <div style={{ padding: "20px" }}>
+                  {/* Recordatorio de turno */}
+                  {nextBooking && (
+                    <div style={{ marginTop: "20px" }}>
+                      <BookingReminder booking={nextBooking} />
+                    </div>
+                  )}
+                  {loading && <p>Cargando tus turnos...</p>}
+                </div>
+              )}
           </Box>
           {dataBookings?.length > 0 && loading ? (
             <Flex
@@ -413,7 +499,7 @@ const Home = () => {
                           >
                             <Td textAlign="center">Dr/Dra. {x.doctorName}</Td>
                             <Td textAlign="center">{x.beginning}</Td>
-                            <Td textAlign="center">{x.startDate}</Td>
+                            <Td textAlign="center">{x.startTime}</Td>
                             <Td textAlign="center">Consulta</Td>
                             <Td textAlign="center">
                               {x.status === "deleted" ? (
@@ -421,7 +507,7 @@ const Home = () => {
                               ) : now > bookingStart ? (
                                 <Text color="gray">No disponible</Text>
                               ) : (
-                                <Link href={x.hangoutLink} target="_blank">
+                                <Link href={x.link} target="_blank">
                                   <Text
                                     color="#104DBA"
                                     textDecoration="underline"
@@ -528,6 +614,7 @@ const Home = () => {
             }
             isLoading={false}
           ></AlertModal>
+
           {/* Modal cancelar turno */}
           <AlertModal
             customWidth={300}
@@ -649,6 +736,14 @@ const Home = () => {
           ></AlertModal>
         </Flex>
       </Box>
+
+      <RatingPopup
+        isOpen={isRatingPopupOpen}
+        onClose={handleCloseRatingPopup}
+        appointment={selectedAppointment}
+        organizer={selectedDoctor}
+        fetchBookings={fetchBookings}
+      />
     </Flex>
   );
 };
