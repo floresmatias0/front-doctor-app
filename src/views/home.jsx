@@ -105,17 +105,19 @@ const Home = () => {
 
   // Calcular el próximo turno siempre que `dataBookings` cambie
   useEffect(() => {
-    const fetchDataBookings = async () => {
-      if (user) {
-        try {
-          await fetchBookings();
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    };
+    if (dataBookings.length > 0) {
+      const sortedBookings = [...dataBookings].sort(
+        (a, b) =>
+          new Date(a.originalStartTime) - new Date(b.originalStartTime)
+      );
+      setNextBooking(sortedBookings[0]); // Guardar el turno más cercano
+    } else {
+      setNextBooking(null); // No hay turnos disponibles
+    }
+  }, [dataBookings]);
 
-    fetchDataBookings();
+  useEffect(() => {
+    fetchBookings();
   }, [fetchBookings, user]);
 
   const handleDeleteEvent = async (bookingId, userEmail) => {
