@@ -536,14 +536,6 @@ const History = () => {
                     let canCancel = hoursDifference > 24;
                     let isBookingPassed = now > bookingStart || x.status === "deleted" || !canCancel;
 
-                    const doctor = {
-                      _id: x.doctorId,
-                      name: x.doctorName,
-                      email: x.doctorEmail,
-                      picture: x.doctorPicture,
-                      price: x.doctorPrice,
-                    };
-
                     return (
                       <Tr
                         key={idx}
@@ -587,7 +579,7 @@ const History = () => {
                           {x.status !== "deleted" ? (
                             x.isRated ? (
                               <Flex alignItems="center" justifyContent="center">
-                                {renderStars(x.rating, x, handleOpenRatingPopupWithDoctor)}
+                                {renderStars(x.rating, x, '19px')}
                               </Flex>
                             ) : (
                               <Button
