@@ -59,14 +59,15 @@ export default function Settings() {
   const [provincias, setProvincias] = useState([]);
   const [localidades, setLocalidades] = useState([]);
 
-  // Estado para el primer AlertModal
+  {/*Estado para el primer AlertModal*/}
+
   const {
     isOpen: isOpenFirst,
     onOpen: onOpenFirst,
     onClose: onCloseFirst,
   } = useDisclosure();
 
-  // Estado para el segundo AlertModal
+  {/*Estado para el segundo AlertModal*/}
   const {
     isOpen: isOpenSecond,
     onOpen: onOpenSecond,
@@ -208,7 +209,7 @@ export default function Settings() {
     }
   }, [code, connectMercadopago]);
 
-  //LOGICA PARA EL SELECT DE ESPECIALIZACION
+  {/*LOGICA PARA EL SELECT DE ESPECIALIZACION*/}
   const [specializations, setSpecializations] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -244,7 +245,7 @@ export default function Settings() {
     fetchDataSpecializations();
   }, []);
 
-  // Función para obtener provincias
+  {/*Función para obtener provincias*/}
   useEffect(() => {
     const fetchProvincias = async () => {
       try {
@@ -258,7 +259,7 @@ export default function Settings() {
     fetchProvincias();
   }, []);
 
-  // Función para obtener localidades según la provincia seleccionada
+  {/*Función para obtener localidades según la provincia seleccionada*/}
   useEffect(() => {
     if (provincia) {
       const fetchLocalidades = async () => {
@@ -825,9 +826,9 @@ export default function Settings() {
                         ml={[0, 4]}
                         color="#104DBA"
                         sx={{
-                          fontSize: ['sm', 'md', 'lg'], // Forzar el tamaño del texto
+                          fontSize: ['sm', 'md', 'lg'],
                           '& .chakra-checkbox__label': {
-                            fontSize: ['sm', 'md'], // Asegurar que el texto del label también cambie
+                            fontSize: ['sm', 'md'],
                           }
                         }}
                       >
