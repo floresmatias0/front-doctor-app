@@ -37,7 +37,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 import { ChevronRightIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { MdErrorOutline } from "react-icons/md";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
-
+import axios from 'axios';
 
 const initialState = {
   firstName: false,
@@ -60,14 +60,20 @@ export default function Settings() {
   const [patientSelected, setPatientSelected] = useState(null);
   const [secondSlotEnabled, setSecondSlotEnabled] = useState(!!(user?.reserveTimeFrom2 && user?.reserveTimeUntil2));
 
-  // Estado para el primer AlertModal
+  const [provincia, setProvincia] = useState(user?.provincia || '');
+  const [localidad, setLocalidad] = useState(user?.localidad || '');
+  const [provincias, setProvincias] = useState([]);
+  const [localidades, setLocalidades] = useState([]);
+
+  {/*Estado para el primer AlertModal*/}
+
   const {
     isOpen: isOpenFirst,
     onOpen: onOpenFirst,
     onClose: onCloseFirst,
   } = useDisclosure();
 
-  // Estado para el segundo AlertModal
+  {/*Estado para el segundo AlertModal*/}
   const {
     isOpen: isOpenSecond,
     onOpen: onOpenSecond,
@@ -102,6 +108,8 @@ export default function Settings() {
         reserveTimeUntil2: secondSlotEnabled ? values.reserveTimeUntil2 : null,
         reserveSaturday: values.reserveSaturday,
         reserveSunday: values.reserveSunday,
+        provincia: values.provincia,
+        localidad: values.localidad
       };
 
       const updatedUser = await instance.put(`/users/${user?._id}`, payload);
@@ -212,7 +220,7 @@ export default function Settings() {
     }
   }, [code, connectMercadopago]);
 
-  //LOGICA PARA EL SELECT DE ESPECIALIZACION
+  {/*LOGICA PARA EL SELECT DE ESPECIALIZACION*/}
   const [specializations, setSpecializations] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -247,6 +255,36 @@ export default function Settings() {
     };
     fetchDataSpecializations();
   }, []);
+
+  {/*Función para obtener provincias*/}
+  useEffect(() => {
+    const fetchProvincias = async () => {
+      try {
+        const response = await axios.get('https://apis.datos.gob.ar/georef/api/provincias');
+        const sortedProvinces = response.data.provincias.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        setProvincias(sortedProvinces);
+      } catch (error) {
+        console.error("Error fetching provinces:", error);
+      }
+    };
+    fetchProvincias();
+  }, []);
+
+  {/*Función para obtener localidades según la provincia seleccionada*/}
+  useEffect(() => {
+    if (provincia) {
+      const fetchLocalidades = async () => {
+        try {
+          const response = await axios.get(`https://apis.datos.gob.ar/georef/api/localidades?provincia=${provincia}&max=5000`);
+          const sortedLocalities = response.data.localidades.sort((a, b) => a.nombre.localeCompare(b.nombre));
+          setLocalidades(sortedLocalities);
+        } catch (error) {
+          console.error("Error fetching localities:", error);
+        }
+      };
+      fetchLocalidades();
+    }
+  }, [provincia]);
 
   return (
     <Flex
@@ -314,7 +352,9 @@ export default function Settings() {
               reserveTimeFrom2: secondSlotEnabled ? user?.reserveTimeFrom2 : null,
               reserveTimeUntil2: secondSlotEnabled ? user?.reserveTimeUntil2 : null,
               reserveSaturday: user?.reserveSaturday,
-              reserveSunday: user?.reserveSunday
+              reserveSunday: user?.reserveSunday,
+              provincia: user?.provincia || '',
+              localidad: user?.localidad || ''
             }}
             onSubmit={handleSubmit}
           >
@@ -522,6 +562,67 @@ export default function Settings() {
                       </FormControl>
                     )}
                   </Field>
+
+                  <Field name="provincia">
+                    {({ field }) => (
+                      <FormControl id="provincia" w={["100%", "220px"]} isRequired>
+                        <FormLabel
+                          fontSize={["xs", "md"]}
+                          color="#104DBA"
+                          fontWeight={400}
+                          lineHeight={["12.3px", "16.24px"]}
+                          w={["100%", "220px"]}
+                        >
+                          Provincia
+                        </FormLabel>
+                        <Select
+                          {...field}
+                          placeholder="Seleccionar provincia"
+                          fontSize={["xs", "md"]}
+                          w={["100%", "220px"]}
+                          onChange={(e) => {
+                            setFieldValue('provincia', e.target.value);
+                            setProvincia(e.target.value);
+                          }}
+                        >
+                          {provincias.map((prov, index) => (
+                            <option key={index} value={prov.nombre}>{prov.nombre}</option>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  </Field>
+
+                  {provincia && (
+                    <Field name="localidad">
+                      {({ field }) => (
+                        <FormControl id="localidad" w={["100%", "220px"]} isRequired>
+                          <FormLabel
+                            fontSize={["xs", "md"]}
+                            color="#104DBA"
+                            fontWeight={400}
+                            lineHeight={["12.3px", "16.24px"]}
+                            w={["100%", "220px"]}
+                          >
+                            Localidad
+                          </FormLabel>
+                          <Select
+                            {...field}
+                            placeholder="Seleccionar localidad"
+                            fontSize={["xs", "md"]}
+                            w={["100%", "220px"]}
+                            onChange={(e) => setFieldValue('localidad', e.target.value)}
+                          >
+                            {localidades.map((loc, index) => (
+                              <option key={index} value={loc.nombre}>{loc.nombre}</option>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      )}
+                    </Field>
+                  )}
+
+
                   <Field name="socialWork">
                     {({ field }) => (
                       <FormControl id="socialWork" w={["100%", "220px"]}>
@@ -762,9 +863,9 @@ export default function Settings() {
                         ml={[0, 4]}
                         color="#104DBA"
                         sx={{
-                          fontSize: ['sm', 'md', 'lg'], // Forzar el tamaño del texto
+                          fontSize: ['sm', 'md', 'lg'],
                           '& .chakra-checkbox__label': {
-                            fontSize: ['sm', 'md'], // Asegurar que el texto del label también cambie
+                            fontSize: ['sm', 'md'],
                           }
                         }}
                       >
