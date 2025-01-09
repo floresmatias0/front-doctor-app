@@ -73,24 +73,12 @@ const Turns = () => {
     setLoading(false);
     setDataBookings(filteredBookings);
 
-    // ALERTA: Mostrar si hay turnos disponibles
-    if (filteredBookings.length > 0) {
-      const nextBooking = filteredBookings[0];
-      Swal.fire({
-        title: "Próximo turno",
-        text: `Tu próximo turno es el ${new Date(
-          nextBooking.originalStartTime
-        ).toLocaleString()} con el Dr./Dra. ${nextBooking.doctorName || ''}.`,
-        icon: "info",
-        confirmButtonText: "Entendido",
-      });
-    }
   } catch (err) {
     console.log(err.message);
     setLoading(false);
     throw new Error(err.message);
   }
-}, [user, alertShown]);
+}, [user]);
 
 
   useEffect(() => {
