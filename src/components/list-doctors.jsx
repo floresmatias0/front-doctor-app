@@ -50,7 +50,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       }
       filters += `}`;
       
-      console.log("Filters applied:", filters); // Log para depuración
   
       const { data } = await instance.get(`/users?filters=${filters}`);
       const response = data;
@@ -61,7 +60,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
         if (doctors && doctors?.length > 0) {
           for (let i = 0; i < doctors.length; i++) {
             const normalizedSpecializations = doctors[i].especialization.map(spec => spec.normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
-            console.log("Normalized Doctor Especializations:", normalizedSpecializations); // Log para depuración
             if ((doctors[i].validated === 'completed') && (!specialization || normalizedSpecializations.includes(specialization))) {
               const averageRating = await fetchAverageRating(doctors[i]._id);
               auxDoctors.push({
@@ -83,7 +81,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
               });
             }
           }
-          console.log("Filtered Doctors:", auxDoctors); // Log para depuración
           setDoctors(auxDoctors);
         } else {
           setDoctors([]);
@@ -158,11 +155,9 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   const fetchClosestAppointments = async (specialization) => {
     setLoadingCalendar(true);
     try {
-      console.log("Fetching closest appointments for:", specialization); // Log para depuración
       const response = await instance.get(`/calendars/closest-appointments?specialization=${specialization}`);
   
       const sortedAppointments = response.data.data.sort((a, b) => new Date(a.nextAvailable.start) - new Date(b.nextAvailable.start));
-      console.log("Fetched Appointments:", sortedAppointments); // Log para depuración
   
       const appointmentsWithRatings = await Promise.all(sortedAppointments.map(async appointment => {
         const averageRating = await fetchAverageRating(appointment.doctor._id);
@@ -192,7 +187,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
 
   const handleSpecializationSelect = async (event) => {
     const selectedSpec = event.target.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    console.log("Selected Specialization (Frontend):", selectedSpec); // Log para depuración
     setSelectedSpecialization(selectedSpec);
     await fetchDoctors(selectedSpec);
   };
