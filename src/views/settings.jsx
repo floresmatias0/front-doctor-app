@@ -610,42 +610,51 @@ export default function Settings() {
                       <Field name="especialization">
                         {({ field }) => (
                           <FormControl id="especialization" w={["100%", "240px"]}>
-                            <FormLabel fontSize={["xs", "md"]} color="#104DBA" fontWeight={400} lineHeight={["12.3px", "16.24px"]} w={["100%", "220px"]}>
+                            <FormLabel
+                              fontSize={["xs", "md"]}
+                              color="#104DBA"
+                              fontWeight={400}
+                              lineHeight={["12.3px", "16.24px"]}
+                              w={["100%", "220px"]}
+                              display="flex"
+                              alignItems="center"
+                            >
                               Especialización
-                            </FormLabel>     
-                              <Menu closeOnSelect={false}>
-                                <MenuButton as={Button} rightIcon={<ChevronDownIcon />} bg="white" color="black" borderColor="gray.200" borderWidth="1px" w="100%" textAlign="left" fontWeight={400} fontSize={["xs", "md"]}>
-                                  Seleccionar
-                                </MenuButton>
-                                <MenuList zIndex={3} maxHeight="240px" overflowY="auto" w={["100%", "240px"]}>
-                                  <CheckboxGroup
-                                    value={values.especialization}
-                                    onChange={(value) => setFieldValue('especialization', value)}
-                                  >
-                                    <Stack>
-                                      {specializations.map((spec) => (
-                                        <MenuItem key={spec._id} closeOnSelect={false}>
-                                          <Checkbox
-                                            value={spec.name}
-                                            sx={{
-                                              '.chakra-checkbox__control': {
+                              <Text as="span" color="red.500" ml={1}>*</Text>
+                            </FormLabel>
+                            <Menu closeOnSelect={false}>
+                              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} bg="white" color="black" borderColor="gray.200" borderWidth="1px" w="100%" textAlign="left" fontWeight={400} fontSize={["xs", "md"]}>
+                                Seleccionar
+                              </MenuButton>
+                              <MenuList zIndex={3} maxHeight="240px" overflowY="auto" w={["100%", "240px"]}>
+                                <CheckboxGroup
+                                  value={values.especialization}
+                                  onChange={(value) => setFieldValue('especialization', value)}
+                                >
+                                  <Stack>
+                                    {specializations.map((spec) => (
+                                      <MenuItem key={spec._id} closeOnSelect={false}>
+                                        <Checkbox
+                                          value={spec.name}
+                                          sx={{
+                                            '.chakra-checkbox__control': {
+                                              borderColor: '#104DBA',
+                                              _checked: {
+                                                bg: '#104DBA',
                                                 borderColor: '#104DBA',
-                                                _checked: {
-                                                  bg: '#104DBA',
-                                                  borderColor: '#104DBA',
-                                                },
                                               },
-                                            }}
-                                          >
-                                            {spec.name}
-                                          </Checkbox>
-                                        </MenuItem>
-                                      ))}
-                                    </Stack>
-                                  </CheckboxGroup>
+                                            },
+                                          }}
+                                        >
+                                          {spec.name}
+                                        </Checkbox>
+                                      </MenuItem>
+                                    ))}
+                                  </Stack>
+                                </CheckboxGroup>
 
-                                </MenuList>
-                              </Menu>
+                              </MenuList>
+                            </Menu>
                           </FormControl>
                         )}
                       </Field>
