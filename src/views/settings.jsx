@@ -17,6 +17,12 @@ import {
   FormLabel,
   Spinner,
   Checkbox,
+  CheckboxGroup,
+  Stack,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem
 } from "@chakra-ui/react";
 import { AppContext } from "../components/context";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
@@ -28,7 +34,7 @@ import FormPatient from "../components/form-patient";
 import { SiMercadopago } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
 import { FaCircleCheck } from "react-icons/fa6";
-import { ChevronRightIcon } from "@chakra-ui/icons";
+import { ChevronRightIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { MdErrorOutline } from "react-icons/md";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 
@@ -70,6 +76,11 @@ export default function Settings() {
 
   const handleSubmit = async (values) => {
     try {
+      if (values.especialization.length === 0) {
+        alert("Por favor, selecciona al menos una especialización.");
+        return;
+      }
+
       const payload = {
         firstName: values.firstName,
         lastName: values.lastName,
@@ -224,7 +235,7 @@ export default function Settings() {
       throw new Error("Something went wrong to fetch specializations");
     }
   };
-  
+
 
   useEffect(() => {
     const fetchDataSpecializations = async () => {
@@ -294,7 +305,7 @@ export default function Settings() {
               phone: user?.phone,
               reservePrice: user?.reservePrice,
               reserveTime: user?.reserveTime,
-              especialization: user?.especialization,
+              especialization: user?.especialization || [],
               socialWork: user?.socialWork,
               socialWorkId: user?.socialWorkId,
               enrollment: user?.enrollment,
@@ -307,7 +318,7 @@ export default function Settings() {
             }}
             onSubmit={handleSubmit}
           >
-            {({ isSubmitting }) => (
+            {({ isSubmitting, setFieldValue, values }) => (
               <Form style={{ gap: 10, display: "flex", flexDirection: "column" }} >
                 <Text
                   fontSize={["md", "xl"]}
@@ -598,26 +609,43 @@ export default function Settings() {
                       </Field>
                       <Field name="especialization">
                         {({ field }) => (
-                          <FormControl id="especialization" w={["100%", "240px"]} isRequired>
+                          <FormControl id="especialization" w={["100%", "240px"]}>
                             <FormLabel fontSize={["xs", "md"]} color="#104DBA" fontWeight={400} lineHeight={["12.3px", "16.24px"]} w={["100%", "220px"]}>
                               Especialización
-                            </FormLabel>
-                            {loading ? (
-                              <Spinner />
-                            ) : (
-                              <Select
-                                placeholder="Seleccionar"
-                                fontSize={["xs", "md"]}
-                                w={["100%", "240px"]}
-                                {...field}
-                              >
-                                {specializations.map((spec) => (
-                                  <option key={spec._id} value={spec.name}>
-                                    {spec.name}
-                                  </option>
-                                ))}
-                              </Select>
-                            )}
+                            </FormLabel>     
+                              <Menu closeOnSelect={false}>
+                                <MenuButton as={Button} rightIcon={<ChevronDownIcon />} bg="white" color="black" borderColor="gray.200" borderWidth="1px" w="100%" textAlign="left" fontWeight={400} fontSize={["xs", "md"]}>
+                                  Seleccionar
+                                </MenuButton>
+                                <MenuList zIndex={3} maxHeight="240px" overflowY="auto" w={["100%", "240px"]}>
+                                  <CheckboxGroup
+                                    value={values.especialization}
+                                    onChange={(value) => setFieldValue('especialization', value)}
+                                  >
+                                    <Stack>
+                                      {specializations.map((spec) => (
+                                        <MenuItem key={spec._id} closeOnSelect={false}>
+                                          <Checkbox
+                                            value={spec.name}
+                                            sx={{
+                                              '.chakra-checkbox__control': {
+                                                borderColor: '#104DBA',
+                                                _checked: {
+                                                  bg: '#104DBA',
+                                                  borderColor: '#104DBA',
+                                                },
+                                              },
+                                            }}
+                                          >
+                                            {spec.name}
+                                          </Checkbox>
+                                        </MenuItem>
+                                      ))}
+                                    </Stack>
+                                  </CheckboxGroup>
+
+                                </MenuList>
+                              </Menu>
                           </FormControl>
                         )}
                       </Field>

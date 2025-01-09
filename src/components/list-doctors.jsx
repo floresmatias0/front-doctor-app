@@ -1,12 +1,11 @@
 import PropTypes from "prop-types";
-import { Button, Flex, Text, Box, Image, Divider, Center, Spinner, Select, FormControl, FormLabel, Input, InputGroup, InputRightElement } from "@chakra-ui/react";
+import { Button, Flex, Text, Box, Image, Center, Spinner, Select, FormControl, FormLabel, Input, InputGroup, InputRightElement } from "@chakra-ui/react";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import { instance } from "../utils/axios";
 import { FaMoneyBill, FaSearch } from "react-icons/fa";
 import { MdOutlineNavigateNext, MdOutlineNavigateBefore } from "react-icons/md";
 import CustomCalendar from "./custom-calendar";
 import { renderStars } from '../components/rating-stars';
-
 
 const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected, setDoctorSelected, daySelected, setDaySelected }) => {
   const initialStateTabs = {
@@ -35,7 +34,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   const [closestAppointments, setClosestAppointments] = useState([]);
   const [currentDoctorIndex, setCurrentDoctorIndex] = useState(0);
 
-
   const handlePreviousPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
@@ -43,13 +41,17 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
 
-  const fetchDoctors = async () => {
+  const fetchDoctors = async (specialization = "") => {
     try {
       let filters = `{ "role":["DOCTOR", "ADMIN"]`;
-      if (selectedSpecialization) {
-        filters += `, "especialization": "${selectedSpecialization}"`;
+      if (specialization) {
+        const normalizedSpec = specialization.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        filters += `, "especialization": "${normalizedSpec}"`;
       }
       filters += `}`;
+      
+      console.log("Filters applied:", filters); // Log para depuración
+  
       const { data } = await instance.get(`/users?filters=${filters}`);
       const response = data;
       setDoctorSelected(null);
@@ -58,7 +60,9 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
         let auxDoctors = [];
         if (doctors && doctors?.length > 0) {
           for (let i = 0; i < doctors.length; i++) {
-            if ((doctors[i].validated === 'completed') && (!selectedSpecialization || doctors[i].especialization === selectedSpecialization)) {
+            const normalizedSpecializations = doctors[i].especialization.map(spec => spec.normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
+            console.log("Normalized Doctor Especializations:", normalizedSpecializations); // Log para depuración
+            if ((doctors[i].validated === 'completed') && (!specialization || normalizedSpecializations.includes(specialization))) {
               const averageRating = await fetchAverageRating(doctors[i]._id);
               auxDoctors.push({
                 label: `${doctors[i].firstName} ${doctors[i].lastName}`,
@@ -79,22 +83,22 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
               });
             }
           }
+          console.log("Filtered Doctors:", auxDoctors); // Log para depuración
           setDoctors(auxDoctors);
         } else {
           setDoctors([]);
         }
       }
-      return [];
     } catch (err) {
       console.log("fetch doctors", err.message);
       throw new Error("Something went wrong to search doctors");
     }
   };
-
+  
+  
   const normalizeText = (text) => {
     return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   };
-
 
   const fetchAverageRating = async (doctorId) => {
     try {
@@ -117,13 +121,13 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       if (response.success) {
         let specializations = response.data;
 
-        {/* Obtener los médicos*/}
+        // Obtener los médicos
         const { data: doctorsData } = await instance.get("/users?filters={\"role\":[\"DOCTOR\"]}");
         const doctors = doctorsData.data;
 
-        {/*Filtrar especializaciones que tienen al menos un médico validado*/}
+        // Filtrar especializaciones que tienen al menos un médico validado
         const filteredSpecializations = specializations.filter(spec =>
-          doctors.some(doc => doc.especialization === spec.name && doc.validated === 'completed')
+          doctors.some(doc => doc.especialization.includes(spec.name) && doc.validated === 'completed')
         );
 
         filteredSpecializations.sort((a, b) => a.name.localeCompare(b.name));
@@ -151,15 +155,15 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     fetchDataSpecializations();
   }, []);
 
-  {/* Función para obtener los turnos más próximos */} 
   const fetchClosestAppointments = async (specialization) => {
     setLoadingCalendar(true);
     try {
+      console.log("Fetching closest appointments for:", specialization); // Log para depuración
       const response = await instance.get(`/calendars/closest-appointments?specialization=${specialization}`);
-
+  
       const sortedAppointments = response.data.data.sort((a, b) => new Date(a.nextAvailable.start) - new Date(b.nextAvailable.start));
-
-      {/*Promedio de calificaciones para cada doctor */}
+      console.log("Fetched Appointments:", sortedAppointments); // Log para depuración
+  
       const appointmentsWithRatings = await Promise.all(sortedAppointments.map(async appointment => {
         const averageRating = await fetchAverageRating(appointment.doctor._id);
         return {
@@ -170,7 +174,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
           }
         };
       }));
-
+  
       setClosestAppointments(appointmentsWithRatings);
     } catch (err) {
       console.error("fetch closest appointments", err.message);
@@ -179,15 +183,22 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       setLoadingCalendar(false);
     }
   };
+  
+  
 
   const handleDoctorsSelect = (doctor) => {
     setDoctorSelected(doctor);
   };
 
   const handleSpecializationSelect = async (event) => {
-    setSelectedSpecialization(event.target.value);
-    await fetchClosestAppointments(event.target.value);
+    const selectedSpec = event.target.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    console.log("Selected Specialization (Frontend):", selectedSpec); // Log para depuración
+    setSelectedSpecialization(selectedSpec);
+    await fetchDoctors(selectedSpec);
   };
+  
+  
+  
   
   const handleDoctorSelection = (doctor, appointment) => {
     const adjustedDate = new Date(appointment.nextAvailable.start);
@@ -270,9 +281,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     });
   };
 
-
-  {/* CARROUSEL DOCTORES - TURNO MAS PROXIMO*/}
-
   const handlePrevClick = () => {
     setCurrentDoctorIndex((prevIndex) =>
       prevIndex === 0 ? closestAppointments.length - 1 : prevIndex - 1
@@ -284,7 +292,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       prevIndex === closestAppointments.length - 1 ? 0 : prevIndex + 1
     );
   };
-
 
   const fetchDataCalendar = useCallback(async () => {
     try {
@@ -320,16 +327,15 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   }, [doctorSelected, isActive, fetchDataCalendar]);
 
   useEffect(() => {
-    setCurrentPage(1);
     const fetchDataDoctors = async () => {
       try {
-        await fetchDoctors();
+        await fetchDoctors(selectedSpecialization);
       } catch (err) {
         throw new Error(err.message);
       }
     };
     if (isActive) fetchDataDoctors();
-  }, [isActive, selectedSpecialization]);
+  }, [isActive, selectedSpecialization]);  
 
   if (!isActive) {
     return null;
@@ -340,7 +346,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       normalizeText(doctor.label).includes(normalizeText(searchTerm))
     );
 
-    {/*No paginamos en dispositivos móviles y mostramos todos los doctores*/} 
+    {/* No paginamos en dispositivos móviles y mostramos todos los doctores */ }
     if (window.innerWidth <= 768) {
       return filteredDoctors.map((doctor, idx) => (
         <Flex
@@ -378,7 +384,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                 {doctor?.label}
               </Text>
               <Text fontSize="xs" fontWeight={400} lineHeight="14.06px">
-                {doctor?.especialization}
+                {doctor?.especialization.join(" / ")}
               </Text>
               <Box display="flex" alignItems="center">
                 {renderStars(doctor.averageRating)}
@@ -406,7 +412,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       ));
     }
 
-    {/*Paginamos en dispositivos de mayor tamaño*/}
+    {/* Paginamos en dispositivos de mayor tamaño */ }
     const currentDoctors = filteredDoctors.slice(
       (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage
@@ -448,7 +454,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
               {doctor?.label}
             </Text>
             <Text fontSize="xs" fontWeight={400} lineHeight="14.06px">
-              {doctor?.especialization}
+              {doctor?.especialization.join(" / ")}
             </Text>
             <Box display="flex" alignItems="center">
               {renderStars(doctor.averageRating)}
@@ -495,11 +501,10 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
         </Text>
       </Flex>
 
-      {/* Condición de la pestaña de filtro inicial */}
       {!disableTabs.filter && (
         <Flex flexDirection="column" flex={1} gap={4}>
           <Text fontWeight={400} fontSize="md" lineHeight="18.75px">
-            ¿Como deseas realizar la busqueda de tu turno?
+            ¿Como deseas realizar la búsqueda de tu turno?
           </Text>
           <Flex
             justifyContent="space-between"
@@ -519,7 +524,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
               fontWeight={500}
               onClick={handleNextSpecialty}
             >
-              ESPECIALIDAD MEDICA
+              ESPECIALIDAD MÉDICA
             </Button>
             <Button
               fontSize="sm"
@@ -547,9 +552,8 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
               fontWeight={500}
               onClick={handleNextClosest}
             >
-              TURNO MAS PROXIMO
+              TURNO MÁS PRÓXIMO
             </Button>
-
           </Flex>
           <Flex justifyContent="flex-start" alignItems="flex-start" my={1}>
             <Button
@@ -852,7 +856,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                     >
                       <MdOutlineNavigateBefore size="md" />
                     </Button>
-
                     <Flex
                       key={currentDoctorIndex}
                       w={["full", "265px"]}
@@ -887,7 +890,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                             {closestAppointments[currentDoctorIndex].doctor.firstName} {closestAppointments[currentDoctorIndex].doctor.lastName}
                           </Text>
                           <Text fontSize="xs" fontWeight={400} lineHeight="14.06px">
-                            {closestAppointments[currentDoctorIndex].doctor.especialization}
+                            {closestAppointments[currentDoctorIndex].doctor.especialization.join(", ")}
                           </Text>
                           <Box display="flex" alignItems="center">
                             {renderStars(closestAppointments[currentDoctorIndex].doctor.averageRating)}
@@ -912,7 +915,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                         </Box>
                       </Flex>
                     </Flex>
-
                     <Button onClick={handleNextClick}
                       rounded="full"
                       p={1}
@@ -980,7 +982,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
         </Fragment>
       )}
 
-
       {!disableTabs.calendar && (
         <Fragment>
           <Text fontWeight={400} fontSize="md" lineHeight="18.75px">
@@ -1021,7 +1022,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
                         {doctorSelected?.label}
                       </Text>
                       <Text fontSize={["sm", "md"]} fontWeight={400} lineHeight="16.88px">
-                        {doctorSelected?.especialization}
+                        {doctorSelected?.especialization.join(", ")}
                       </Text>
                     </Box>
                   </Flex>
