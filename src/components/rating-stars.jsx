@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from "@chakra-ui/react";
 
-export const renderStars = (rating, booking, handleOpenRatingPopupWithDoctor) => {
+export const renderStars = (rating, booking, size = '15px') => {
     const stars = [];
     for (let i = 0; i < 5; i++) {
         if (rating >= i + 1) {
@@ -11,11 +11,9 @@ export const renderStars = (rating, booking, handleOpenRatingPopupWithDoctor) =>
                     as="span"
                     color="#ffbd13"
                     borderColor="#c6c2b8"
-                    cursor="pointer"
-                    onClick={() => handleOpenRatingPopupWithDoctor(booking)}
                     sx={{
                         display: 'inline-block',
-                        fontSize: '15px',
+                        fontSize: size,
                         lineHeight: '1',
                         marginRight: '4px',
                         marginTop: '2px',
@@ -35,11 +33,9 @@ export const renderStars = (rating, booking, handleOpenRatingPopupWithDoctor) =>
                     key={i}
                     as="span"
                     position="relative"
-                    cursor="pointer"
-                    onClick={() => handleOpenRatingPopupWithDoctor(booking)}
                     sx={{
                         display: 'inline-block',
-                        fontSize: '15px',
+                        fontSize: size,
                         lineHeight: '1',
                         marginRight: '4px',
                         marginTop: '2px',
@@ -78,11 +74,9 @@ export const renderStars = (rating, booking, handleOpenRatingPopupWithDoctor) =>
                     as="span"
                     color="#c6c2b8"
                     borderColor="#c6c2b8"
-                    cursor="pointer"
-                    onClick={() => handleOpenRatingPopupWithDoctor(booking)}
                     sx={{
                         display: 'inline-block',
-                        fontSize: '15px',
+                        fontSize: size,
                         lineHeight: '1',
                         marginRight: '4px',
                         marginTop: '2px',
