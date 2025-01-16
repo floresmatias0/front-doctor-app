@@ -29,6 +29,7 @@ import { FooterLanding } from "../components/footer";
 // import photoDefaultDoctor from "../assets/photo-default-doctor.jpeg";
 import photoDraNatalia from "../assets/dra.natalia.png";
 import photoDrMartin from "../assets/dr.martin.jpg";
+import InstagramFeed from '../components/instagram-feed'
 
 const principalServices = [
   {
@@ -600,6 +601,18 @@ const LandingHome = () => {
           </Grid>
         </Container>
       </Box>
+
+      {/* Publicaciones de Instagram */}
+      <Box w="full" py={6} px={0} bg="white">
+        <Container maxW="100vw" px={0}>
+          <Box bg="#FFFFFF" py={4}>
+            <Flex direction="column" alignItems="center">
+              <InstagramFeed />
+            </Flex>
+          </Box>
+        </Container>
+      </Box>
+
       {/* Servicios */}
       <Box w="full" py={10} ref={refServices}>
         <Container maxW="container.xl">
