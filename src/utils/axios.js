@@ -43,15 +43,3 @@ instanceUpload.interceptors.request.use(config => {
     }/auth/google/logout`;
     return Promise.reject(error);
 });
-
-instance.interceptors.response.use(
-  response => response,
-  error => {
-      if (error.response?.status === 401) {
-          localStorage.removeItem("user");
-          localStorage.removeItem("authToken");
-          window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/google/logout`;
-      }
-      return Promise.reject(error);
-  }
-);
