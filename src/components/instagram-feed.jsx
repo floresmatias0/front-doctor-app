@@ -102,8 +102,16 @@ const InstagramFeed = () => {
 
   if (loading) {
     return (
-      <Flex justifyContent="center" alignItems="center" h="100%">
+      <Flex justifyContent="center" mt={10} alignItems="center" h="100%">
         <Spinner size="xl" />
+      </Flex>
+    );
+  }
+
+  if (!posts || posts.length === 0) {
+    return (
+      <Flex justifyContent="center" alignItems="center" h="100%">
+        <p> </p>
       </Flex>
     );
   }
@@ -139,11 +147,11 @@ const InstagramFeed = () => {
               {post.media_type === 'VIDEO' ? (
                 <video src={post.media_url} controls style={{ width: '100%', height: '100%' }} />
               ) : (
-                    <Image src={post.media_url} alt={post.caption} style={{ width: '100%', height: '100%' }} />
-                  )}
-                </Link>
-              </Box>
-            ))}
+                <Image src={post.media_url} alt={post.caption} style={{ width: '100%', height: '100%' }} />
+              )}
+            </Link>
+          </Box>
+        ))}
       </Box>
 
       {/* Carrusel para móviles */}
