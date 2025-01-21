@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Box, Image, Link, Spinner, Flex, Heading, Stack, IconButton, Button, Text } from '@chakra-ui/react';
+import { Box, Image, Link, Spinner, Flex, IconButton } from '@chakra-ui/react';
 import { FaChevronLeft, FaChevronRight, FaInstagram } from 'react-icons/fa';
 
-const CustomLeftArrow = ({ onClick }) => (
+const CustomLeftArrow = ({ onClick, isMobile }) => (
   <IconButton
     color="white"
-    fontSize={24}
+    fontSize={32}
     aria-label="left-arrow"
     variant="solid"
     position="absolute"
-    left="2"
+    left={isMobile ? "10px" : "-6"}
     top="50%"
-    transform="translate(0, -50%)"
+    transform="translate(0, -118%)"
     zIndex="2"
     size="lg"
     icon={<FaChevronLeft />}
@@ -20,19 +20,22 @@ const CustomLeftArrow = ({ onClick }) => (
     _hover={{ bg: "blackAlpha.800" }}
     _focus={{ boxShadow: "none" }}
     onClick={onClick}
+    paddingLeft={isMobile ? "5px" : "20px"}
+    paddingRight={isMobile ? "8px" : "7px"}
+    paddingY={isMobile ? "5px" : "34px"}
   />
 );
 
-const CustomRightArrow = ({ onClick }) => (
+const CustomRightArrow = ({ onClick, isMobile }) => (
   <IconButton
     color="white"
-    fontSize={24}
+    fontSize={32}
     aria-label="right-arrow"
     variant="solid"
     position="absolute"
-    right="2"
+    right={isMobile ? "10px" : "-6"} 
     top="50%"
-    transform="translate(0, -50%)"
+    transform="translate(0, -118%)"
     zIndex="2"
     size="lg"
     icon={<FaChevronRight />}
@@ -41,32 +44,26 @@ const CustomRightArrow = ({ onClick }) => (
     _hover={{ bg: "blackAlpha.800" }}
     _focus={{ boxShadow: "none" }}
     onClick={onClick}
+    paddingLeft={isMobile ? "8px" : "7px"}
+    paddingRight={isMobile ? "5px" : "20px"}
+    paddingY={isMobile ? "5px" : "34px"}
   />
 );
 
 const InstagramFeed = () => {
-  const [profile, setProfile] = useState({});
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const containerRef = useRef(null);
+  const mobileContainerRef = useRef(null);
 
   const accessToken = import.meta.env.VITE_IG_ACCESS_TOKEN;
-  const urlBase = 'https://graph.instagram.com';
+  const userId = import.meta.env.VITE_IG_USER_ID;
+  const urlBase = 'https://graph.instagram.com/v21.0';
 
   useEffect(() => {
-    async function fetchProfile() {
-      try {
-        const response = await fetch(`${urlBase}/me?fields=id,username,account_type,media_count,profile_picture_url,biography,followers_count,follows_count,name&access_token=${accessToken}`);
-        const data = await response.json();
-        setProfile(data);
-      } catch (error) {
-        console.error('Error fetching Instagram profile:', error);
-      }
-    }
-
     async function fetchMedia() {
       try {
-        const response = await fetch(`${urlBase}/me/media?fields=id,caption,media_type,media_url,permalink,timestamp&access_token=${accessToken}`);
+        const response = await fetch(`${urlBase}/${userId}/media?fields=id,caption,media_type,media_url,permalink,timestamp&access_token=${accessToken}`);
         const data = await response.json();
         setPosts(data.data);
         setLoading(false);
@@ -76,7 +73,6 @@ const InstagramFeed = () => {
       }
     }
 
-    fetchProfile();
     fetchMedia();
   }, [accessToken, urlBase]);
 
@@ -92,6 +88,18 @@ const InstagramFeed = () => {
     }
   };
 
+  const handleLeftClickMobile = () => {
+    if (mobileContainerRef.current) {
+      mobileContainerRef.current.scrollLeft -= mobileContainerRef.current.offsetWidth;
+    }
+  };
+
+  const handleRightClickMobile = () => {
+    if (mobileContainerRef.current) {
+      mobileContainerRef.current.scrollLeft += mobileContainerRef.current.offsetWidth;
+    }
+  };
+
   if (loading) {
     return (
       <Flex justifyContent="center" alignItems="center" h="100%">
@@ -100,112 +108,109 @@ const InstagramFeed = () => {
     );
   }
 
-  const profileUrl = "https://www.instagram.com/zonamed_salud"; // Reemplaza [usuario] con el nombre de usuario de Instagram
-
-  // Distribuir las publicaciones de forma alternada entre las dos filas
-  const firstRow = posts.filter((_, index) => index % 2 === 0);
-  const secondRow = posts.filter((_, index) => index % 2 !== 0);
+  const mobileGroups = [];
+  for (let i = 0; i < posts.length; i += 4) {
+    mobileGroups.push(posts.slice(i, i + 4));
+  }
 
   return (
     <Box width="100vw" maxWidth="100%" position="relative" overflow="hidden">
-      <Flex id="profileInfo" mb={6} alignItems="center" justifyContent="center" gap={6}>
-        <Link href={profileUrl} isExternal>
-          <Image
-            borderRadius="full"
-            boxSize="70px"
-            src={profile.profile_picture_url}
-            alt={profile.username}
-          />
-        </Link>
-        <Stack spacing={0}>
-          <Link href={profileUrl} isExternal>
-            <Heading as="h1" fontSize="20px">{profile.name}</Heading>
-          </Link>
-          <Link href={profileUrl} isExternal>
-            <Text fontSize="md" color="gray.500">@{profile.username}</Text>
-          </Link>
-        </Stack>
-        <Flex gap={8} ml={12}>
-          <Box textAlign="center">
-            <Text fontSize="lg" fontWeight="bold">{profile.media_count}</Text>
-            <Text>Posts</Text>
+      {/* Carrusel para escritorio */}
+      <Box
+        ref={containerRef}
+        id="carousel-container"
+        display={{ base: "none", lg: "flex" }}
+        flexWrap="nowrap"
+        overflow="hidden"
+        scrollBehavior="smooth"
+        width="100.1vw"
+      >
+        {posts.map((post) => (
+          <Box
+            key={post.id}
+            overflow="hidden"
+            minWidth={{ lg: "25%", xl: "20%" }}
+            height={{ lg: "285px", xl: "350px" }}   
+            bg="white"
+            boxShadow="md"
+            _hover={{ boxShadow: "lg" }}
+          >
+            <Link href={post.permalink} isExternal>
+              {post.media_type === 'VIDEO' ? (
+                <video src={post.media_url} controls style={{ width: '100%', height: '100%' }} />
+              ) : (
+                    <Image src={post.media_url} alt={post.caption} style={{ width: '100%', height: '100%' }} />
+                  )}
+                </Link>
+              </Box>
+            ))}
+      </Box>
+
+      {/* Carrusel para móviles */}
+      <Box
+        ref={mobileContainerRef}
+        id="carousel-container-mobile"
+        display={{ base: "flex", lg: "none" }}
+        flexWrap="nowrap"
+        overflow="hidden"
+        scrollBehavior="smooth"
+        width="100vw"
+      >
+        {mobileGroups.map((group, index) => (
+          <Box key={index} display="grid" gridTemplateColumns="repeat(2, 1fr)" gridTemplateRows="repeat(2, 1fr)" gap={0} minWidth="100%" px={0}>
+            {group.map((post) => (
+              <Box
+                key={post.id}
+                overflow="hidden"
+                minWidth="100%"
+                height="200px"    
+                bg="white"
+                boxShadow="md"
+                _hover={{ boxShadow: "lg" }}
+              >
+                <Link href={post.permalink} isExternal>
+                  {post.media_type === 'VIDEO' ? (
+                    <video src={post.media_url} controls style={{ width: '100%', height: '100%' }} />
+                  ) : (
+                    <Image src={post.media_url} alt={post.caption} style={{ width: '100%', height: '100%' }} />
+                  )}
+                </Link>
+              </Box>
+            ))}
           </Box>
-          <Box textAlign="center">
-            <Text fontSize="lg" fontWeight="bold">{profile.followers_count}</Text>
-            <Text>Seguidores</Text>
-          </Box>
-          <Box textAlign="center">
-            <Text fontSize="lg" fontWeight="bold">{profile.follows_count}</Text>
-            <Text>Seguidos</Text>
-          </Box>
-        </Flex>
-        <Button ml={4} colorScheme="blue" leftIcon={<FaInstagram color="white" />}>
-          Seguir
-        </Button>
+        ))}
+      </Box>
+
+      <Flex alignItems="center" justifyContent="center" mt={{ base: 4, lg: 8, xl: 8 }} mb={{ base: 0, lg: 2, xl: 2 }}>
+        <IconButton
+          as="a"
+          href="https://www.instagram.com/zonamed_salud"
+          target="_blank"
+          color="#104DBA"
+          fontSize={{ base: 40, lg: 50, xl: 60 }}
+          aria-label="Instagram"
+          variant="solid"
+          size="lg"
+          icon={<FaInstagram />}
+          bg="transparent"
+          _hover={{ bg: "transparent", color: "#083b87" }}
+          _focus={{ boxShadow: "none" }}
+        />
       </Flex>
 
-      <Box position="relative">
-        <Box
-          ref={containerRef}
-          id="carousel-container"
-          display="flex"
-          flexDirection="column"
-          overflow="hidden"
-          scrollBehavior="smooth"
-          width="100vw"
-        >
-          <Flex>
-            {firstRow.map((post) => (
-              <Box
-                key={post.id}
-                overflow="hidden"
-                minWidth={{ sm: "50%", lg: "25%", xl: "20%" }}
-                height={{ lg: "320px", xl: "380px" }}
-                bg="white"
-                boxShadow="md"
-                _hover={{ boxShadow: "lg" }}
-              >
-                <Link href={post.permalink} isExternal>
-                  {post.media_type === 'VIDEO' ? (
-                    <video src={post.media_url} controls style={{ width: '100%', height: '100%' }} />
-                  ) : (
-                    <Image src={post.media_url} alt={post.caption} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  )}
-                </Link>
-              </Box>
-            ))}
-          </Flex>
-          <Flex>
-            {secondRow.map((post) => (
-              <Box
-                key={post.id}
-                overflow="hidden"
-                minWidth={{ sm: "50%", lg: "25%", xl: "20%" }}
-                height={{ lg: "320px", xl: "380px" }}
-                bg="white"
-                boxShadow="md"
-                _hover={{ boxShadow: "lg" }}
-              >
-                <Link href={post.permalink} isExternal>
-                  {post.media_type === 'VIDEO' ? (
-                    <video src={post.media_url} controls style={{ width: '100%', height: '100%' }} />
-                  ) : (
-                    <Image src={post.media_url} alt={post.caption} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  )}
-                </Link>
-              </Box>
-            ))}
-          </Flex>
-        </Box>
-        <CustomLeftArrow onClick={handleLeftClick} />
-        <CustomRightArrow onClick={handleRightClick} />
+      {/* Flechas para escritorio */}
+      <Box display={{ base: "none", lg: "block" }}>
+        <CustomLeftArrow onClick={handleLeftClick} isMobile={false} />
+        <CustomRightArrow onClick={handleRightClick} isMobile={false} />
+      </Box>
+
+      {/* Flechas para móviles */}
+      <Box display={{ base: "flex", lg: "none" }} justifyContent="space-between" position="absolute" top="50%" transform="translateY(-50%)" width="100%">
+        <CustomLeftArrow onClick={handleLeftClickMobile} isMobile={true} />
+        <CustomRightArrow onClick={handleRightClickMobile} isMobile={true} />
       </Box>
     </Box>
   );
 };
 
 export default InstagramFeed;
-
-
-
-

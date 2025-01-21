@@ -603,7 +603,7 @@ const LandingHome = () => {
       </Box>
 
       {/* Publicaciones de Instagram */}
-      <Box w="full" py={6} px={0} bg="white">
+      <Box w="full" pt={6} pb={4} px={0} bg="white">
         <Container maxW="100vw" px={0}>
           <Box bg="#FFFFFF" py={4}>
             <Flex direction="column" alignItems="center">
@@ -614,7 +614,7 @@ const LandingHome = () => {
       </Box>
 
       {/* Servicios */}
-      <Box w="full" py={10} ref={refServices}>
+      <Box w="full" pt={2} pb={10}  mt={{ base: 0, lg: 0, xl: 0 }} ref={refServices}>
         <Container maxW="container.xl">
           <Flex flexDirection="column">
             <Box ml={4}>
