@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Button, Flex, Text, Box, Image, Center, Spinner, Select, FormControl, FormLabel, Input, InputGroup, InputRightElement } from "@chakra-ui/react";
+import { Button, Flex, Text, Box, Image, Center, Spinner, Select, Divider, FormControl, FormLabel, Input, InputGroup, InputRightElement } from "@chakra-ui/react";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import { instance } from "../utils/axios";
 import { FaMoneyBill, FaSearch } from "react-icons/fa";
