@@ -43,8 +43,15 @@ const fonts = {
   heading: `'Roboto', sans-serif`,
   body: `'Roboto', sans-serif`
 }
+const breakpoints = {
+  sm: '30em',  // 480px
+  md: '48em',  // 768px
+  lg: '62em',  // 992px
+  xl: '84em',  // 1280px
+  '2xl': '96em', // 1536px
+};
 
-const theme = extendTheme({ colors, fonts });
+const theme = extendTheme({ colors, fonts, breakpoints });
 
 const handleLogin = (role) => {
   window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google/?role=${role}`, "_self");
