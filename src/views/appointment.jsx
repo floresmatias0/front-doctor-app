@@ -109,9 +109,10 @@ export default function Appointment() {
     setActiveTab(0);
     slider?.slickPrev();
     setDisableTabs({
-      ...disableTabs,
       patient: false,
       filter: true,
+      symptoms: true,
+      reserve: true,
     });
   };
 
@@ -137,6 +138,12 @@ export default function Appointment() {
     const cleanUrl = window.location.origin + window.location.pathname;
     window.location.href = cleanUrl;
   };
+
+  useEffect(() => {
+    if (activeTab === 0) {
+      setDisableTabs(initialStateTabs);
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     if (paymentStatus) {
@@ -205,6 +212,7 @@ export default function Appointment() {
       doctorSelected={doctorSelected}
       daySelected={daySelected}
       setDaySelected={setDaySelected}
+      resetFilter={activeTab === 0} // Prop adicional para restablecer el filtro
     />,
     <ListSymptoms
       key="third"
@@ -260,6 +268,8 @@ export default function Appointment() {
             setActiveTab={setActiveTab}
             slider={slider}
             setSlider={setSlider}
+            disableTabs={disableTabs}
+            setDisableTabs={setDisableTabs}
           />
         </Flex>
         {/* FORMS */}
