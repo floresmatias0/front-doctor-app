@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Button, Flex, Text, Box, Image, Center, Spinner, Select, FormControl, FormLabel, Input, InputGroup, InputRightElement } from "@chakra-ui/react";
+import { Button, Flex, Text, Box, Image, Center, Spinner, Select, Divider, FormControl, FormLabel, Input, InputGroup, InputRightElement } from "@chakra-ui/react";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import { instance } from "../utils/axios";
 import { FaMoneyBill, FaSearch } from "react-icons/fa";
@@ -7,7 +7,7 @@ import { MdOutlineNavigateNext, MdOutlineNavigateBefore } from "react-icons/md";
 import CustomCalendar from "./custom-calendar";
 import { renderStars } from '../components/rating-stars';
 
-const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected, setDoctorSelected, daySelected, setDaySelected }) => {
+const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected, setDoctorSelected, daySelected, setDaySelected, resetFilter }) => {
   const initialStateTabs = {
     filter: false,
     doctors: true,
@@ -34,9 +34,19 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
   const [closestAppointments, setClosestAppointments] = useState([]);
   const [currentDoctorIndex, setCurrentDoctorIndex] = useState(0);
 
+  useEffect(() => {
+    if (resetFilter) {
+      setSelectedSpecialization("");
+      setDoctorSelected({});
+      setSearchTerm("");
+      setDisableTabs(initialStateTabs);
+    }
+  }, [resetFilter]);
+
   const handlePreviousPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
+
   const handleNextPage = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
@@ -91,8 +101,8 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       throw new Error("Something went wrong to search doctors");
     }
   };
-  
-  
+
+
   const normalizeText = (text) => {
     return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   };
@@ -118,11 +128,11 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       if (response.success) {
         let specializations = response.data;
 
-        // Obtener los médicos
+       {/*Obtener los médicos*/}
         const { data: doctorsData } = await instance.get("/users?filters={\"role\":[\"DOCTOR\"]}");
         const doctors = doctorsData.data;
 
-        // Filtrar especializaciones que tienen al menos un médico validado
+       {/*Filtrar especializaciones que tienen al menos un médico validado*/}
         const filteredSpecializations = specializations.filter(spec =>
           doctors.some(doc => doc.especialization.includes(spec.name) && doc.validated === 'completed')
         );
@@ -156,9 +166,9 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     setLoadingCalendar(true);
     try {
       const response = await instance.get(`/calendars/closest-appointments?specialization=${specialization}`);
-  
+
       const sortedAppointments = response.data.data.sort((a, b) => new Date(a.nextAvailable.start) - new Date(b.nextAvailable.start));
-  
+
       const appointmentsWithRatings = await Promise.all(sortedAppointments.map(async appointment => {
         const averageRating = await fetchAverageRating(appointment.doctor._id);
         return {
@@ -169,7 +179,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
           }
         };
       }));
-  
+
       setClosestAppointments(appointmentsWithRatings);
     } catch (err) {
       console.error("fetch closest appointments", err.message);
@@ -190,9 +200,6 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
     setSelectedSpecialization(selectedSpec);
     await fetchDoctors(selectedSpec);
   };
-  
-  
-  
   
   const handleDoctorSelection = (doctor, appointment) => {
     const adjustedDate = new Date(appointment.nextAvailable.start);
@@ -236,6 +243,7 @@ const ListDoctors = ({ onNext, onBack, isActive, patientSelected, doctorSelected
       calendar: false,
     });
   };
+
   const handleNextProfesional = () => {
     setDisableTabs({
       ...disableTabs,
@@ -1105,6 +1113,11 @@ ListDoctors.propTypes = {
   onBack: PropTypes.func,
   isActive: PropTypes.bool,
   patientSelected: PropTypes.object,
+  doctorSelected: PropTypes.object,
+  setDoctorSelected: PropTypes.func,
+  daySelected: PropTypes.string,
+  setDaySelected: PropTypes.func,
+  resetFilter: PropTypes.bool,
 };
 
 export default ListDoctors;
