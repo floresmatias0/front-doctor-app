@@ -13,7 +13,7 @@ export const LogoCustom = ({
   flexDirection = 'row',
   displayText = 'inline-block'
 }) => (
-  <Link to="/">
+  <Link href="https://zonamed.com.ar">
     <Flex gap={2} flexDirection={flexDirection}>
       <Box w={[svgWidth, maxSvgWidth]} h={[svgHeight, maxSvgWeight]} pb={5}>
         <svg

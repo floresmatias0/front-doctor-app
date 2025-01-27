@@ -55,7 +55,7 @@ export const FooterLanding = ({ styles = {} }) => {
                 </Box>
               </Link>
               */}
-              <Link href="https://instagram.com" target="__blank">
+              <Link href="https://instagram.com/zonamed_salud" target="__blank">
                 <Box
                   w="30px"
                   h="30px"
