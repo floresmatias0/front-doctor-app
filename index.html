@@ -73,7 +73,9 @@
 
         var redirectButton = document.getElementById('redirectButton');
         if (isIOS) {
-          redirectButton.href = 'https://zonamed.com.ar';
+          redirectButton.onclick = function() {
+            window.location = 'https://zonamed.com.ar';
+          };
           redirectButton.innerHTML = '<img src="/Safari-Logo.png" alt="Logo de Safari" width="30" /> Abrir en Safari Browser';
         } else {
           redirectButton.href = 'intent://zonamed.com.ar#Intent;scheme=https;package=com.android.chrome;end';
