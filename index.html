@@ -62,30 +62,33 @@
     }
   </style>
 
-  <script>
-    function checkInstagramBrowser() {
-      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      var isInstagram = userAgent.indexOf('Instagram') > -1;
-      var isIOS = /iPhone|iPad|iPod/i.test(userAgent);
+<script>
+  function checkInstagramBrowser() {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    var isInstagram = userAgent.indexOf('Instagram') > -1;
+    var isIOS = /iPhone|iPad|iPod/i.test(userAgent);
 
-      if (isInstagram) {
-        document.getElementById('overlay').style.display = 'flex';
+    if (isInstagram) {
+      document.getElementById('overlay').style.display = 'flex';
 
-        var redirectButton = document.getElementById('redirectButton');
-        if (isIOS) {
-          redirectButton.onclick = function() {
-            window.location = 'https://zonamed.com.ar';
-          };
-          redirectButton.innerHTML = '<img src="/Safari-Logo.png" alt="Logo de Safari" width="30" /> Abrir en Safari Browser';
-        } else {
-          redirectButton.href = 'intent://zonamed.com.ar#Intent;scheme=https;package=com.android.chrome;end';
-          redirectButton.innerHTML = '<img src="/Google_Chrome-Logo.png" alt="Logo de Chrome" width="25" /> Abrir en Google Chrome';
-        }
+      var redirectButton = document.getElementById('redirectButton');
+      if (isIOS) {
+        redirectButton.onclick = function() {
+          window.open('https://zonamed.com.ar', '_blank');
+          setTimeout(function () {
+            window.location.href = "https://zonamed.com.ar";
+          }, 25);
+        };
+        redirectButton.innerHTML = '<img src="/Safari-Logo.png" alt="Logo de Safari" width="30" /> Abrir en Safari';
+      } else {
+        redirectButton.href = 'intent://zonamed.com.ar#Intent;scheme=https;package=com.android.chrome;end';
+        redirectButton.innerHTML = '<img src="/Google_Chrome-Logo.png" alt="Logo de Chrome" width="25" /> Abrir en Google Chrome';
       }
     }
+  }
 
-    window.onload = checkInstagramBrowser;
-  </script>
+  window.onload = checkInstagramBrowser;
+</script>
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
