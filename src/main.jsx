@@ -23,6 +23,7 @@ import Settings from "./views/settings";
 import TermsOfServices from "./views/terms-of-services";
 import Turns from "./views/turns";
 import Verify from "./views/verify";
+import CreateTurn from "./views/create-turn";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -66,6 +67,11 @@ const router = createBrowserRouter([
   {
     path: "inicio",
     element: <LayoutWithSidebarAndFooter><ProtectedRoutes><Home /></ProtectedRoutes></LayoutWithSidebarAndFooter>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "nuevo-turno",
+    element: <LayoutWithSidebarAndFooter><ProtectedRoutes><CreateTurn /></ProtectedRoutes></LayoutWithSidebarAndFooter>,
     errorElement: <ErrorPage />,
   },
   {

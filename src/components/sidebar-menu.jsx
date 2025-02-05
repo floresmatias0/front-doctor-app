@@ -24,119 +24,116 @@ import { FaXmark } from "react-icons/fa6";
 
 import "../styles/sidebarmenu.css";
 
-const receiveMenu = (isOpen, color="#104DBA", width="20px", height="20px", role="PACIENTE", isMobile=false) => {
-    const path = window.location.pathname
-    const { user } = useContext(AppContext);
-    const iconsMobile = [
-      {
-        icon: (
-          <AiOutlineHome
-            color={path === "/inicio" && isMobile ? "#FFF" : color}
-            title="Home"
-            className={isOpen ? "fade-in-text" : ""}
-            style={{ width, height }}
-          />
-        ),
-        title: "Home",
-        href: "/inicio",
-      },
-      {
-        icon: (
-          <AiOutlineCalendar
-            color={path === "/turnos" && isMobile ? "#FFF" : color}
-            title="Nuevo turno"
-            className={isOpen ? "fade-in-text" : ""}
-            style={{ width, height }}
-          />
-        ),
-        title: "Nuevo turno",
-        href: "/turnos",
-      },
-      {
-        icon: (
-          <AiOutlineHistory
-            color={path === "/historial-clinico" && isMobile ? "#FFF" : color}
-            title="Historial clinico"
-            className={isOpen ? "fade-in-text" : ""}
-            style={{ width, height }}
-          />
-        ),
-        title: "Historial",
-        href: "/historial-clinico",
-      },
-      {
-        icon: (
-          <AiOutlineHistory
-            color={path === "/mis-turnos" && isMobile ? "#FFF" : color}
-            title="Mis turnos"
-            className={isOpen ? "fade-in-text" : ""}
-            style={{ width, height }}
-          />
-        ),
-        title: "Mis turnos",
-        href: "/mis-turnos",
-      },
-      {
-        icon: (
-          <AiOutlineUser
-            color={path === "/mis-pacientes" && isMobile ? "#FFF" : color}
-            title="Mis pacientes"
-            className={isOpen ? "fade-in-text" : ""}
-            style={{ width, height }}
-          />
-        ),
-        title: "Pacientes",
-        href: "/mis-pacientes",
-      },
-      {
-        icon: (
-          <AiOutlineSetting
-            color={path === "/configuracion" && isMobile ? "#FFF" : color}
-            title="Ajustes"
-            className={isOpen ? "fade-in-text" : ""}
-            style={{ width, height }}
-          />
-        ),
-        title: "Ajustes",
-        href: "/configuracion",
-      },
-      {
-        icon: (
-          <MdOutlineAdminPanelSettings
-            color={path === "/administracion" && isMobile ? "#FFF" : color}
-            title="Administración"
-            className={isOpen ? "fade-in-text" : ""}
-            style={{ width, height }}
-          />
-        ),
-        title: "Admin",
-        href: "/administracion",
-      }
-    ];
+const receiveMenu = (isOpen, color = "#104DBA", width = "20px", height = "20px", role = "PACIENTE", isMobile = false) => {
+  const path = window.location.pathname;
+  const { user } = useContext(AppContext);
+  const iconsMobile = [
+    {
+      icon: (
+        <AiOutlineHome
+          color={path === "/inicio" && isMobile ? "#FFF" : color}
+          title="Home"
+          className={isOpen ? "fade-in-text" : ""}
+          style={{ width, height }}
+        />
+      ),
+      title: "Home",
+      href: "/inicio",
+    },
+    {
+      icon: (
+        <AiOutlineCalendar
+          color={path === "/turnos" && isMobile ? "#FFF" : color}
+          title="Nuevo turno"
+          className={isOpen ? "fade-in-text" : ""}
+          style={{ width, height }}
+        />
+      ),
+      title: "Nuevo turno",
+      href: role === "DOCTOR" ? "/nuevo-turno" : "/turnos",
+    },
+    {
+      icon: (
+        <AiOutlineHistory
+          color={path === "/historial-clinico" && isMobile ? "#FFF" : color}
+          title="Historial clinico"
+          className={isOpen ? "fade-in-text" : ""}
+          style={{ width, height }}
+        />
+      ),
+      title: "Historial",
+      href: "/historial-clinico",
+    },
+    {
+      icon: (
+        <AiOutlineHistory
+          color={path === "/mis-turnos" && isMobile ? "#FFF" : color}
+          title="Mis turnos"
+          className={isOpen ? "fade-in-text" : ""}
+          style={{ width, height }}
+        />
+      ),
+      title: "Mis turnos",
+      href: "/mis-turnos",
+    },
+    {
+      icon: (
+        <AiOutlineUser
+          color={path === "/mis-pacientes" && isMobile ? "#FFF" : color}
+          title="Mis pacientes"
+          className={isOpen ? "fade-in-text" : ""}
+          style={{ width, height }}
+        />
+      ),
+      title: "Pacientes",
+      href: "/mis-pacientes",
+    },
+    {
+      icon: (
+        <AiOutlineSetting
+          color={path === "/configuracion" && isMobile ? "#FFF" : color}
+          title="Ajustes"
+          className={isOpen ? "fade-in-text" : ""}
+          style={{ width, height }}
+        />
+      ),
+      title: "Ajustes",
+      href: "/configuracion",
+    },
+  ];
 
-    if(role === "PACIENTE") {
-      iconsMobile.splice(3, 2)
-      iconsMobile.splice(4, 1)
-    }
+  if (role === "PACIENTE") {
+    iconsMobile.splice(3, 2);
+    iconsMobile.splice(4, 1);
+  }
 
-    if(role === "DOCTOR" && !(user.validated=== "completed")) {
-      iconsMobile.splice(1, 1)
-      iconsMobile.splice(1, 1)
-      iconsMobile.splice(4, 1)
+  if (role === "DOCTOR") {
+    iconsMobile.splice(2, 1); // Eliminamos "Historial" para DOCTOR
+    if (!(user.validated === "completed")) {
+      iconsMobile.splice(1, 1); // Eliminamos "Nuevo turno" si no está validado
+      iconsMobile.splice(1, 1); // Eliminamos "Mis turnos" si no está validado
+      iconsMobile.splice(4, 1); // Eliminamos "Pacientes" si no está validado
     }
-    if(role === "DOCTOR") {
-      iconsMobile.splice(1, 1)
-      iconsMobile.splice(1, 1)
-      iconsMobile.splice(4, 1)
-    }
+  }
 
-    if(role === "ADMIN") {
-      iconsMobile.splice(1, 1)
-      iconsMobile.splice(1, 1)
-    }
+  if (role === "ADMIN") {
+    iconsMobile.push({
+      icon: (
+        <MdOutlineAdminPanelSettings
+          color={path === "/administracion" && isMobile ? "#FFF" : color}
+          title="Administración"
+          className={isOpen ? "fade-in-text" : ""}
+          style={{ width, height }}
+        />
+      ),
+      title: "Admin",
+      href: "/administracion",
+    });
+  }
 
-    return iconsMobile;
+  return iconsMobile;
 };
+
 
 const SidebarMenu = ({ children }) => {
   const { user } = useContext(AppContext);
