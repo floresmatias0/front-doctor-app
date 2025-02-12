@@ -111,8 +111,13 @@ const CreateTurn = () => {
     };
 
     const normalizeName = (name) => {
-        return name.replace(/\b\w/g, char => char.toUpperCase()).trim();
+        return name
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ')
+            .trim();
     };
+    
 
     const handleNextDetails = () => {
         if (isFormComplete) {
@@ -168,13 +173,75 @@ const CreateTurn = () => {
         });
     };
 
-    const handleNextConfirmation = () => {
+// Función para manejar la confirmación de turno
+const handleNextConfirmation = async () => {
+    try {
+        const bookingData = {
+            doctorEmail: user.email,
+            tutorEmail: tutorEmail,
+            title: "Consulta médica",
+            startDateTime: new Date(daySelected).toISOString(),
+            endDateTime: new Date(new Date(daySelected).getTime() + (user.reserveTime * 60000)).toISOString(),
+            symptoms: [],
+            patient: {
+                name: patientName,
+                tutorName: tutorName,
+                email: tutorEmail,
+            },
+            order_id: "",
+        };
+
+        console.log("Datos de la reserva:", bookingData);
+
+        const response = await instance.post('/calendars/create-event', bookingData);
+
+        if (response.data.success) {
+            // Enviar correo al paciente para que confirme el turno
+            const emailData = {
+                emailType: 'notifyPatientToConfirmBooking', // Tipo de correo electrónico
+                sendTo: tutorEmail,
+                subject: 'Tiene un nuevo turno agendado', // Asunto del correo
+                patientName: patientName,
+                doctorName: user.name,
+                doctorEspecialization: doctorData?.especialization?.join(", ") || "",
+                startDate: fechaFormateada,
+                price: user.reservePrice,
+                bookingId: response.data.booking_id || "defaultBookingId", // Asegúrate de que booking_id esté presente
+                doctorEmail: user.email,
+                isHtml: true, // Definir si el correo es HTML
+            };
+
+            console.log("Datos del correo:", emailData);
+
+            const emailResponse = await instance.post('/messages', emailData);
+
+            if (emailResponse.data.success) {
+                setMessageStatus("¡Reserva creada exitosamente y el evento ha sido añadido a Google Calendar! Un correo ha sido enviado al paciente.");
+            } else {
+                setMessageStatus("¡Reserva creada, pero hubo un error al enviar el correo al paciente.");
+            }
+        } else {
+            setMessageStatus("Hubo un error al crear la reserva.");
+        }
+
         setActiveTab(3);
         setDisableTabs({
             ...disableTabs,
             success: false,
         });
-    };
+
+    } catch (error) {
+        console.error("Error al crear la reserva:", error);
+        toast({
+            title: "Error al crear la reserva",
+            description: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+        });
+    }
+};
+
 
     const handleTryAgain = () => {
         setTutorName('');
@@ -428,8 +495,8 @@ const CreateTurn = () => {
                                 gap={[2, 5]}
                                 mt={0}
                                 p={[4, 6]}
-                                maxW="500px"  // Hacer la tarjeta aún más angosta
-                                mx="auto"     // Centrar la tarjeta
+                                maxW="500px"
+                                mx="auto"  
                             >
                                 <Heading
                                     fontSize={["15px", "25px"]}
@@ -546,7 +613,7 @@ const CreateTurn = () => {
                                     <Button
                                         bg="#104DBA"
                                         color="#FFFFFF"
-                                        w="auto"  // Aumentar el ancho del botón para acomodar el texto
+                                        w="auto" 
                                         size="xs"
                                         rightIcon={<MdOutlineNavigateNext style={{ width: "20px", height: "20px" }} />}
                                         onClick={handleNextConfirmation}
@@ -584,4 +651,3 @@ const CreateTurn = () => {
 };
 
 export default CreateTurn;
-
