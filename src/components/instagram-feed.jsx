@@ -61,11 +61,12 @@ const InstagramFeed = () => {
   const pass = import.meta.env.VITE_INSTA_PASS;
   const userId = import.meta.env.VITE_IG_USER_ID;
   const urlBase = 'https://graph.instagram.com/v21.0';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     async function fetchAccessToken() {
       try {
-          const response = await fetch(authUrl, {
+          const response = await fetch(`${backendUrl}/instagram/`, {
               method: "GET",
               headers: {
                   "Authorization": "Basic " + btoa(`${userName}:${pass}`),
