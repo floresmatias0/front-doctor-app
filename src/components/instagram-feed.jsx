@@ -71,8 +71,7 @@ const InstagramFeed = () => {
               headers: {
                   "Authorization": "Basic " + btoa(`${userName}:${pass}`),
                   "Content-Type": "application/json",
-              },
-              body: JSON.stringify({}),
+              }
           });
           if (!response.ok) {
               throw new Error(`Error al obtener token: ${response.statusText}`);
