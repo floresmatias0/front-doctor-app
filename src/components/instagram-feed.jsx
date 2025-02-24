@@ -77,7 +77,7 @@ const InstagramFeed = () => {
               throw new Error(`Error al obtener token: ${response.statusText}`);
           }
           const data = await response.json();
-          return data.accessToken;
+          return data.result;
       } catch (error) {
           console.error("Error obteniendo el accessToken:", error);
           throw error;
