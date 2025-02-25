@@ -66,13 +66,17 @@ const InstagramFeed = () => {
   useEffect(() => {
     async function fetchAccessToken() {
       try {
-          const response = await fetch(`${backendUrl}/instagram/`, {
-              method: "GET",
-              headers: {
-                  "Authorization": "Basic " + btoa(`${userName}:${pass}`),
-                  "Content-Type": "application/json",
-              }
-          });
+        console.log({url: backendUrl, user: userName, pass:pass})
+        const credentials = btoa(`${userName}:${pass}`);
+
+        const response = await fetch(`${backendUrl}/instagram/`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Basic ${credentials}`,
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        });
           if (!response.ok) {
               throw new Error(`Error al obtener token: ${response.statusText}`);
           }
@@ -86,6 +90,7 @@ const InstagramFeed = () => {
     async function fetchMedia() {
       try {
         const accessToken = await fetchAccessToken();
+        console.log(accessToken);
         const response = await fetch(`${urlBase}/${userId}/media?fields=id,caption,media_type,media_url,permalink,timestamp&access_token=${accessToken}`);
         const data = await response.json();
         setPosts(data.data);
