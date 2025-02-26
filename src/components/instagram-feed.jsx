@@ -57,12 +57,37 @@ const InstagramFeed = () => {
   const mobileContainerRef = useRef(null);
 
   const accessToken = import.meta.env.VITE_IG_ACCESS_TOKEN;
+  const userName = import.meta.env.VITE_INSTA_USER;
+  const pass = import.meta.env.VITE_INSTA_PASS;
   const userId = import.meta.env.VITE_IG_USER_ID;
   const urlBase = 'https://graph.instagram.com/v21.0';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
+    async function fetchAccessToken() {
+      try {
+        const credentials = btoa(`${userName}:${pass}`);
+        const response = await fetch(`${backendUrl}/instagram/`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Basic ${credentials}`,
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        });
+          if (!response.ok) {
+              throw new Error(`Error al obtener token: ${response.statusText}`);
+          }
+          const data = await response.json();
+          return data.result;
+      } catch (error) {
+          console.error("Error obteniendo el accessToken:", error);
+          throw error;
+      }
+    }
     async function fetchMedia() {
       try {
+        const accessToken = await fetchAccessToken();
         const response = await fetch(`${urlBase}/${userId}/media?fields=id,caption,media_type,media_url,permalink,timestamp&access_token=${accessToken}`);
         const data = await response.json();
         setPosts(data.data);
