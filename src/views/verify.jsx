@@ -6,7 +6,7 @@ export default function Verify() {
   const [searchParams] = useSearchParams();
   
   const currentParams = Object.fromEntries([...searchParams]);
-  const { token } = currentParams;
+  const { token, bookingId, email } = currentParams;
 
   useEffect(() => {
     const handleVerification = async () => {
@@ -19,11 +19,18 @@ export default function Verify() {
           }
           localStorage.setItem("authToken", token);
 
-          return navigate("/inicio");
+          if (bookingId && email) {
+            return navigate(`/confirm-appointment?bookingId=${bookingId}&email=${email}`);
+          } else {
+            return navigate("/inicio");
+          }
         } else {
           let token = localStorage.getItem("authToken");
 
           if(token) {
+            if (bookingId && email) {
+              return navigate(`/confirm-appointment?bookingId=${bookingId}&email=${email}`);
+            }
             return navigate("/inicio");
           }
           return navigate("/iniciar-sesion");
@@ -35,7 +42,7 @@ export default function Verify() {
     };
 
     handleVerification();
-  }, [token, navigate]);
+  }, [token, navigate, bookingId, email]);
 
   return null;
 }

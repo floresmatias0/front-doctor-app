@@ -24,7 +24,7 @@ import { instance } from "../utils/axios";
 import { AlertModal } from "../components/alerts";
 import { IoMdCalendar } from "react-icons/io";
 import { IoDocumentTextOutline } from "react-icons/io5";
-import { MdOutlineCancel } from "react-icons/md";
+import { MdOutlineCancel, MdPayment } from "react-icons/md";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 import { MdErrorOutline } from "react-icons/md";
 import RatingPopup from "../components/rating-popup";
@@ -111,7 +111,8 @@ const Home = () => {
         );
       });
 
-      if (filteredBookingsPassed.length > 0) {
+      if (filteredBookingsPassed.length > 0 &&
+        booking.status !== "pending") {
         const lastBooking = filteredBookingsPassed[0];
         if (lastBooking && lastBooking.originalStartTime) {
           const doctor = {
@@ -298,7 +299,7 @@ const Home = () => {
 
   const headingTable = [
     {
-      name: "tutor",
+      name: "paciente",
       detail: "",
     },
     {
@@ -322,7 +323,7 @@ const Home = () => {
       detail: "",
     },
     {
-      name: "paciente",
+      name: "tutor",
       detail: "",
     },
     {
@@ -330,6 +331,11 @@ const Home = () => {
       detail: "",
     },
   ];
+
+  const handlePay = (bookingId) => {
+    window.location.href = `/confirm-appointment?bookingId=${bookingId}`;
+  };
+
 
   return (
     <Flex
@@ -476,18 +482,10 @@ const Home = () => {
                     dataBookings
                       ?.map((x, idx) => {
                         let now = new Date();
-
                         let bookingStart = new Date(x.originalStartTime);
-
-                        let hoursDifference =
-                          (bookingStart - now) / (1000 * 60 * 60);
-
+                        let hoursDifference = (bookingStart - now) / (1000 * 60 * 60);
                         let canCancel = hoursDifference > 24;
-
-                        let isBookingPassed =
-                          now > bookingStart ||
-                          x.status === "deleted" ||
-                          !canCancel;
+                        let isBookingPassed = now > bookingStart || x.status === "deleted" || !canCancel;
 
                         return (
                           <Tr
@@ -499,22 +497,20 @@ const Home = () => {
                             px={8}
                             textAlign="center"
                           >
-                            <Td textAlign="center">Dr/Dra. {x.doctorName}</Td>
+                            <Td textAlign="center">{x?.patientName || x?.patientInfo?.name}</Td>
                             <Td textAlign="center">{x.beginning}</Td>
                             <Td textAlign="center">{x.startTime}</Td>
                             <Td textAlign="center">Consulta</Td>
                             <Td textAlign="center">
                               {x.status === "deleted" ? (
                                 <Text color="gray">No disponible</Text>
+                              ) : x.status === "pending" ? (
+                                <Text color="gray">No disponible</Text>
                               ) : now > bookingStart ? (
                                 <Text color="gray">No disponible</Text>
                               ) : (
                                 <Link href={x.link} target="_blank">
-                                  <Text
-                                    color="#104DBA"
-                                    textDecoration="underline"
-                                    _hover={{ textDecoration: "none" }}
-                                  >
+                                  <Text color="#104DBA" textDecoration="underline" _hover={{ textDecoration: "none" }}>
                                     Ir a la consulta
                                   </Text>
                                 </Link>
@@ -529,15 +525,9 @@ const Home = () => {
                                     ? "Expiró"
                                     : "Confirmado"}
                             </Td>
-                            <Td textAlign="center">{x?.patientName || x?.patientInfo?.name}</Td>
+                            <Td textAlign="center">{x.tutorName}</Td>
                             <Td textAlign="center">
-                              <Flex
-                                w="full"
-                                h="full"
-                                justifyContent="center"
-                                alignItems="center"
-                                gap="2"
-                              >
+                              <Flex w="full" h="full" justifyContent="center" alignItems="center" gap="2">
                                 {x?.certificate?.length > 0 && (
                                   <Button
                                     padding={0}
@@ -547,11 +537,30 @@ const Home = () => {
                                     size="xs"
                                     rounded="md"
                                     title="Documentos adjuntos"
-                                    onClick={() =>
-                                      handleShowDocuments(x.certificate)
-                                    }
+                                    onClick={() => handleShowDocuments(x.certificate)}
                                   >
                                     <IoDocumentTextOutline size="18px" />
+                                  </Button>
+                                )}
+                                {x.status === "pending" && user?.role === "PACIENTE" && (
+                                  <Button
+                                    padding={0}
+                                    w="20px"
+                                    bg="#38C521"
+                                    color="#FFF"
+                                    size="xs"
+                                    rounded="md"
+                                    title="Pagar"
+                                    onClick={() => handlePay(x?.bookingId)}
+                                    _hover={{
+                                      bg: "#FFF",
+                                      border: "1px solid #38C521",
+                                      svg: {
+                                        fill: "#38C521",
+                                      },
+                                    }}
+                                  >
+                                    <MdPayment size="18px" />
                                   </Button>
                                 )}
                                 <Button

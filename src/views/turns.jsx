@@ -16,14 +16,15 @@ import {
   Heading,
   useDisclosure,
   Link,
-  Icon
+  Icon,
+  Divider
 } from "@chakra-ui/react";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { AppContext } from "../components/context";
 import { instance, instanceUpload } from "../utils/axios";
 import { FormHistory } from "./history";
 import { AlertModal } from "../components/alerts";
-import { MdErrorOutline, MdFileDownload } from "react-icons/md";
+import { MdErrorOutline, MdFileDownload, MdOutlineNavigateNext, MdOutlineNavigateBefore } from "react-icons/md";
 import * as XLSX from "xlsx";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 import { FaEye } from "react-icons/fa";
@@ -37,6 +38,11 @@ const Turns = () => {
   const [loading, setLoading] = useState(false);
   const [uploadLoading, setUploadLoading] = useState(false);
   const { user } = useContext(AppContext);
+
+  const [currentPageNext, setCurrentPageNext] = useState(1);
+  const [currentPageHistory, setCurrentPageHistory] = useState(1);
+  const [itemsPerPageNext, setItemsPerPageNext] = useState(3);
+  const [itemsPerPageHistory, setItemsPerPageHistory] = useState(3);
 
   const toast = useToast();
 
@@ -70,8 +76,20 @@ const Turns = () => {
         return bookingStart >= new Date() && booking.status !== "deleted";
       });
 
+      const filteredBookingsPassed = data.filter((booking) => {
+        const bookingStart = new Date(booking.originalStartTime);
+        return bookingStart <= new Date() && booking.status !== "deleted";
+      });
+
       setLoading(false);
-      setDataBookings(filteredBookings);
+      setDataBookingsNext(filteredBookings);
+      setDataBookings(filteredBookingsPassed);
+      setDataExcel(data);
+
+      // Ajustar itemsPerPage dinámicamente
+      const nextCount = filteredBookings.length;
+      setItemsPerPageNext(3);
+      setItemsPerPageHistory(nextCount === 1 ? 5 : nextCount === 2 ? 4 : 3);
 
     } catch (err) {
       console.log(err.message);
@@ -234,10 +252,6 @@ const Turns = () => {
       name: "",
       detail: "",
     },
-    {
-      name: "acciones",
-      detail: "",
-    },
   ];
 
   const handleSelectHistory = (booking) => {
@@ -380,6 +394,36 @@ const Turns = () => {
     XLSX.writeFile(workbook, "Turnos.xlsx");
   };
 
+  const handleNextPageNext = () => {
+    if (currentPageNext < Math.ceil(dataBookingsNext.length / itemsPerPageNext)) {
+      setCurrentPageNext(currentPageNext + 1);
+    }
+  };
+  
+  const handlePreviousPageNext = () => {
+    if (currentPageNext > 1) {
+      setCurrentPageNext(currentPageNext - 1);
+    }
+  };
+  
+  const handleNextPageHistory = () => {
+    if (currentPageHistory < Math.ceil(dataBookings.length / itemsPerPageHistory)) {
+      setCurrentPageHistory(currentPageHistory + 1);
+    }
+  };
+  
+  const handlePreviousPageHistory = () => {
+    if (currentPageHistory > 1) {
+      setCurrentPageHistory(currentPageHistory - 1);
+    }
+  };
+  
+  const paginate = (data, page, itemsPerPage) => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return data.slice(startIndex, endIndex);
+  };
+  
   return (
     <Flex
       w={["full", "calc(100% - 155px)"]}
@@ -401,7 +445,7 @@ const Turns = () => {
           </Center>
         </Flex>
       ) : (
-        <Box overflowY="auto">
+        <Box overflowY="auto" w="100%" flex={1} px={[2, 2, 4]} py={4}>
           <Heading
             fontSize={["15px", "25px"]}
             fontWeight={700}
@@ -456,171 +500,148 @@ const Turns = () => {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {dataBookingsNext?.length > 0 &&
-                      dataBookingsNext
-                        ?.map((x, idx) => {
-                          let now = new Date();
-
-                          let bookingStart = new Date(x.originalStartTime);
-
-                          let hoursDifference =
-                            (bookingStart - now) / (1000 * 60 * 60);
-
-                          let canCancel = hoursDifference > 24;
-
-                          let isBookingPassed =
-                            now > bookingStart ||
-                            x.status === "deleted" ||
-                            !canCancel;
-
-                          return (
-                            <Tr
-                              key={idx}
-                              fontSize="12px"
-                              fontWeight={400}
-                              lineHeight="14.06px"
-                              textTransform="uppercase"
-                              px={8}
-                              textAlign="center"
-                            >
-                              <Td textAlign="center">{x.patientName || x.patientInfo?.name}</Td>
-                              <Td textAlign="center">{x.patientSocialWork}</Td>
-                              <Td textAlign="center">
-                                {x.patientSocialWorkId}
-                              </Td>
-                              <Td textAlign="center">{x.beginning}</Td>
-                              <Td textAlign="center">{x.startTime}</Td>
-                              <Td textAlign="center">Consulta</Td>
-                              <Td textAlign="center">
-                                {x.status === "deleted" ? (
-                                  <Text color="gray">No disponible</Text>
-                                ) : now > bookingStart ? (
-                                  <Text color="gray">No disponible</Text>
-                                ) : (
-                                  <Link href={x.link} target="_blank">
-                                    <Text
-                                      color="#104DBA"
-                                      textDecoration="underline"
-                                      _hover={{ textDecoration: "none" }}
-                                    >
-                                      Ir a la consulta
-                                    </Text>
-                                  </Link>
-                                )}
-                              </Td>
-                              <Td textAlign="center">
-                                {x.status === "deleted"
-                                  ? "Cancelado"
-                                  : x.status === "pending"
-                                    ? "Pendiente de Pago"
-                                    : now > bookingStart
-                                      ? "Expiró"
-                                      : "Confirmado"}
-                              </Td>
-
-                              <Td textAlign="center">{x?.tutorName}</Td>
-                              <Td textAlign="center">
-                                <Box w="full" h="full" position="relative">
-                                  {x?.certificate?.length > 0 && (
-                                    <Button
-                                      padding={0}
-                                      position="absolute"
-                                      top="-12px"
-                                      left="0"
-                                      w="calc(100% - 20px)"
-                                      bg="#38C521"
-                                      color="#FFF"
-                                      size="xs"
-                                      rounded="xl"
-                                      transform="translateX(0px)"
-                                      transition="transform 0.8s, z-index 0.3s"
-                                      zIndex={1}
-                                      _hover={{
-                                        transform: "translateX(20px)",
-                                        zIndex: 3,
-                                      }}
-                                      onClick={() =>
-                                        handleShowDocuments(x.certificate)
-                                      }
-                                    >
-                                      <Text
-                                        fontSize={[
-                                          "8px",
-                                          "8px",
-                                          "8px",
-                                          "8px",
-                                          "10px",
-                                        ]}
-                                        fontWeight={400}
-                                        textTransform="uppercase"
-                                        lineHeight="11.72px"
-                                      >
-                                        DOCUMENTOS
-                                      </Text>
-                                    </Button>
-                                  )}
-                                  <Button
-                                    padding={0}
-                                    px={4}
-                                    position="absolute"
-                                    top="-12px"
-                                    left="0"
-                                    w="calc(100% - 20px)"
-                                    bg="#FF0000"
-                                    color="#FFF"
-                                    size="xs"
-                                    rounded="xl"
-                                    transform="translateX(20px)"
-                                    transition="transform 0.5s, z-index 0.5s"
-                                    zIndex={2}
-                                    onClick={() =>
-                                      handleDeleteEvent(
-                                        x?.bookingId,
-                                        x?.doctorEmail
-                                      )
-                                    }
-                                    isDisabled={isBookingPassed}
-                                    _disabled={{
-                                      opacity: 1,
-                                      bg: "#DCDCDC",
-                                    }}
-                                    _hover={{
-                                      bg: isBookingPassed ? "" : "inherit",
-                                    }}
+                    {paginate(dataBookingsNext, currentPageNext, itemsPerPageNext)?.map((x, idx) => {
+                      let now = new Date();
+                      let bookingStart = new Date(x.originalStartTime);
+                      let hoursDifference = (bookingStart - now) / (1000 * 60 * 60);
+                      let canCancel = hoursDifference > 24;
+                      let isBookingPassed = now > bookingStart || x.status === "deleted" || !canCancel;
+                      return (
+                        <Tr
+                          key={idx}
+                          fontSize="12px"
+                          fontWeight={400}
+                          lineHeight="14.06px"
+                          textTransform="uppercase"
+                          px={8}
+                          textAlign="center"
+                        >
+                          <Td textAlign="center">{x.patientName || x.patientInfo?.name}</Td>
+                          <Td textAlign="center">{x.patientSocialWork}</Td>
+                          <Td textAlign="center">{x.patientSocialWorkId}</Td>
+                          <Td textAlign="center">{x.beginning}</Td>
+                          <Td textAlign="center">{x.startTime}</Td>
+                          <Td textAlign="center">Consulta</Td>
+                          <Td textAlign="center">
+                            {x.status === "deleted" ? (
+                              <Text color="gray">No disponible</Text>
+                            ) : x.status === "pending" ? (
+                              <Text color="gray">No disponible</Text>
+                            ) : now > bookingStart ? (
+                              <Text color="gray">No disponible</Text>
+                            ) : (
+                              <Link href={x.link} target="_blank">
+                                <Text color="#104DBA" textDecoration="underline" _hover={{ textDecoration: "none" }}>
+                                  Ir a la consulta
+                                </Text>
+                              </Link>
+                            )}
+                          </Td>
+                          <Td textAlign="center">
+                            {x.status === "deleted"
+                              ? "Cancelado"
+                              : x.status === "pending"
+                              ? "Pendiente de Pago"
+                              : now > bookingStart
+                              ? "Expiró"
+                              : "Confirmado"}
+                          </Td>
+                          <Td textAlign="center">{x?.tutorName}</Td>
+                          <Td textAlign="center">
+                            <Box w="full" h="full" position="relative">
+                              {x?.certificate?.length > 0 && (
+                                <Button
+                                  padding={0}
+                                  position="absolute"
+                                  top="-12px"
+                                  left="0"
+                                  w="calc(100% - 20px)"
+                                  bg="#38C521"
+                                  color="#FFF"
+                                  size="xs"
+                                  rounded="xl"
+                                  transform="translateX(0px)"
+                                  transition="transform 0.8s, z-index 0.3s"
+                                  zIndex={1}
+                                  _hover={{
+                                    transform: "translateX(20px)",
+                                    zIndex: 3,
+                                  }}
+                                  onClick={() => handleShowDocuments(x.certificate)}
+                                >
+                                  <Text
+                                    fontSize={["8px", "8px", "8px", "8px", "10px"]}
+                                    fontWeight={400}
+                                    textTransform="uppercase"
+                                    lineHeight="11.72px"
                                   >
-                                    <Text
-                                      fontSize={[
-                                        "8px",
-                                        "8px",
-                                        "8px",
-                                        "8px",
-                                        "10px",
-                                      ]}
-                                      fontWeight={400}
-                                      textTransform="uppercase"
-                                      lineHeight="11.72px"
-                                    >
-                                      {x.status === "deleted"
-                                        ? "Cancelado"
-                                        : now > bookingStart
-                                          ? "Cancelar"
-                                          : "Cancelar"}
-                                    </Text>
-                                  </Button>
-                                </Box>
-                              </Td>
-                            </Tr>
-                          );
-                        })
-                        .slice(0, 5)}
+                                    DOCUMENTOS
+                                  </Text>
+                                </Button>
+                              )}
+                              <Button
+                                padding={0}
+                                px={4}
+                                position="absolute"
+                                top="-12px"
+                                left="0"
+                                w="calc(100% - 20px)"
+                                bg="#FF0000"
+                                color="#FFF"
+                                size="xs"
+                                rounded="xl"
+                                transform="translateX(20px)"
+                                transition="transform 0.5s, z-index 0.5s"
+                                zIndex={2}
+                                onClick={() => handleDeleteEvent(x?.bookingId, x?.doctorEmail)}
+                                isDisabled={isBookingPassed}
+                                _disabled={{
+                                  opacity: 1,
+                                  bg: "#DCDCDC",
+                                }}
+                                _hover={{
+                                  bg: isBookingPassed ? "" : "inherit",
+                                }}
+                              >
+                                <Text
+                                  fontSize={["8px", "8px", "8px", "8px", "10px"]}
+                                  fontWeight={400}
+                                  textTransform="uppercase"
+                                  lineHeight="11.72px"
+                                >
+                                  {x.status === "deleted" ? "Cancelado" : now > bookingStart ? "Cancelar" : "Cancelar"}
+                                </Text>
+                              </Button>
+                            </Box>
+                          </Td>
+                        </Tr>
+                      );
+                    })}
                   </Tbody>
                 </Table>
+                <Divider />
+                <Flex justifyContent="center" my={4}>
+                  <MdOutlineNavigateBefore
+                    onClick={handlePreviousPageNext}
+                    isDisabled={currentPageNext === 1}
+                    style={{ cursor: 'pointer', color: '#104DBA'}}
+                    size={20}
+                  />
+                  <Text mx={3} fontSize={["12px", "14px"]}>
+                    Página {currentPageNext} de {Math.ceil(dataBookingsNext.length / itemsPerPageNext)}
+                  </Text>
+                  <MdOutlineNavigateNext onClick={handleNextPageNext}
+                    isDisabled={currentPageNext === Math.ceil(dataBookingsNext.length / itemsPerPageNext)}
+                    style={{ cursor: 'pointer', color: '#104DBA'}}
+                    size={20}
+                  />
+                </Flex>
               </TableContainer>
             ) : (
-              <Text>No tienes turnos proximos</Text>
+              <Text>No tienes turnos próximos</Text>
             )}
           </Box>
-
+  
           <Box>
             <Flex justifyContent="space-between" alignItems="center">
               <Heading
@@ -633,39 +654,33 @@ const Turns = () => {
               >
                 Historial de turnos
               </Heading>
-              {user?.role === "ADMIN" ||
-                (user?.role === "DOCTOR" && (
-                  <Button
-                    onClick={handleDownloadFileExcel}
-                    title="Exportar a excel"
-                    size={["xs", "sm"]}
-                    variant="unstyled"
-                    display="flex"
-                    borderWidth={1}
-                    px={3}
-                    borderColor="#104DBA"
-                    borderRadius="full"
-                    _hover={{
-                      backgroundColor: "#104DBA",
-                      "svg, p": {
-                        color: "#FFF",
-                        fill: "#FFF",
-                        transition: "all 1 ease-in-out",
-                      },
-                    }}
-                    isDisabled={dataBookings?.length === 0}
-                  >
-                    <Text
-                      display={["none", "inline-block"]}
-                      pr={[0, 2]}
-                      color="#104DBA"
-                      fontWeight={500}
-                    >
-                      Exportar a excel
-                    </Text>
-                    <MdFileDownload color="#104DBA" />
-                  </Button>
-                ))}
+              {user?.role === "ADMIN" || (user?.role === "DOCTOR") && (
+                <Button
+                  onClick={handleDownloadFileExcel}
+                  title="Exportar a excel"
+                  size={["xs", "sm"]}
+                  variant="unstyled"
+                  display="flex"
+                  borderWidth={1}
+                  px={3}
+                  borderColor="#104DBA"
+                  borderRadius="full"
+                  _hover={{
+                                    backgroundColor: "#104DBA",
+                    "svg, p": {
+                      color: "#FFF",
+                      fill: "#FFF",
+                      transition: "all 1 ease-in-out",
+                    },
+                  }}
+                  isDisabled={dataBookings?.length === 0}
+                >
+                  <Text display={["none", "inline-block"]} pr={[0, 2]} color="#104DBA" fontWeight={500}>
+                    Exportar a excel
+                  </Text>
+                  <MdFileDownload color="#104DBA" />
+                </Button>
+              )}
             </Flex>
             <TableContainer
               borderTopStartRadius="15px"
@@ -679,88 +694,81 @@ const Turns = () => {
               <Table size="md" variant="unstyled">
                 <Thead bgColor="#104DBA" boxShadow="xl" height={50}>
                   <Tr>
-                    {headingTablePassed
-                      ?.map((h, idx) => (
-                        <Th
-                          key={idx}
-                          color="#FFF"
-                          fontWeight={500}
-                          fontSize="16px"
-                          lineHeight="18.75px"
-                          px={8}
-                          textAlign="center"
-                        >
-                          {h?.name}
-                        </Th>
-                      ))
-                      .slice(0, 7)}
+                    {headingTablePassed?.map((h, idx) => (
+                      <Th key={idx} color="#FFF" fontWeight={500} fontSize="16px" lineHeight="18.75px" px={8} textAlign="center">
+                        {h?.name}
+                      </Th>
+                    ))}
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {dataBookings?.length > 0 &&
-                    dataBookings
-                      ?.map((x, idx) => {
-                        let now = new Date();
-                        let bookingStart = new Date(x.originalStartTime);
-
-                        return (
-                          <Tr
-                            key={idx}
-                            fontSize="12px"
-                            fontWeight={400}
-                            lineHeight="14.06px"
-                            textTransform="uppercase"
-                            px={8}
-                            textAlign="center"
+                  {paginate(dataBookings, currentPageHistory, itemsPerPageHistory)?.map((x, idx) => {
+                    let now = new Date();
+                    let bookingStart = new Date(x.originalStartTime);
+                    let isBookingPassed = now > bookingStart || x.status === "deleted";
+                    return (
+                      <Tr
+                        key={idx}
+                        fontSize="12px"
+                        fontWeight={400}
+                        lineHeight="14.06px"
+                        textTransform="uppercase"
+                        px={8}
+                        textAlign="center"
+                      >
+                        <Td textAlign="center">{x.patientName || x.patientInfo?.name}</Td>
+                        <Td textAlign="center">{x.beginning}</Td>
+                        <Td textAlign="center">{x.startTime}</Td>
+                        <Td textAlign="center">Consulta</Td>
+                        <Td textAlign="center">
+                          {isBookingPassed ? (
+                            <Text color="gray">No disponible</Text>
+                          ) : (
+                            <Link href={x.link} target="_blank">
+                              <Text color="#104DBA" textDecoration="underline" _hover={{ textDecoration: "none" }}>
+                                Ir a la consulta
+                              </Text>
+                            </Link>
+                          )}
+                        </Td>
+                        <Td textAlign="center">
+                          {x.status === "deleted"
+                            ? "Cancelado"
+                            : x.status === "pending"
+                            ? "Expiró"
+                            : now > bookingStart
+                              ? "Expiró"
+                              : "Confirmado"}
+                        </Td>
+                        <Td textAlign="center">
+                          <Button
+                            onClick={() => handleSelectHistory(x)}
+                            variant="unstyled"
                           >
-                            <Td textAlign="center">{x.patientName || x.patientInfo?.name}</Td>
-                            <Td textAlign="center">{x.beginning}</Td>
-                            <Td textAlign="center">{x.startTime}</Td>
-                            <Td textAlign="center">Consulta</Td>
-                            <Td textAlign="center">
-                              {x.status === "deleted" ? (
-                                <Text color="gray">No disponible</Text>
-                              ) : now > bookingStart ? (
-                                <Text color="gray">No disponible</Text>
-                              ) : (
-                                <Link href={x.link} target="_blank">
-                                  <Text
-                                    color="#104DBA"
-                                    textDecoration="underline"
-                                    _hover={{ textDecoration: "none" }}
-                                  >
-                                    Ir a la consulta
-                                  </Text>
-                                </Link>
-                              )}
-                            </Td>
-                            <Td textAlign="center">
-                              {x.status === "deleted"
-                                ? "Cancelado"
-                                : x.status === "pending"
-                                  ? "Pendiente de Pago"
-                                  : now > bookingStart
-                                    ? "Expiró"
-                                    : "Confirmado"}
-                            </Td>
-                            <Td textAlign="center">
-                              <Button
-                                onClick={() => handleSelectHistory(x)}
-                                variant="unstyled"
-                              >
-                                <Icon
-                                  as={FaEye}
-                                  boxSize={6}
-                                  color="#104DBA"
-                                />
-                              </Button>
-                            </Td>
-                          </Tr>
-                        );
-                      })
-                      .slice(0, 5)}
+                            <Icon as={FaEye} boxSize={6} color="#104DBA" />
+                          </Button>
+                        </Td>
+                      </Tr>
+                    );
+                  })}
                 </Tbody>
               </Table>
+              <Divider />
+              <Flex justifyContent="center" my={4}>
+                <MdOutlineNavigateBefore
+                  onClick={handlePreviousPageHistory}
+                  isDisabled={currentPageHistory === 1}
+                  style={{ cursor: 'pointer', color: '#104DBA'}}
+                  size={20}
+                />
+                <Text mx={3} fontSize={["12px", "14px"]}>
+                  Página {currentPageHistory} de {Math.ceil(dataBookings.length / itemsPerPageHistory)}
+                </Text>
+                <MdOutlineNavigateNext onClick={handleNextPageHistory} isDisabled={currentPageHistory === Math.ceil(dataBookings.length / itemsPerPageHistory)}
+                  style={{ cursor: 'pointer', color: '#104DBA'}}
+                  size={20}
+                />
+              </Flex>
             </TableContainer>
           </Box>
         </Box>
@@ -792,12 +800,7 @@ const Turns = () => {
             {documentsSelected?.map((doc, idx) => (
               <Flex key={idx} justifyContent="space-between">
                 <Text>{doc?.name}</Text>
-                <Link
-                  href={doc?.url}
-                  target="_blank"
-                  color="#104DBA"
-                  fontWeight={700}
-                >
+                <Link href={doc?.url} target="_blank" color="#104DBA" fontWeight={700}>
                   Ver
                 </Link>
               </Flex>
@@ -808,6 +811,6 @@ const Turns = () => {
       />
     </Flex>
   );
-};
-
-export default Turns;
+  };
+  
+  export default Turns;

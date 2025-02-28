@@ -43,7 +43,7 @@ const receiveMenu = (isOpen, color = "#104DBA", width = "20px", height = "20px",
     {
       icon: (
         <AiOutlineCalendar
-          color={path === "/turnos" && isMobile ? "#FFF" : color}
+          color={path === "/turnos" || path === "/nuevo-turno" && isMobile ? "#FFF" : color}
           title="Nuevo turno"
           className={isOpen ? "fade-in-text" : ""}
           style={{ width, height }}

@@ -2,8 +2,14 @@ import PropTypes from "prop-types";
 import { Button, Text, Box, Center, Flex, Container, Heading, GridItem, Grid, Link } from "@chakra-ui/react";
 import { FcGoogle } from "react-icons/fc";
 import { LogoCustom } from "../components/extras";
+import { useLocation } from 'react-router-dom';
 
 export default function Login({ handleLogin }) {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const bookingId = params.get('bookingId');
+  const emailParam = params.get('email');
+
   return (
     <Flex bg="#FFFFFF" flexDirection="column" h='100vh'>
       {/* Navbar */}
@@ -27,7 +33,7 @@ export default function Login({ handleLogin }) {
       </Box>
       <Flex flex={1} justifyContent='center' alignItems='center'>
         <Box w={['full', 'full', 'full', '889px', "889px"]} h={["572px"]} mx={['2em', '2em', '2em', 'auto','auto']} boxShadow='2xl' rounded='2xl'>
-        <Grid templateColumns="repeat(12, 1fr)" h="full">
+          <Grid templateColumns="repeat(12, 1fr)" h="full">
             <GridItem colSpan={[12, 12, 5, 5]} alignContent="center">
               <Flex justifyContent="center" alignItems="center" h='full'>
                 <Box w={["180px", "180px", "250px", "250px"]}>
@@ -116,7 +122,7 @@ export default function Login({ handleLogin }) {
                     backgroundColor='white'
                     fontSize={["sm", "xl"]}
                     leftIcon={<FcGoogle fontSize={24} />}
-                    onClick={() => handleLogin("PACIENTE")}
+                    onClick={() => handleLogin("PACIENTE", bookingId, emailParam)}
                     rounded='full'
                     w='full'
                     my={2}
@@ -127,7 +133,7 @@ export default function Login({ handleLogin }) {
                     backgroundColor='white'
                     fontSize={["sm", "xl"]}
                     leftIcon={<FcGoogle fontSize={24} />}
-                    onClick={() => handleLogin("DOCTOR")}
+                    onClick={() => handleLogin("DOCTOR", bookingId, emailParam)}
                     rounded='full'
                     w='full'
                     my={2}

@@ -122,7 +122,7 @@ const DoctorCalendar = ({ currentDateState, setDaySelected, calendarEvents, dayS
       <Button onClick={handlePreviousPage} isDisabled={currentPage === 0} rounded="full" size="xs" p={0} bg="#104DBA" color="#FFF" _active={{ bgColor: "#104DBA" }} _hover={{ bgColor: "#104DBA40" }}>
         <MdOutlineNavigateBefore style={{ width: "18px", height: "18px" }} />
       </Button>
-      <Grid templateColumns="repeat(7, 1fr)" my={2} overflow="auto" w="full" maxH={["300px", "200px", "200px", "200px", "200px", "200px"]}>
+      <Grid templateColumns="repeat(7, 1fr)" my={2} overflow="auto" w="full" maxH={["300px", "200px", "200px", "150px", "200px", "350px"]}>
         {currentDays.map(day => {
           const dayName = format(day, "EEEE", { locale: es });
           const dayDate = format(day, "dd", { locale: es });

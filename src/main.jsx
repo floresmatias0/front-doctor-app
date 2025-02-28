@@ -24,6 +24,7 @@ import TermsOfServices from "./views/terms-of-services";
 import Turns from "./views/turns";
 import Verify from "./views/verify";
 import CreateTurn from "./views/create-turn";
+import ConfirmAppointment from "./views/confirm-appointment";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -54,14 +55,23 @@ const breakpoints = {
 
 const theme = extendTheme({ colors, fonts, breakpoints });
 
-const handleLogin = (role) => {
-  window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google/?role=${role}`, "_self");
+const handleLogin = (role, bookingId, email) => {
+  const url = new URL(`${import.meta.env.VITE_BACKEND_URL}/auth/google`);
+  url.searchParams.append('role', role);
+  if (bookingId) url.searchParams.append('bookingId', bookingId);
+  if (email) url.searchParams.append('email', email);
+  window.open(url.toString(), "_self");
 };
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <LandingHome/>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "confirm-appointment",
+    element: <ConfirmAppointment />,
     errorElement: <ErrorPage />,
   },
   {

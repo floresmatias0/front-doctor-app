@@ -33,22 +33,22 @@ const StatusMessage = ({ text, status = "approved", backAction }) => {
             justifyContent="center"
             alignItems="flex-start"
             flexDirection="column"
-            px={[4, 20]}
-            mt={[4, 0]}
+            px={[4, 16]}
+            mt={[4, 4]}
             h="full"
         >
             {status === "approved" ? (
                 <HiOutlineBadgeCheck
-                    style={{ width: "36px", height: "36px", color: "#104DBA" }}
+                    style={{ width: "54px", height: "54px", color: "#104DBA" }}
                 />
             ) : (
                 <MdOutlineErrorOutline
-                    style={{ width: "36px", height: "36px", color: "red" }}
+                    style={{ width: "50px", height: "50px", color: "red" }}
                 />
             )}
             <Text
                 color="#104DBA"
-                fontSize={["26px", "2xl"]}
+                fontSize={["26px", "35px"]}
                 fontWeight={700}
                 textOverflow="wrap"
                 lineHeight={["30.47px", "35.16px"]}
@@ -56,20 +56,6 @@ const StatusMessage = ({ text, status = "approved", backAction }) => {
             >
                 {text}
             </Text>
-            <Flex justifyContent="flex-end" w="full">
-                <Button
-                    bg="#104DBA"
-                    color="#FFFFFF"
-                    w="222px"
-                    size={["xs", "sm"]}
-                    onClick={backAction}
-                    fontSize="16px"
-                    fontWeight={500}
-                    mx={["auto", 0]}
-                >
-                    SOLICITAR NUEVO TURNO
-                </Button>
-            </Flex>
         </Flex>
     );
 };
@@ -117,7 +103,7 @@ const CreateTurn = () => {
             .join(' ')
             .trim();
     };
-    
+
 
     const handleNextDetails = () => {
         if (isFormComplete) {
@@ -173,75 +159,84 @@ const CreateTurn = () => {
         });
     };
 
-// Función para manejar la confirmación de turno
-const handleNextConfirmation = async () => {
-    try {
-        const bookingData = {
-            doctorEmail: user.email,
-            tutorEmail: tutorEmail,
-            title: "Consulta médica",
-            startDateTime: new Date(daySelected).toISOString(),
-            endDateTime: new Date(new Date(daySelected).getTime() + (user.reserveTime * 60000)).toISOString(),
-            symptoms: [],
-            patient: {
-                name: patientName,
-                tutorName: tutorName,
-                email: tutorEmail,
-            },
-            order_id: "",
-        };
-
-        console.log("Datos de la reserva:", bookingData);
-
-        const response = await instance.post('/calendars/create-event', bookingData);
-
-        if (response.data.success) {
-            // Enviar correo al paciente para que confirme el turno
-            const emailData = {
-                emailType: 'notifyPatientToConfirmBooking', // Tipo de correo electrónico
-                sendTo: tutorEmail,
-                subject: 'Tiene un nuevo turno agendado', // Asunto del correo
-                patientName: patientName,
-                doctorName: user.name,
-                doctorEspecialization: doctorData?.especialization?.join(", ") || "",
-                startDate: fechaFormateada,
-                price: user.reservePrice,
-                bookingId: response.data.booking_id || "defaultBookingId", // Asegúrate de que booking_id esté presente
+    // Función para manejar la confirmación de turno
+    const handleNextConfirmation = async () => {
+        try {
+            const bookingData = {
                 doctorEmail: user.email,
-                isHtml: true, // Definir si el correo es HTML
+                tutorEmail: tutorEmail,
+                title: "Consulta médica",
+                startDateTime: new Date(daySelected).toISOString(),
+                endDateTime: new Date(new Date(daySelected).getTime() + (user.reserveTime * 60000)).toISOString(),
+                symptoms: [],
+                patient: {
+                    name: patientName,
+                    tutorName: tutorName,
+                    email: tutorEmail,
+                },
+                order_id: "",
             };
 
-            console.log("Datos del correo:", emailData);
+            console.log("Datos de la reserva:", bookingData);
 
-            const emailResponse = await instance.post('/messages', emailData);
+            const response = await instance.post('/calendars/create-event', bookingData);
 
-            if (emailResponse.data.success) {
-                setMessageStatus("¡Reserva creada exitosamente y el evento ha sido añadido a Google Calendar! Un correo ha sido enviado al paciente.");
+            console.log("Response data:", response.data); // Agrega un console.log aquí
+
+            if (response.data.success) {
+                // Extraer booking_id desde response.data.data
+                const bookingId = response.data.data.booking_id;
+
+                console.log("Booking ID:", bookingId);
+
+                if (!bookingId) {
+                    throw new Error("Booking ID is missing from the response.");
+                }
+
+                // Enviar correo al paciente para que confirme el turno
+                const emailData = {
+                    emailType: 'notifyPatientToConfirmBooking', // Tipo de correo electrónico
+                    sendTo: tutorEmail,
+                    subject: 'Tiene un nuevo turno agendado', // Asunto del correo
+                    patientName: patientName,
+                    doctorName: user.name,
+                    doctorEspecialization: doctorData?.especialization?.join(", ") || "",
+                    startDate: fechaFormateada,
+                    price: user.reservePrice,
+                    bookingId: bookingId, // Asegúrate de que booking_id esté presente
+                    isHtml: true, // Definir si el correo es HTML
+                };
+
+                console.log("Datos del correo:", emailData);
+
+                const emailResponse = await instance.post('/messages', emailData);
+
+                if (emailResponse.data.success) {
+                    setMessageStatus("¡Reserva creada exitosamente y el evento ha sido añadido a Google Calendar! Un correo ha sido enviado al paciente.");
+                } else {
+                    setMessageStatus("¡Reserva creada, pero hubo un error al enviar el correo al paciente.");
+                }
             } else {
-                setMessageStatus("¡Reserva creada, pero hubo un error al enviar el correo al paciente.");
+                setMessageStatus("Hubo un error al crear la reserva.");
             }
-        } else {
-            setMessageStatus("Hubo un error al crear la reserva.");
+
+            setActiveTab(3);
+            setDisableTabs({
+                ...disableTabs,
+                success: false,
+            });
+
+        } catch (error) {
+            console.error("Error al crear la reserva:", error);
+            toast({
+                title: "Error al crear la reserva",
+                description: error.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
         }
-
-        setActiveTab(3);
-        setDisableTabs({
-            ...disableTabs,
-            success: false,
-        });
-
-    } catch (error) {
-        console.error("Error al crear la reserva:", error);
-        toast({
-            title: "Error al crear la reserva",
-            description: error.message,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-        });
-    }
-};
-
+    };
 
     const handleTryAgain = () => {
         setTutorName('');
@@ -350,27 +345,58 @@ const handleNextConfirmation = async () => {
                                     color="gray.500"
                                     mb={6}
                                 >
-                                    Completa los campos para agendar un turno
+                                    Por favor complete los siguientes campos para agendar un turno.
                                 </Text>
                                 <Box
                                     boxShadow="lg"
                                     p={[4, 6]}
                                     bg="white"
-                                    borderRadius="md"
+                                    borderRadius="lg"
                                     w="full"
+                                    border="1px solid #104DBA"
                                 >
                                     <Flex flexDirection="column" gap={4}>
                                         <Flex flexDirection="column">
-                                            <Text mb={2} fontWeight={600}>Nombre de tutor</Text>
-                                            <Input placeholder="Nombre de tutor" value={tutorName} onChange={(e) => { setTutorName(e.target.value); handleInputChange(); }} />
+                                            <Text mb={2} fontWeight={400}>Nombre de tutor</Text>
+                                            <Input
+                                                border="none"
+                                                borderBottom="2px solid #104DBA"
+                                                borderRadius="none"
+                                                w={["auto", "250px"]}
+                                                h={["30px", "36px"]}
+                                                focusBorderColor="none"
+                                                _focusVisible={{ boxShadow: "none" }}
+                                                placeholder="Nombre y apellido"
+                                                value={tutorName}
+                                                onChange={(e) => { setTutorName(e.target.value); handleInputChange(); }} />
                                         </Flex>
                                         <Flex flexDirection="column">
-                                            <Text mb={2} fontWeight={600}>Nombre de paciente</Text>
-                                            <Input placeholder="Nombre de paciente" value={patientName} onChange={(e) => { setPatientName(e.target.value); handleInputChange(); }} />
+                                            <Text mb={2} fontWeight={400}>Nombre de paciente</Text>
+                                            <Input
+                                                border="none"
+                                                borderBottom="2px solid #104DBA"
+                                                borderRadius="none"
+                                                w={["auto", "250px"]}
+                                                h={["30px", "36px"]}
+                                                focusBorderColor="none"
+                                                _focusVisible={{ boxShadow: "none" }}
+                                                placeholder="Nombre y apellido"
+                                                value={patientName}
+                                                onChange={(e) => { setPatientName(e.target.value); handleInputChange(); }} />
                                         </Flex>
                                         <Flex flexDirection="column">
-                                            <Text mb={2} fontWeight={600}>Mail del tutor</Text>
-                                            <Input placeholder="Mail del tutor" value={tutorEmail} onChange={(e) => { setTutorEmail(e.target.value); handleInputChange(); }} />
+                                            <Text mb={2} fontWeight={400}>Mail del tutor</Text>
+                                            <Input
+                                                border="none"
+                                                borderBottom="2px solid #104DBA"
+                                                borderRadius="none"
+                                                w={["auto", "250px"]}
+                                                h={["30px", "36px"]}
+                                                focusBorderColor="none"
+                                                _focusVisible={{ boxShadow: "none" }}
+                                                placeholder="Mail del tutor"
+                                                value={tutorEmail}
+                                                onChange={(e) => { setTutorEmail(e.target.value); handleInputChange(); }} />
                                         </Flex>
                                     </Flex>
                                 </Box>
@@ -378,8 +404,13 @@ const handleNextConfirmation = async () => {
                                     <Button
                                         bg="#104DBA"
                                         color="#FFFFFF"
-                                        w="120px"
+                                        w="175px"
+                                        fontSize="sm"
+                                        lineHeight="16px"
+                                        fontWeight={500}
+                                        textTransform="uppercase"
                                         size="sm"
+                                        rightIcon={<MdOutlineNavigateNext style={{ width: "20px", height: "20px" }} />}
                                         onClick={handleNextDetails}
                                         isDisabled={!isFormComplete}
                                     >
@@ -392,13 +423,14 @@ const handleNextConfirmation = async () => {
                             overflowY="auto"
                             h="full"
                             w="full"
-                            px={0}
+                            px={2}
                             py={0}
                         >
                             <Flex
                                 flexDirection="column"
                                 gap={[2, 5]}
-                                mt={0}
+                                pt={6}
+                                pl={4}
                             >
                                 <Heading
                                     fontSize={["15px", "25px"]}
@@ -409,14 +441,14 @@ const handleNextConfirmation = async () => {
                                     py={[0.5, 0]}
                                     w={["120px", "auto"]}
                                 >
-                                    Selecciona un horario
+                                    Agendar turno
                                 </Heading>
                                 <Text
                                     fontSize="md"
                                     color="gray.500"
                                     mb={6}
                                 >
-                                    Elige un horario disponible para la consulta.
+                                    Por favor seleccione la fecha y horarios para el turno.
                                 </Text>
                                 <Box
                                     boxShadow="lg"
@@ -495,8 +527,7 @@ const handleNextConfirmation = async () => {
                                 gap={[2, 5]}
                                 mt={0}
                                 p={[4, 6]}
-                                maxW="500px"
-                                mx="auto"  
+                                mx="auto"
                             >
                                 <Heading
                                     fontSize={["15px", "25px"]}
@@ -507,14 +538,14 @@ const handleNextConfirmation = async () => {
                                     py={[0.5, 0]}
                                     w={["120px", "auto"]}
                                 >
-                                    Confirmar turno
+                                    Agendar turno
                                 </Heading>
                                 <Text
                                     fontSize="md"
                                     color="gray.500"
                                     mb={6}
                                 >
-                                    Revise los detalles del turno y confirme la reserva.
+                                    Por favor confirme la información para enviar la solicitud de pago de turno.
                                 </Text>
                                 <Box
                                     boxShadow="lg"
@@ -522,6 +553,7 @@ const handleNextConfirmation = async () => {
                                     bg="white"
                                     borderRadius="md"
                                     w="full"
+                                    maxW="400px"
                                 >
                                     <Text fontWeight={600} fontSize={25} mb={2}>
                                         Tutor: {tutorName}
@@ -613,7 +645,7 @@ const handleNextConfirmation = async () => {
                                     <Button
                                         bg="#104DBA"
                                         color="#FFFFFF"
-                                        w="auto" 
+                                        w="auto"
                                         size="xs"
                                         rightIcon={<MdOutlineNavigateNext style={{ width: "20px", height: "20px" }} />}
                                         onClick={handleNextConfirmation}
@@ -624,7 +656,7 @@ const handleNextConfirmation = async () => {
                                             fontWeight={500}
                                             textTransform="uppercase"
                                         >
-                                            Reservar e informar al paciente
+                                            Enviar solcicitud de pago
                                         </Text>
                                     </Button>
                                 </Flex>
@@ -636,7 +668,19 @@ const handleNextConfirmation = async () => {
                             w="full"
                             px={0}
                             py={0}
+                            maxW={500}
                         >
+                            <Heading
+                                fontSize={["15px", "25px"]}
+                                fontWeight={700}
+                                lineHeight={["17.58px", "29.3px"]}
+                                color="#104DBA"
+                                px={[4, 8]}
+                                py={[0.5, 8]}
+                                w={["120px", "auto"]}
+                            >
+                                Agendar turno
+                            </Heading>
                             <StatusMessage
                                 text="Su solicitud ha sido enviada exitosamente."
                                 status="approved"
