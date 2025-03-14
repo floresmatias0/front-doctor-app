@@ -80,7 +80,8 @@ const router = createBrowserRouter([
   },
   {
     path: "iniciar-sesion",
-    element: localStorage.getItem("authToken") ? <Navigate to="/inicio" replace /> : <Login handleLogin={handleLogin} />,
+    // element: localStorage.getItem("authToken") ? <Navigate to="/inicio" replace /> : <Login handleLogin={handleLogin} />,
+    element: <Login handleLogin={handleLogin} />,
   },
   {
     path: "configuracion",
